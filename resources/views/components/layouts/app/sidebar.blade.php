@@ -11,9 +11,12 @@
                 <x-app-logo />
             </a>
 
+             <livewire:Sites.SearchingForSite />
+
             <flux:navlist variant="outline">
                 <flux:navlist.group :heading="__('Platform')" class="grid">
                     <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')" wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
+                         <flux:navlist.item icon="home" :href="route('post.create')" :current="request()->routeIs('post.create')" wire:navigate>{{ __('Create Post') }}</flux:navlist.item>
                 </flux:navlist.group>
             </flux:navlist>
 
