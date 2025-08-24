@@ -11,7 +11,7 @@
                 <x-slot:links>
                     <x-site-navlinks-group :site="$site" />
                 </x-slot:links>
-                {{-- <livewire:Sites.SiteCreationForm :readonly="true" :site="$site" target="Information" /> --}}
+         
                 <x-site-creation-form target="Information" :readonly="true" />
 
                    
@@ -29,7 +29,8 @@
     <div class="tab-content border-2  border-gray-200 bg-base-100 p-10">
         @if ($newDirectCascades)
             <div class=" w-full ">
-                <livewire:site-direct-cascades-table :data=$newDirectCascades />
+                {{-- <livewire:components.cascades-table :cascades=$newDirectCascades cascadesType='direct' /> --}}
+                <livewire:tables.site.cascades-table :cascades=$newDirectCascades cascadesType='direct'/>
             </div>
         @endif
     </div>
@@ -48,7 +49,8 @@
     <div class="tab-content border-2  border-gray-200 bg-base-100 p-10">
         @if ($indirectCascades)
             <div class=" w-full ">
-                <livewire:site-indirect-cascades-table :data=$indirectCascades />
+                {{-- <livewire:site-indirect-cascades-table :data=$indirectCascades /> --}}
+                   <livewire:tables.site.cascades-table :cascades=$indirectCascades cascadesType='indirect'/>
             </div>
         @endif
     </div>

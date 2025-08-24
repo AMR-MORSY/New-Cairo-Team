@@ -21,9 +21,10 @@ class ShowSite extends Component
 
     public function mount(SiteInterface $siteRepositry, Site $site)
     {
+        
         $this->siteRepository = $siteRepositry;
 
-        $this->form->setSite($site);
+        $this->form->setSite($site); ////this function binds the $site model with the form which contains the site model attributes which could be accessed inside the view 'livewire.sites.actions.show-site' by using the object form
 
 
         $this->site = $site;

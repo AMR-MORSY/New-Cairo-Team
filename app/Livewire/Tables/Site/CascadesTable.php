@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Tables\Site;
 
 use Livewire\Attributes\On;
 use Illuminate\Support\Carbon;
@@ -10,14 +10,15 @@ use PowerComponents\LivewirePowerGrid\Column;
 use PowerComponents\LivewirePowerGrid\PowerGridFields;
 use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
-use PowerComponents\LivewirePowerGrid\Traits\ActionButton;
-use PowerComponents\LivewirePowerGrid\Components\SetUp\Responsive;
 
-final class SiteDirectCascadesTable extends PowerGridComponent
+final class CascadesTable extends PowerGridComponent
 {
-    public string $tableName = 'site-details-table-hrh4tz-table';
+    public string $tableName = 'cascades-table-lvjnmv-table';
 
-    public array $data;
+
+    public  $cascades;
+
+    public string $cascadesType;
 
 
     public function actions($row): array
@@ -25,7 +26,7 @@ final class SiteDirectCascadesTable extends PowerGridComponent
         return [
             Button::add('edit-stock')
 
-                ->icon('default-bolt')
+                ->icon('default-eye')
                 ->class('cursor-pointer')
                 ->dispatch('clickToEdit', ['site_code' => $row->code]),
         ];
@@ -34,21 +35,23 @@ final class SiteDirectCascadesTable extends PowerGridComponent
     public function datasource(): Collection
     {
 
-        $count = count($this->data);
-        $newDataArray = [];
-        for ($i = 1; $i <= $count; $i++) {
-            $site = [];
-            $site['id'] = $i;
-            $site['code'] = $this->data[$i - 1]['details']['site_code'];
-            $site['name'] =  $this->data[$i - 1]['details']['site_name'];
-            $site['count'] =  $this->data[$i - 1]['count'];
-            array_push($newDataArray, $site);
+        if ($this->cascadesType == 'direct') {
+            $count = count($this->cascades);
+            $newDataArray = [];
+            for ($i = 1; $i <= $count; $i++) {
+                $site = [];
+                $site['id'] = $i;
+                $site['code'] = $this->cascades[$i - 1]['details']['site_code'];
+                $site['name'] = $this->cascades[$i - 1]['details']['site_name'];
+                $site['count'] =  $this->cascades[$i - 1]['count'];
+
+
+                array_push($newDataArray, $site);
+            }
+
+            return collect($newDataArray);
         }
-
-
-
-
-        return collect($newDataArray);
+        return $this->cascades;
     }
 
     public function setUp(): array
@@ -67,20 +70,38 @@ final class SiteDirectCascadesTable extends PowerGridComponent
 
     public function fields(): PowerGridFields
     {
+        if ($this->cascadesType == 'direct') {
+            return PowerGrid::fields()
+                ->add('id')
+                ->add('code')
+                ->add('name')
+                ->add('count');
+        }
         return PowerGrid::fields()
             ->add('id')
-            ->add('code')
-            ->add('name')
-            ->add('count');
-        // ->add('created_at_formatted', function ($entry) {
-        //     return Carbon::parse($entry->created_at)->format('d/m/Y');
-        // });
+            ->add('site_code')
+            ->add('site_name');
     }
     // <-- Required for actions
 
 
     public function columns(): array
     {
+        if ($this->cascadesType == 'indirect') {
+            return [
+
+
+                Column::make('Name', 'site_name')
+                    ->searchable()
+                    ->sortable(),
+
+                Column::make('Code', 'site_code')
+                    ->sortable(),
+
+
+                Column::action('Action')
+            ];
+        }
         return [
 
             Column::make('Code', 'code')
@@ -104,6 +125,6 @@ final class SiteDirectCascadesTable extends PowerGridComponent
     #[On('clickToEdit')]
     public function clickToEdit(string $site_code)
     {
-        return redirect()->route('site.show',['site'=>$site_code]);
+        return redirect()->route('site.show', ['site' => $site_code]);
     }
 }

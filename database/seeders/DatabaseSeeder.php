@@ -4,7 +4,11 @@ namespace Database\Seeders;
 
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Database\Seeders\ZoneSeder;
 use Illuminate\Database\Seeder;
+use Database\Seeders\UsersSeeder;
+use Database\Seeders\AreasAndZonesSeeder;
+use Database\Seeders\ModificationRolesAndPermissionsSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,11 +17,20 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        $this->call([
+            AreasAndZonesSeeder::class,
+            ModificationRolesAndPermissionsSeeder::class,
+            UsersSeeder::class,
+            
+           
+
+        ]);
+        
         // User::factory(10)->create();
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        // User::factory()->create([
+        //     'name' => 'Test User',
+        //     'email' => 'test@example.com',
+        // ]);
     }
 }

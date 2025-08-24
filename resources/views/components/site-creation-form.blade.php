@@ -3,7 +3,7 @@
         <div class="bg-white shadow-lg rounded-lg overflow-hidden">
 
             <!-- Form -->
-            <form  class="p-6 space-y-8">
+            <form class="p-6 space-y-8">
 
                 <!-- Personal Information Section -->
                 <div class="space-y-6">
@@ -19,7 +19,7 @@
                             <flux:label>Site Code *</flux:label>
                             <flux:input wire:model="form.site_code" :readonly="$readonly"
                                 :placeholder="$readonly ? null : 'Enter Site Code'" class="w-full" />
-                            <flux:error name="site_code" />
+                            <flux:error name="form.site_code" />
                         </flux:field>
 
 
@@ -28,37 +28,54 @@
                             <flux:label>Site Name *</flux:label>
                             <flux:input wire:model="form.site_name" :readonly="$readonly"
                                 :placeholder="$readonly ? null : 'Enter Site Name'" class="w-full" />
-                            <flux:error name="site_name" />
+                            <flux:error name="form.site_name" />
                         </flux:field>
+
+                        @if ($target == 'Information')
+                            <flux:field>
+                                <flux:label>Nodal Code *</flux:label>
+                                <flux:input wire:model="form.nodal_code" :readonly="$readonly"
+                                    :placeholder="$readonly ? null : 'Enter nodal code'" class="w-full" />
+                                <flux:error name="form.nodal_code" />
+                            </flux:field>
+                            <flux:field>
+                                <flux:label>Nodal Name *</flux:label>
+                                <flux:input wire:model="form.nodal_name" :readonly="$readonly"
+                                    :placeholder="$readonly ? null : 'Enter nodal Name'" class="w-full" />
+                                <flux:error name="form.nodal_name" />
+                            </flux:field>
+                        @endif
+
+
 
                         <flux:field>
                             <flux:label>BSC *</flux:label>
                             <flux:input wire:model="form.BSC" :readonly="$readonly" type="text"
                                 :placeholder="$readonly ? null : 'Enter BSC'" class="w-full" />
-                            <flux:error name="BSC" />
+                            <flux:error name="form.BSC" />
                         </flux:field>
 
                         <flux:field>
                             <flux:label>RNC *</flux:label>
                             <flux:input wire:model="form.RNC" :readonly="$readonly" type="text"
                                 :placeholder="$readonly ? null : 'Enter RNC'" class="w-full" />
-                            <flux:error name="RNC" />
+                            <flux:error name="form.RNC" />
                         </flux:field>
 
                         <flux:field>
                             <flux:label>Office *</flux:label>
                             <flux:input wire:model="form.office" type="text" :readonly="$readonly"
                                 :placeholder="$readonly ? null : 'Enter Office'" class="w-full" />
-                            <flux:error name="office" />
+                            <flux:error name="form.office" />
                         </flux:field>
 
                         <flux:field>
                             <flux:label>Severity *</flux:label>
                             @if ($target == 'Update' || $target == 'Create')
-                                <flux:select wire:model="form.severity" type="text"
+                                <flux:select wire:model="form.severity" type="text" clearable
                                     :placeholder="$readonly ? null : 'Enter Site Severity'" class="w-full">
                                     @foreach (('App\Enums\SiteSeverities')::cases() as $severity)
-                                        <flux:select.option :value="$severity->value">{{ $severity->name }}
+                                        <flux:select.option :value="$severity->value" >{{ $severity->name }}
                                         </flux:select.option>
                                     @endforeach
 
@@ -69,7 +86,7 @@
 
                             @endif
 
-                            <flux:error name="severity" />
+                            <flux:error name="form.severity" />
                         </flux:field>
                         <flux:field>
                             <flux:label>Category *</flux:label>
@@ -87,7 +104,7 @@
                                     :placeholder="$readonly ? null : 'Enter Site Category'" class="w-full" />
                             @endif
 
-                            <flux:error name="category" />
+                            <flux:error name="form.category" />
                         </flux:field>
 
                         <flux:field>
@@ -104,9 +121,10 @@
                             @else
                                 <flux:input wire:model="form.type" :placeholder="$readonly ? null : 'Enter Site Type'"
                                     :readonly="$readonly" class="w-full" />
+
                             @endif
 
-                            <flux:error name="type" />
+                            <flux:error name="form.type" />
                         </flux:field>
                         <flux:field>
                             <flux:label>Sharing *</flux:label>
@@ -125,7 +143,7 @@
                                     class="w-full" />
                             @endif
 
-                            <flux:error name="sharing" />
+                            <flux:error name="form.sharing" />
                         </flux:field>
 
                         <flux:field>
@@ -144,7 +162,7 @@
                                     :readonly="$readonly" class="w-full" />
                             @endif
 
-                            <flux:error name="host" />
+                            <flux:error name="form.host" />
                         </flux:field>
 
                         <flux:field>
@@ -163,64 +181,65 @@
                                     :readonly="$readonly" class="w-full" />
                             @endif
 
-                            <flux:error name="guest" />
+                            <flux:error name="form.gest" />
                         </flux:field>
 
                         <flux:field>
-                            <flux:label>Oz *</flux:label>
+                            <flux:label>Area *</flux:label>
                             @if ($target == 'Update' || $target == 'Create')
-                                <flux:select wire:model="form.oz" type="text" placeholder="Enter OZ" class="w-full">
-                                    @foreach (('App\Enums\OZ')::cases() as $OZ)
+                                <flux:select wire:model="form.area" type="text" placeholder="Enter Area"
+                                    class="w-full">
+                                    @foreach (('App\Enums\Areas')::cases() as $OZ)
                                         <flux:select.option :value="$OZ->value">{{ $OZ->name }}
                                         </flux:select.option>
                                     @endforeach
 
                                 </flux:select>
                             @else
-                                <flux:input wire:model="form.oz" :placeholder="$readonly ? null : 'Enter Site OZ'"
+                                <flux:input wire:model="form.area" :placeholder="$readonly ? null : 'Enter Area'"
                                     :readonly="$readonly" class="w-full" />
                             @endif
 
-                            <flux:error name="oz" />
+                            <flux:error name="form.area" />
                         </flux:field>
                         <flux:field>
                             <flux:label>VF Code *</flux:label>
                             <flux:input wire:model="form.vf_code" :placeholder="$readonly ? null : 'Enter VF Code'"
                                 :readonly="$readonly" class="w-full" />
-                            <flux:error name="vf_code" />
+                            <flux:error name="form.vf_code" />
                         </flux:field>
 
                         <flux:field>
                             <flux:label>ET Code *</flux:label>
                             <flux:input wire:model="form.et_code" :placeholder="$readonly ? null : 'Enter ET Code'"
                                 :readonly="$readonly" class="w-full" />
-                            <flux:error name="et_code" />
+                            <flux:error name="form.et_code" />
                         </flux:field>
 
                         <flux:field>
                             <flux:label>We Code *</flux:label>
                             <flux:input wire:model="form.we_code" :placeholder="$readonly ? null : 'Enter WE Code'"
                                 :readonly="$readonly" class="w-full" />
-                            <flux:error name="we_code" />
+                            <flux:error name="form.we_code" />
                         </flux:field>
 
                         <flux:field>
                             <flux:label>2G Cells *</flux:label>
-                            <flux:input wire:model="form.2G_cells" type="text" :readonly="$readonly"
+                            <flux:input wire:model="form.cells_2G" type="number" :readonly="$readonly"
                                 :placeholder="$readonly ? null : 'Enter 2G Cells'" class="w-full" />
-                            <flux:error name="2G_cells" />
+                            <flux:error name="form.cells_2G" />
                         </flux:field>
                         <flux:field>
                             <flux:label>3G Cells *</flux:label>
-                            <flux:input wire:model="form.3G_cells" type="text" :readonly="$readonly"
+                            <flux:input wire:model="form.cells_3G" type="number" :readonly="$readonly"
                                 :placeholder="$readonly ? null : 'Enter 3G Cells'" class="w-full" />
-                            <flux:error name="3G_cells" />
+                            <flux:error name="form.cells_3G" />
                         </flux:field>
                         <flux:field>
                             <flux:label>4G Cells *</flux:label>
-                            <flux:input wire:model="form.4G_cells" type="text" :readonly="$readonly"
+                            <flux:input wire:model="form.cells_4G" type="number" :readonly="$readonly"
                                 :placeholder="$readonly ? null : 'Enter 4G Cells'" class="w-full" />
-                            <flux:error name="4G_cells" />
+                            <flux:error name="form.cells_4G" />
                         </flux:field>
 
                         <flux:field>
@@ -229,17 +248,19 @@
                                 <flux:select wire:model="form.status" type="text" placeholder="Enter Status"
                                     class="w-full">
                                     @foreach (('App\Enums\Status')::cases() as $status)
-                                        <flux:select.option :value="$status->value">{{ $status->name }}
+                                        <flux:select.option :value="$status->value" wire:key="{{ $status->value }}">
+                                            {{ $status->name }}
                                         </flux:select.option>
                                     @endforeach
 
                                 </flux:select>
                             @else
-                                <flux:input wire:model="form.status" :placeholder="$readonly ? null : 'Enter Site Status'"
-                                    :readonly="$readonly" class="w-full" />
+                                <flux:input wire:model="form.status"
+                                    :placeholder="$readonly ? null : 'Enter Site Status'" :readonly="$readonly"
+                                    class="w-full" />
                             @endif
 
-                            <flux:error name="status" />
+                            <flux:error name="form.status" />
                         </flux:field>
 
                         <flux:field>
@@ -247,7 +268,7 @@
                             @if ($target == 'Update' || $target == 'Create')
                                 <flux:select wire:model="form.zone" type="text" placeholder="Enter Zone"
                                     class="w-full">
-                                    @foreach (('App\Enums\Zone')::cases() as $zone)
+                                    @foreach (('App\Enums\Zones')::cases() as $zone)
                                         <flux:select.option :value="$zone->value">{{ $zone->name }}
                                         </flux:select.option>
                                     @endforeach
@@ -258,7 +279,7 @@
                                     :readonly="$readonly" class="w-full" />
                             @endif
 
-                            <flux:error name="zone" />
+                            <flux:error name="form.zone" />
                         </flux:field>
 
 
@@ -269,14 +290,17 @@
 
 
 
+
                 </div>
-              @if ($target=='Update')
-                    <flux:button variant="primary" color="zinc" wire:click='updateSite' class=" cursor-pointer">Update</flux:button>
-              @endif
-               @if ($target=='Create')
-                    <flux:button variant="primary" color="zinc" wire:click='createSite' class=" cursor-pointer">Create</flux:button>
-              @endif
-              
+                @if ($target == 'Update')
+                    <flux:button variant="primary" color="zinc" wire:click='updateSite' class=" cursor-pointer">
+                        Update</flux:button>
+                @endif
+                @if ($target == 'Create')
+                    <flux:button variant="primary" color="zinc" wire:click='create' class=" cursor-pointer">
+                        Create</flux:button>
+                @endif
+
             </form>
 
 

@@ -2,7 +2,7 @@
 
 namespace App\Enums;
 
-enum Zone: string
+enum Areas: string
 {
     case AGLI = "AGLI";
     case HGLI = "HGLI";

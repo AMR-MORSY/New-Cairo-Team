@@ -4,8 +4,8 @@ namespace App\Enums;
 
 enum SiteTypies: string
 {
-    case OUTDOOR = "Outdoor";
-    case SHELTER = 'Shelter';
+    case MACRO = "Macro";
+    case INDOOR='Indoor';
     case MICRO = 'Micro';
     case PICO = 'Pico';
     case MOBILE_STATION = 'Mobile Station';

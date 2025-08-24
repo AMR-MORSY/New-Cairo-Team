@@ -1,5 +1,12 @@
 <?php
 
+use App\Enums\Guest;
+use App\Enums\Host;
+use App\Enums\SiteCategories;
+use App\Enums\SiteSeverities;
+use App\Enums\SiteSharing;
+use App\Enums\SiteTypies;
+use App\Enums\Status;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -19,29 +26,29 @@ return new class extends Migration
             $table->string("RNC", 50)->nullable();
             $table->string('office', 50)->nullable();
 
-            $table->string('type', 50)->nullable();
+            $table->enum('type',array_column(SiteTypies::cases(),'value'));
 
-            $table->string('category', 50)->nullable();
+            $table->enum('category', array_column(SiteCategories::cases(),'value'));
 
-            $table->string('severity', 50)->nullable();
+            $table->enum('severity',array_column(SiteSeverities::cases(),'value'));
 
-            $table->string('sharing', 20)->nullable();
+            $table->enum('sharing', array_column(SiteSharing::cases(),'value'));
 
-            $table->string('host', 20)->nullable();
+            $table->enum('host', array_column(Host::cases(),'value'))->nullable();
 
-            $table->string('gest', 50)->nullable();
+            $table->enum('gest', array_column(Guest::cases(),'value'))->nullable();
             $table->string("vf_code", 50)->nullable();
             $table->string("et_code", 50)->nullable();
             $table->string("we_code", 50)->nullable();
 
-            $table->string('oz', 50)->nullable();
+           $table->foreignId('zone_id')->constrained()->onDelete('cascade');
 
-              $table->string("zone", 20)->nullable();
-            $table->integer("2G_cells")->nullable();
-            $table->integer("3G_cells")->nullable();
+            $table->foreignId('area_id')->constrained()->onDelete('cascade');
+            $table->integer("cells_2G")->nullable();
+            $table->integer("cells_3G")->nullable();
+            $table->integer("cells_4G")->nullable();
+            $table->enum("status",array_column(Status::cases(),'value'))->default("On Air");
 
-            $table->string("status", 20)->default("On Air");
-          
             $table->timestamps();
         });
     }

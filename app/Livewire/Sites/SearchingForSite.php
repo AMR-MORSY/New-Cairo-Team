@@ -3,18 +3,62 @@
 namespace App\Livewire\Sites;
 
 use Livewire\Component;
+use App\Models\Site\Site;
+use Masmerise\Toaster\Toaster;
+use Masmerise\Toaster\Toastable;
+use Livewire\Attributes\Validate;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 
 class SearchingForSite extends Component
 {
-    public $code;
+    use Toastable;
+    public $search = '';
+
 
     public function show()
     {
-        
+        $validator = Validator::make(
+            // Data to validate...
+            ['search' => $this->search],
 
-        return redirect()->route('site.show',['site'=>$this->code]);
-       
+            // Validation rules to apply...
+            ['search' => 'required|min:3'],
+
+        );
+        $this->dispatch('openCreateUserModal');
+        if ($validator->fails()) {
+            $errors = $validator->errors();
+            $searchError = $errors->first('search');
+            if ($searchError) {
+                Toaster::error($searchError);
+            }
+
+            throw new ValidationException($validator);
+        }
+        $validated = $validator->validated();
+        $search = $validated['search'];
+        $sites = Site::where('site_code', 'like', "%$search%")->orWhere('site_name', 'like', "%$search%")->get();
+
+        if (count($sites) > 0) {
+            $props = [
+                'title' => "Sites",
+                'data' => $sites,
+
+            ];
+
+            $this->dispatch('openDynamicModal', 'tables.site.searched-sites-table', $props);
+        }
+        else{
+              Toaster::info('No data found');
+
+        }
+
+
+
+
+     
+
 
     }
-
 }

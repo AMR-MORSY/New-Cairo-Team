@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Tables\Site;
 
 use Livewire\Attributes\On;
 use Illuminate\Support\Carbon;
@@ -11,11 +11,11 @@ use PowerComponents\LivewirePowerGrid\PowerGridFields;
 use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
 
-final class SiteIndirectCascadesTable extends PowerGridComponent
+final class SearchedSitesTable extends PowerGridComponent
 {
-    public string $tableName = 'site-indirect-cascades-table-mlwlz5-table';
+    public string $tableName = 'searched-sites-table-w6g9gq-table';
 
-    public Collection  $data;
+    public  $props;
 
 
     public function actions($row): array
@@ -23,18 +23,16 @@ final class SiteIndirectCascadesTable extends PowerGridComponent
         return [
             Button::add('edit-stock')
 
-                ->icon('default-bolt')
+                ->icon('default-eye')
                 ->class('cursor-pointer')
-                ->dispatch('clickToEdit', ['site_code' => $row->code]),
+                ->dispatch('clickToEdit', ['site_code' => $row->site_code]),
         ];
     }
-
-
     public function datasource(): Collection
     {
-
-
-        return $this->data;
+       
+        
+        return collect($this->props['data']) ;
     }
 
     public function setUp(): array
@@ -55,30 +53,29 @@ final class SiteIndirectCascadesTable extends PowerGridComponent
         return PowerGrid::fields()
             ->add('id')
             ->add('site_code')
-            ->add('site_name');
-        // ->add('created_at_formatted', function ($entry) {
-        //     return Carbon::parse($entry->created_at)->format('d/m/Y');
-        // });
+            ->add('site_name')
+            ->add('oz');
     }
 
     public function columns(): array
     {
         return [
-
+            Column::make('Code', 'site_code')
+                ->searchable()
+                ->sortable(),
 
             Column::make('Name', 'site_name')
                 ->searchable()
                 ->sortable(),
 
-            Column::make('Code', 'site_code')
+            Column::make('OZ', 'oz')
                 ->sortable(),
 
-            // Column::make('Created', 'created_at_formatted'),
-
-            Column::action('Action')
+            Column::action('View')
         ];
     }
 
+    
     #[On('clickToEdit')]
     public function clickToEdit(string $site_code)
     {

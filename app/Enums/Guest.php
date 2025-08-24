@@ -9,9 +9,10 @@ enum Guest: string
     case ET = "ET";
     case WE = "WE";
     case VF_OG = "VF+OG";
-    case VF_ET = "VF+ET";
+    case ET_VF = "ET+VF";
     case OG_ET = "OG+ET";
     case ET_WE = "ET+WE";
     case VF_WE = "VF+WE";
     case OG_WE = "OG+WE";
 }
+

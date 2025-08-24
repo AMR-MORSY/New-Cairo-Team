@@ -11,7 +11,13 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+          $middleware->alias([
+       
+        
+        // Add your custom middleware here
+        'team.member' => \App\Http\Middleware\CheckTeamMembership::class,
+        'team.permission' => \App\Http\Middleware\CheckTeamPermission::class,
+    ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
