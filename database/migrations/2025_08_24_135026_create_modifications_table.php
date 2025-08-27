@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreignId('requester_id')->constrained()->onDelete('cascade');
             $table->text('description')->nullable();
             $table->text('pending')->nullable();
-            $table->foreignId('modification_status_id')->constrained('modification__status')->onDelete('cascade');
+            $table->foreignId('modification_status_id')->constrained('modification_status')->onDelete('cascade');
             $table->foreignId('zone_id')->constrained()->onDelete('cascade');
             $table->foreignId('action_owner')->constrained('users')->cascadeOnDelete();
             $table->foreignId('project_id')->constrained()->onDelete('cascade');

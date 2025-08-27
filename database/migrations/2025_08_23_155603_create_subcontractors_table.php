@@ -14,7 +14,7 @@ return new class extends Migration
     {
         Schema::create('subcontractors', function (Blueprint $table) {
             $table->id();
-            $table->enum('project', array_column(Subcontractors::cases(), 'value'))->unique();
+            $table->enum('name', array_column(Subcontractors::cases(), 'value'))->unique();
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });

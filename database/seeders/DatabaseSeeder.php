@@ -7,7 +7,12 @@ use App\Models\User;
 use Database\Seeders\ZoneSeder;
 use Illuminate\Database\Seeder;
 use Database\Seeders\UsersSeeder;
+use Database\Seeders\ProjectsSeeder;
+use Database\Seeders\RequestersSeeder;
 use Database\Seeders\AreasAndZonesSeeder;
+use Database\Seeders\SubcontractorsSeeder;
+use Database\Seeders\ModificationStatusSeeder;
+use Database\Seeders\ModificationActionsSeeder;
 use Database\Seeders\ModificationRolesAndPermissionsSeeder;
 
 class DatabaseSeeder extends Seeder
@@ -21,6 +26,11 @@ class DatabaseSeeder extends Seeder
             AreasAndZonesSeeder::class,
             ModificationRolesAndPermissionsSeeder::class,
             UsersSeeder::class,
+            ProjectsSeeder::class,
+            ModificationActionsSeeder::class,
+            SubcontractorsSeeder::class,
+            RequestersSeeder::class,
+            ModificationStatusSeeder::class
             
            
 

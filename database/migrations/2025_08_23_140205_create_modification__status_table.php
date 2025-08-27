@@ -12,9 +12,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('modification__status', function (Blueprint $table) {
+        Schema::create('modification_status', function (Blueprint $table) {
             $table->id();
-            $table ->enum('status',array_column(ModificationStatus::cases(), 'value'))->unique();
+            $table ->enum('name',array_column(ModificationStatus::cases(), 'value'))->unique();
              $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('modification__status');
+        Schema::dropIfExists('modification_status');
     }
 };

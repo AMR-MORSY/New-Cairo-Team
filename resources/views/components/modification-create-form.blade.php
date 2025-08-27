@@ -1,0 +1,228 @@
+<div class=" bg-gray-50 py-8 w-full">
+    <div class="w-full mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+
+            <!-- Form -->
+            <form class="p-6 space-y-8">
+
+                <!-- Personal Information Section -->
+                <div class="space-y-6">
+                    <div class="border-b border-gray-200 pb-2">
+
+                        <flux:heading size="lg"> {{ $target }} Modification</flux:heading>
+
+
+                    </div>
+
+                    <div class="grid grid-cols-1 xl:grid-cols-2  2xl:grid-cols-3 gap-6">
+                        <flux:field>
+                            <flux:label>SubContractor *</flux:label>
+                            @if ($target == 'Update' || $target == 'New')
+                                <x-select-named-options wire:model="form.subcontractor_id" :options="$subcontractors"
+                                    placeholder="Enter subcontractor" />
+                            @else
+                                <flux:input wire:model="form.subcontractor_id" :readonly="$readonly"
+                                    :placeholder="$readonly ? null : 'Enter Subcontractor'" class="w-full" />
+                                <flux:error name="form.subcontractor" />
+                            @endif
+
+
+                        </flux:field>
+
+
+
+                        <flux:field>
+                            <flux:label>Project *</flux:label>
+                            @if ($target == 'Update' || $target == 'New')
+                                <x-select-named-options wire:model="form.project_id" :options="$projects"
+                                    placeholder="Enter project" />
+                            @else
+                                <flux:input wire:model="form.project_id" :readonly="$readonly"
+                                    :placeholder="$readonly ? null : 'Enter Site Name'" class="w-full" />
+                                <flux:error name="form.project_id" />
+                            @endif
+                            <flux:error name="form.project_id" />
+                        </flux:field>
+                        <flux:field>
+                            <flux:label>Actions *</flux:label>
+                            @if ($target == 'Update' || $target == 'New')
+                                {{-- <select wire:model="form.action_ids" multiple >
+                                    @foreach ($actions as $action)
+                                        <option :value="$action->id">{{ $action->name }}</option>
+                                    @endforeach
+                                </select> --}}
+                                 <select id="virtual-select" multiple wire:model="form.action_ids"></select>
+                                {{-- <x-select-named-options wire:model="form.action_id" :options="$actions"
+                                    placeholder="Enter action" /> --}}
+                            @else
+                                <flux:input wire:model="form.action_id" :readonly="$readonly"
+                                    :placeholder="$readonly ? null : 'Enter Site Name'" class="w-full" />
+                                <flux:error name="form.action_id" />
+                            @endif
+                            <flux:error name="form.action_id" />
+                        </flux:field>
+
+                        <flux:field>
+                            <flux:label>Requester *</flux:label>
+                            @if ($target == 'Update' || $target == 'New')
+                                <x-select-named-options wire:model="form.requester_id" :options="$requesters"
+                                    placeholder="Enter requester" />
+                            @else
+                                <flux:input wire:model="form.requester_id" :readonly="$readonly"
+                                    :placeholder="$readonly ? null : 'Enter Site Name'" class="w-full" />
+                                <flux:error name="form.requester_id" />
+                            @endif
+                            <flux:error name="form.requester_id" />
+                        </flux:field>
+
+                        <flux:field>
+                            <flux:label>Status *</flux:label>
+                            @if ($target == 'Update' || $target == 'New')
+                                <x-select-named-options wire:model="form.modification_status_id" :options="$modificationStatus"
+                                    placeholder="Enter requester" />
+                            @else
+                                <flux:input wire:model="form.modification_status_id" :readonly="$readonly"
+                                    :placeholder="$readonly ? null : 'Enter Site Name'" class="w-full" />
+                                <flux:error name="form.modification_status_id" />
+                            @endif
+                            <flux:error name="form.modification_status_id" />
+                        </flux:field>
+
+                        <flux:field>
+                            <flux:label>Request Date *</flux:label>
+
+                            @if ($target == 'Update' || $target == 'New')
+                                <flux:input type="date" wire:model="form.request_date"
+                                    placeholder="Enter request date" class="w-full" />
+                            @else
+                                <flux:input wire:model="form.request_date" :readonly="$readonly"
+                                    :placeholder="$readonly ? null : 'Enter Site Name'" class="w-full" />
+                                <flux:error name="form.request_date" />
+                            @endif
+                            <flux:error name="form.request_date" />
+                        </flux:field>
+
+                        <flux:field>
+                            <flux:label>CW Date *</flux:label>
+                            @if ($target == 'Update' || $target == 'New')
+                                <flux:input type="date" wire:model="form.cw_date" placeholder="Enter CW date"
+                                    class="w-full" />
+                            @else
+                                <flux:input wire:model="form.cw_date" :readonly="$readonly"
+                                    :placeholder="$readonly ? null : 'Enter CW Date'" class="w-full" />
+                                <flux:error name="form.cw_date" />
+                            @endif
+                            <flux:error name="form.cw_date" />
+                        </flux:field>
+                        <flux:field>
+                            <flux:label>D6 Date *</flux:label>
+                            @if ($target == 'Update' || $target == 'New')
+                                <flux:input type="date" wire:model="form.d6_date" placeholder="Enter D6 date"
+                                    class="w-full" />
+                            @else
+                                <flux:input wire:model="form.d6_date" :readonly="$readonly"
+                                    :placeholder="$readonly ? null : 'Enter D6 Date'" class="w-full" />
+                                <flux:error name="form.d6_date" />
+                            @endif
+                            <flux:error name="form.d6_date" />
+                        </flux:field>
+
+                        <flux:field>
+                            <flux:label>Est. Cost *</flux:label>
+                            @if ($target == 'Update' || $target == 'New')
+                                <flux:input wire:model="form.est_cost" class="w-full" x-mask:dynamic="$money($input)"
+                                    placeholder="Enter Estimated Cost" />
+                            @else
+                                <flux:input wire:model="form.est_cost" x-mask:dynamic="$money($input)"
+                                    :placeholder="$readonly ? null : 'Enter Estimated Cost'" :readonly="$readonly"
+                                    class="w-full" />
+                            @endif
+
+                            <flux:error name="form.est_cost" />
+                        </flux:field>
+                        <flux:field>
+                            <flux:label>Final Cost *</flux:label>
+                            @if ($target == 'Update' || $target == 'New')
+                                <flux:input wire:model="form.final_cost" class="w-full" x-mask:dynamic="$money($input)"
+                                    placeholder="Enter final Cost" />
+                            @else
+                                <flux:input wire:model="form.final_cost" x-mask:dynamic="$money($input)"
+                                    :placeholder="$readonly ? null : 'Enter final Cost'" :readonly="$readonly"
+                                    class="w-full" />
+                            @endif
+
+                            <flux:error name="form.final_cost" />
+                        </flux:field>
+
+                        <flux:field>
+                            <flux:label>Reported *</flux:label>
+                            @if ($target == 'Update' || $target == 'Create')
+                                <flux:select wire:model="form.reported" type="text" placeholder="Reported??"
+                                    class="w-full">
+
+                                    <flux:select.option value=0>No
+                                    </flux:select.option>
+                                    <flux:select.option value=1>Yes
+                                    </flux:select.option>
+
+                                </flux:select>
+                            @else
+                                <flux:input wire:model="form.reported" :placeholder="$readonly ? null : 'Reported??'"
+                                    :readonly="$readonly" class="w-full" />
+                            @endif
+
+                            <flux:error name="form.reported" />
+                        </flux:field>
+
+                        <flux:field>
+                            <flux:label>Reporting Date *</flux:label>
+                            @if ($target == 'Update' || $target == 'New')
+                                <flux:input type="date" wire:model="form.reported_at"
+                                    placeholder="Enter Reporting Date" class="w-full" />
+                            @else
+                                <flux:input wire:model="form.reported_at" :readonly="$readonly"
+                                    :placeholder="$readonly ? null : 'Enter reporting Date'" class="w-full" />
+                                <flux:error name="form.reported_at" />
+                            @endif
+                            <flux:error name="form.reported_at" />
+                        </flux:field>
+
+                        <flux:field>
+                            {{-- <flux:label>Description *</flux:label> --}}
+                            @if ($target == 'Update' || $target == 'Create')
+                                <flux:textarea label="Description *" placeholder="Action descriptions..." rows="4"
+                                    wire:model="description" class="w-full" />
+                            @else
+                                <flux:textarea label="Description *" wire:model="description" rows="4"
+                                    :placeholder="$readonly ? null : 'Action descriptions...'" :readonly="$readonly"
+                                    class="w-full" />
+                            @endif
+
+                            <flux:error name="form.description" />
+                        </flux:field>
+
+
+                    </div>
+
+
+
+
+
+
+                </div>
+                @if ($target == 'Update')
+                    <flux:button variant="primary" color="zinc" wire:click='updateSite' class=" cursor-pointer">
+                        Update</flux:button>
+                @endif
+                @if ($target == 'New')
+                    <flux:button variant="primary" color="zinc" wire:click='create' class=" cursor-pointer">
+                        Create</flux:button>
+                @endif
+
+            </form>
+
+
+        </div>
+    </div>
+</div>
+

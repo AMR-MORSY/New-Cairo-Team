@@ -1,7 +1,5 @@
 <?php
 
-use App\Enums\ModificationPermissions;
-use App\Enums\ModificationProjects;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('projects', function (Blueprint $table) {
+        Schema::create('action_modifications', function (Blueprint $table) {
             $table->id();
-             $table ->enum('name',array_column(ModificationProjects::cases(), 'value'))->unique();
-             $table->boolean('is_active')->default(true);
+            $table->foreignId('modification_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
+             $table->foreignId('action_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
             $table->timestamps();
         });
     }
@@ -26,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('projects');
+        Schema::dropIfExists('action_modifications');
     }
 };
