@@ -2,10 +2,13 @@
 
 namespace App\Models\Site;
 
+use Dom\Attr;
 use App\Enums\Host;
 use App\Enums\Areas;
 use App\Enums\Guest;
 use App\Enums\Zones;
+use App\Models\Area;
+use App\Models\Zone;
 use App\Enums\Status;
 use App\Enums\SiteTypies;
 use App\Enums\SiteSharing;
@@ -13,13 +16,15 @@ use App\Models\Site\Cascade;
 use App\Enums\SiteCategories;
 use App\Enums\SiteSeverities;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Modification\Modification;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Site extends Model
 {
 
-    protected $appends = ['nodal_name', 'nodal_code'];
+    protected $appends = ['nodal_name', 'nodal_code','zone_name','area_name'];
     protected $table = 'sites';
 
     protected $hidden = ["created_at", 'updated_at'];
@@ -27,17 +32,6 @@ class Site extends Model
     protected $guarded = [];
 
 
-    // protected $casts = [
-    //     "severity" => SiteSeverities::class,
-    //     'type' => SiteTypies::class,
-    //     'category' => SiteCategories::class,
-    //     'status' => Status::class,
-    //     "area" => Areas::class,
-    //     'zone' => Zones::class,
-    //     'host' => Host::class,
-    //     'gest' => Guest::class,
-    //     'sharing' => SiteSharing::class
-    // ];
 
 
     protected function siteCode(): Attribute
@@ -91,6 +85,42 @@ class Site extends Model
                 return $this->getNodalNameAndCode('code');
             }
         );
+    }
+
+
+    public function zone(): BelongsTo
+    {
+        return $this->belongsTo(Zone::class);
+    }
+
+    public function area(): BelongsTo
+    {
+        return $this->belongsTo(Area::class);
+    }
+
+    
+    protected function zoneName(): Attribute
+    {
+        return  Attribute::make(
+            get: function () {
+                return $this->zone->code;
+            }
+        );
+    }
+    protected function areaName(): Attribute
+    {
+        return  Attribute::make(
+            get: function () {
+                return $this->area->code;
+            }
+        );
+    }
+
+
+
+    public function modifications(): HasMany
+    {
+        return $this->hasMany(Modification::class, 'site_code');
     }
 
 

@@ -16,11 +16,13 @@ use App\Enums\SiteSeverities;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Validate;
 use Illuminate\Validation\Rules\Enum;
-
+use Request;
 
 class SiteForm extends Form
 {
-    public Site $site;
+    public $site;
+
+    public bool $isUpdate=false;
 
     public  $site_name = '';
     public  $site_code = '';
@@ -32,8 +34,8 @@ class SiteForm extends Form
     public  $type = '';
     public  $sharing = 'No';
     public  $host = '';
-    public  $area = '';
-    public  $zone = '';
+    public  $area_id = '';
+    public  $zone_id = '';
     public  $gest = '';
     public  $cells_2G = 0;
     public  $cells_3G = 0;
@@ -45,8 +47,9 @@ class SiteForm extends Form
     public  $nodal_name = '';
     public $nodal_code = '';
 
-    public function setSite(Site $site)
+    public function setSite ( $site)
     {
+        $this->site=$site;
 
         $this->nodal_name = $site->nodal_name;
         $this->nodal_code = $site->nodal_code;
@@ -60,8 +63,8 @@ class SiteForm extends Form
         $this->type = $site->type;
         $this->sharing = $site->sharing;
         $this->host = $site->host;
-        $this->area = $site->area;
-        $this->zone = $site->zone;
+        $this->area_id = $site->area_id;
+        $this->zone_id = $site->zone_id;
         $this->gest = $site->gest;
         $this->cells_2G = $site->cells_2G;
         $this->cells_3G = $site->cells_3G;
@@ -76,7 +79,7 @@ class SiteForm extends Form
     {
         $rules = [
             "site_code" => ["required", Rule::unique('sites', 'site_code')],
-            "site_name" => ["required",  Rule::unique('sites', 'site_name'), "regex:/^([0-9a-zA-Z_-]){2,60}$/"],
+            "site_name" => ["required",  "regex:/^([0-9a-zA-Z_-]){2,60}$/"],
             "BSC" => ["nullable", "regex:/^([0-9a-zA-Z_-]|\s){3,50}$/"],
             "RNC" => ["nullable", "regex:/^([0-9a-zA-Z_-]|\s){3,50}$/"],
             "office" => ["nullable", "string", 'max:50'],
@@ -93,7 +96,7 @@ class SiteForm extends Form
                     $fail('The Sharing must be "yes" when Host/Guest has a value.');
                 }
             },],
-            "zone" => ['required', new Enum(Zones::class)],
+            "zone_id" => ['required','exists:zones,id'],
             "host" => ['required_if:sharing,Yes', new Enum(Host::class)],
             "gest" => ['required_if:sharing,Yes', 'different:host', new Enum(Guest::class)],
             "vf_code" => ['nullable', 'string', 'max:50'],
@@ -103,10 +106,11 @@ class SiteForm extends Form
             "cells_3G" => ["nullable", "regex:/^[1-9][0-9]?$|^100$|^0$/"],
             "cells_4G" => ["nullable", "regex:/^[1-9][0-9]?$|^100$|^0$/"],
             "status" => ["required", new Enum(Status::class)],
-            "area" => ['required', new Enum(Areas::class)]
+            "area_id" => ['required','exists:areas,id']
 
         ];
-        if (request()->route('site.update')) {
+        if ($this->isUpdate) {
+            
 
             $rules['site_code'] = ["required", "exists:sites,site_code", Rule::unique('sites', 'site_code')->ignore($this->site)];
         }

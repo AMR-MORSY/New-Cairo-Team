@@ -16,17 +16,16 @@
 
                     <div class="grid grid-cols-1 xl:grid-cols-2  2xl:grid-cols-3 gap-6">
                         <flux:field>
-                            <flux:label>SubContractor *</flux:label>
+                            <flux:label>Subcontractor *</flux:label>
                             @if ($target == 'Update' || $target == 'New')
                                 <x-select-named-options wire:model="form.subcontractor_id" :options="$subcontractors"
                                     placeholder="Enter subcontractor" />
                             @else
                                 <flux:input wire:model="form.subcontractor_id" :readonly="$readonly"
                                     :placeholder="$readonly ? null : 'Enter Subcontractor'" class="w-full" />
-                                <flux:error name="form.subcontractor" />
                             @endif
 
-
+                          
                         </flux:field>
 
 
@@ -39,27 +38,21 @@
                             @else
                                 <flux:input wire:model="form.project_id" :readonly="$readonly"
                                     :placeholder="$readonly ? null : 'Enter Site Name'" class="w-full" />
-                                <flux:error name="form.project_id" />
+                                
                             @endif
-                            <flux:error name="form.project_id" />
+                          
                         </flux:field>
                         <flux:field>
                             <flux:label>Actions *</flux:label>
                             @if ($target == 'Update' || $target == 'New')
-                                {{-- <select wire:model="form.action_ids" multiple >
-                                    @foreach ($actions as $action)
-                                        <option :value="$action->id">{{ $action->name }}</option>
-                                    @endforeach
-                                </select> --}}
-                                 <select id="virtual-select" multiple wire:model="form.action_ids"></select>
-                                {{-- <x-select-named-options wire:model="form.action_id" :options="$actions"
-                                    placeholder="Enter action" /> --}}
+                                <x-select wire:model="form.action_id" placeholder="Select Actions" multiselect
+                                    :options="$actions" option-label="name" option-value="id" />
                             @else
                                 <flux:input wire:model="form.action_id" :readonly="$readonly"
                                     :placeholder="$readonly ? null : 'Enter Site Name'" class="w-full" />
-                                <flux:error name="form.action_id" />
+                              
                             @endif
-                            <flux:error name="form.action_id" />
+                       
                         </flux:field>
 
                         <flux:field>
@@ -70,9 +63,9 @@
                             @else
                                 <flux:input wire:model="form.requester_id" :readonly="$readonly"
                                     :placeholder="$readonly ? null : 'Enter Site Name'" class="w-full" />
-                                <flux:error name="form.requester_id" />
+                               
                             @endif
-                            <flux:error name="form.requester_id" />
+                          
                         </flux:field>
 
                         <flux:field>
@@ -83,9 +76,9 @@
                             @else
                                 <flux:input wire:model="form.modification_status_id" :readonly="$readonly"
                                     :placeholder="$readonly ? null : 'Enter Site Name'" class="w-full" />
-                                <flux:error name="form.modification_status_id" />
+                               
                             @endif
-                            <flux:error name="form.modification_status_id" />
+                        
                         </flux:field>
 
                         <flux:field>
@@ -97,7 +90,7 @@
                             @else
                                 <flux:input wire:model="form.request_date" :readonly="$readonly"
                                     :placeholder="$readonly ? null : 'Enter Site Name'" class="w-full" />
-                                <flux:error name="form.request_date" />
+                               
                             @endif
                             <flux:error name="form.request_date" />
                         </flux:field>
@@ -110,7 +103,7 @@
                             @else
                                 <flux:input wire:model="form.cw_date" :readonly="$readonly"
                                     :placeholder="$readonly ? null : 'Enter CW Date'" class="w-full" />
-                                <flux:error name="form.cw_date" />
+                             
                             @endif
                             <flux:error name="form.cw_date" />
                         </flux:field>
@@ -122,7 +115,7 @@
                             @else
                                 <flux:input wire:model="form.d6_date" :readonly="$readonly"
                                     :placeholder="$readonly ? null : 'Enter D6 Date'" class="w-full" />
-                                <flux:error name="form.d6_date" />
+                               
                             @endif
                             <flux:error name="form.d6_date" />
                         </flux:field>
@@ -156,7 +149,7 @@
 
                         <flux:field>
                             <flux:label>Reported *</flux:label>
-                            @if ($target == 'Update' || $target == 'Create')
+                            @if ($target == 'Update' || $target == 'New')
                                 <flux:select wire:model="form.reported" type="text" placeholder="Reported??"
                                     class="w-full">
 
@@ -182,7 +175,7 @@
                             @else
                                 <flux:input wire:model="form.reported_at" :readonly="$readonly"
                                     :placeholder="$readonly ? null : 'Enter reporting Date'" class="w-full" />
-                                <flux:error name="form.reported_at" />
+                               
                             @endif
                             <flux:error name="form.reported_at" />
                         </flux:field>
@@ -200,6 +193,21 @@
 
                             <flux:error name="form.description" />
                         </flux:field>
+
+                        <flux:field>
+                            {{-- <flux:label>Description *</flux:label> --}}
+                            @if ($target == 'Update' || $target == 'New')
+                                <flux:textarea label="Pending *" placeholder="Reasons..." rows="2"
+                                    wire:model="pending" class="w-full" />
+                            @else
+                                <flux:textarea label="Pending *" wire:model="pending" rows="4"
+                                    :placeholder="$readonly ? null : 'Reasons...'" :readonly="$readonly"
+                                    class="w-full" />
+                            @endif
+
+                            <flux:error name="form.pending" />
+                        </flux:field>
+
 
 
                     </div>
@@ -225,4 +233,3 @@
         </div>
     </div>
 </div>
-

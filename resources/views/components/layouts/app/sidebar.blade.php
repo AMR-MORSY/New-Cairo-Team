@@ -50,12 +50,7 @@
             </flux:navlist.group>
 
             <flux:navlist.group expandable heading="Modifications" class=" lg:grid">
-                 <flux:navlist.item :href="route('modification.create')">
-                    <div class=" flex items-center gap-1">
-                        <flux:icon.magnifying-glass />
-                        <p>create</p>
-                    </div>
-                </flux:navlist.item>
+                
                 <flux:navlist.item href="#">
                     <div class=" flex items-center gap-1">
                         <flux:icon.magnifying-glass />
@@ -191,8 +186,10 @@
     {{ $slot }}
     <x-toaster-hub />
     <livewire:components.dynamic-modal />
-   
+      <x-dialog z-index="z-50" blur="md" align="center" />
+       @wireUiScripts
     @fluxScripts
+  
 </body>
 
 </html>

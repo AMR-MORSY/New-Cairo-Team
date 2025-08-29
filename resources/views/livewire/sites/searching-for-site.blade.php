@@ -7,10 +7,10 @@
 
 
 
-   <flux:button type="submit">Search</flux:button>
+            <flux:button type="submit">Search</flux:button>
         </flux:input.group>
 
-     
+
 
     </form>
 </div>

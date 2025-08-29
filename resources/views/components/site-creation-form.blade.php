@@ -165,9 +165,9 @@
 
                                 </flux:select> --}}
                                 <x-select-enums wire:model="form.host" :enumOptions="('App\Enums\Host')::cases()" class="w-full"
-                                    placeholder="Enter Sharing Status" />
+                                    placeholder="Enter host" />
                             @else
-                                <flux:input wire:model="form.host" :placeholder="$readonly ? null : 'Enter the host'"
+                                <flux:input wire:model="form.host" :placeholder="$readonly ? null : 'Enter host'"
                                     :readonly="$readonly" class="w-full" />
                             @endif
 
@@ -185,7 +185,7 @@
                                     @endforeach
 
                                 </flux:select> --}}
-                                <x-select-enums wire:model="form.host" :enumOptions="('App\Enums\Guest')::cases()" class="w-full"
+                                <x-select-enums wire:model="form.gest" :enumOptions="('App\Enums\Guest')::cases()" class="w-full"
                                     placeholder="Enter the Guest" />
                             @else
                                 <flux:input wire:model="form.gest" :placeholder="$readonly ? null : 'Enter the guest'"
@@ -198,22 +198,22 @@
                         <flux:field>
                             <flux:label>Area *</flux:label>
                             @if ($target == 'Update' || $target == 'Create')
-                                {{-- <flux:select wire:model="form.area" type="text" placeholder="Enter Area"
+                                <flux:select wire:model="form.area_id" type="text" placeholder="Enter Area"
                                     class="w-full">
-                                    @foreach (('App\Enums\Areas')::cases() as $OZ)
-                                        <flux:select.option :value="$OZ->value">{{ $OZ->name }}
+                                    @foreach ($areas as $area)
+                                        <flux:select.option :value="$area->id">{{ $area->code }}
                                         </flux:select.option>
                                     @endforeach
 
-                                </flux:select> --}}
-                                <x-select-enums wire:model="form.area" :enumOptions="('App\Enums\Areas')::cases()" class="w-full"
-                                    placeholder="Enter the Area" />
+                                </flux:select>
+                                {{-- <x-select-enums wire:model="form.area" :enumOptions="('App\Enums\Areas')::cases()" class="w-full"
+                                    placeholder="Enter the Area" /> --}}
                             @else
-                                <flux:input wire:model="form.area" :placeholder="$readonly ? null : 'Enter Area'"
+                                <flux:input wire:model="form.area_id" :placeholder="$readonly ? null : 'Enter Area'"
                                     :readonly="$readonly" class="w-full" />
                             @endif
 
-                            <flux:error name="form.area" />
+                            <flux:error name="form.area_id" />
                         </flux:field>
                         <flux:field>
                             <flux:label>VF Code *</flux:label>
@@ -282,23 +282,23 @@
                         <flux:field>
                             <flux:label>Zone *</flux:label>
                             @if ($target == 'Update' || $target == 'Create')
-                                {{-- <flux:select wire:model="form.zone" type="text" placeholder="Enter Zone"
+                                <flux:select wire:model="form.zone_id" type="text" placeholder="Enter Zone"
                                     class="w-full">
-                                    @foreach (('App\Enums\Zones')::cases() as $zone)
-                                        <flux:select.option :value="$zone->value">{{ $zone->name }}
+                                    @foreach ($zones as $zone)
+                                        <flux:select.option :value="$zone->id">{{ $zone->code }}
                                         </flux:select.option>
                                     @endforeach
 
-                                </flux:select> --}}
-                                 <x-select-enums wire:model="form.zone" :enumOptions="('App\Enums\Zones')::cases()" class="w-full"
-                                    placeholder="Enter the Zone" />
+                                </flux:select>
+                                 {{-- <x-select-enums wire:model="form.zone" :enumOptions="('App\Enums\Zones')::cases()" class="w-full"
+                                    placeholder="Enter the Zone" /> --}}
                                 
                             @else
-                                <flux:input wire:model="form.zone" :placeholder="$readonly ? null : 'Enter Site zone'"
+                                <flux:input wire:model="form.zone_id" :placeholder="$readonly ? null : 'Enter Site zone'"
                                     :readonly="$readonly" class="w-full" />
                             @endif
 
-                            <flux:error name="form.zone" />
+                            <flux:error name="form.zone_id" />
                         </flux:field>
 
 
@@ -312,7 +312,7 @@
 
                 </div>
                 @if ($target == 'Update')
-                    <flux:button variant="primary" color="zinc" wire:click='updateSite' class=" cursor-pointer">
+                    <flux:button variant="primary" color="zinc" wire:click='update' class=" cursor-pointer">
                         Update</flux:button>
                 @endif
                 @if ($target == 'Create')

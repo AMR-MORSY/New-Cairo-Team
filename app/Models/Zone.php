@@ -5,19 +5,20 @@ namespace App\Models;
 use App\Enums\Zones;
 use App\Models\Area;
 use App\Models\Site\Modification;
+use App\Models\Site\Site;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Zone extends Model
 {
     protected $table = 'zones';
     protected $fillable = ['team_id', 'name', 'code', 'description', 'is_active'];
 
-    // protected $casts = [
-
-    //     "name" => Zones::class
-
-    // ];
-
+  
+    public function sites():HasMany
+    {
+        return $this->hasMany(Site::class);
+    }
     public function area()
     {
         return $this->belongsTo(Area::class);

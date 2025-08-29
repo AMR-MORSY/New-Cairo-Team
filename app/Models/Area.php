@@ -3,10 +3,12 @@
 namespace App\Models;
 
 use App\Enums\Areas;
-use App\Models\Site\Modification;
 use App\Models\User;
 use App\Models\Zone;
+use App\Models\Site\Site;
+use App\Models\Site\Modification;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Area extends Model
 {
@@ -19,7 +21,10 @@ class Area extends Model
 
     ];
 
-   
+   public function sites():HasMany
+   {
+    return $this->hasMany(Site::class);
+   }
 
     public function zones()
     {

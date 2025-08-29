@@ -5,7 +5,7 @@
          </flux:navlist.item>
          <flux:navlist.item :href="route('site.update',$site->site_code)" wire:navigate>{{ __('Update') }}
          </flux:navlist.item>
-         <flux:navlist.item href="#" wire:navigate>
+         <flux:navlist.item :href="route('modification.show',$site->site_code)" wire:navigate>
              {{ __('Modifications') }}
          </flux:navlist.item>
          <flux:navlist.item href="#" wire:navigate>{{ __('NUR') }}

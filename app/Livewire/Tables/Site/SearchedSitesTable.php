@@ -37,13 +37,12 @@ final class SearchedSitesTable extends PowerGridComponent
 
     public function setUp(): array
     {
-        $this->showCheckBox();
+       
 
         return [
             PowerGrid::header()
                 ->showSearchInput(),
             PowerGrid::footer()
-                ->showPerPage()
                 ->showRecordCount(),
         ];
     }
@@ -54,7 +53,7 @@ final class SearchedSitesTable extends PowerGridComponent
             ->add('id')
             ->add('site_code')
             ->add('site_name')
-            ->add('oz');
+            ->add('zone_name');
     }
 
     public function columns(): array
@@ -68,7 +67,7 @@ final class SearchedSitesTable extends PowerGridComponent
                 ->searchable()
                 ->sortable(),
 
-            Column::make('OZ', 'oz')
+            Column::make('OZ', 'zone_name')
                 ->sortable(),
 
             Column::action('View')

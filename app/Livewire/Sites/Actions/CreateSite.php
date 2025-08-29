@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Sites\Actions;
 
+use App\Models\Area;
+use App\Models\Zone;
 use Livewire\Component;
 use App\Models\Site\Site;
 use Masmerise\Toaster\Toast;
@@ -15,26 +17,20 @@ class CreateSite extends Component
 {
     public SiteForm $form;
 
+    public $zones, $areas;
+
     public function mount()
     {
-        
 
-      
-        // dd([
-        //     'user_id' => $user->id,
-        //     'areas_query_count' => $user->areas()->count(),
-        //     'areas_get' => $user->areas()->get(),
-        //     'areas_property' => $user->areas,
-        //     'raw_query' => $user->areas()->toSql(),
-        //     'raw_bindings' => $user->areas()->getBindings()
-        // ]);
+        $this->zones = Zone::all();
+        $this->areas = Area::all();
     }
 
     public function create()
     {
         $validated = $this->validate();
 
-
+        dd($this->form->all());
         Site::create([
             "site_name" => $this->form->site_name,
             "site_code" => $this->form->site_code,
@@ -46,8 +42,8 @@ class CreateSite extends Component
             "type" => $this->form->type,
             "sharing" => $this->form->sharing,
             "host" => $this->form->host,
-            "area" => $this->form->area,
-            "zone" => $this->form->zone,
+            "area_id" => $this->form->area_id,
+            "zone_id" => $this->form->zone_id,
             "gest" => $this->form->gest,
             "cells_2G" => $this->form->cells_2G,
             "cells_3G" => $this->form->cells_3G,

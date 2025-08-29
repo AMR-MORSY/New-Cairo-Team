@@ -1,11 +1,13 @@
-
 @import 'tailwindcss';
 
+/* @import '../../vendor/wireui/wireui/ts/global.css';  */
 
+@source '../../vendor/wireui/wireui';
 
 @plugin "daisyui" {
-themes: false;
+    themes: false;
 }
+
 @import '../../vendor/livewire/flux/dist/flux.css';
 @import '../../vendor/power-components/livewire-powergrid/resources/css/tailwind4.css';
 
@@ -26,7 +28,7 @@ themes: false;
 @source '../../vendor/power-components/livewire-powergrid/resources/views/**/*.php';
 
 @source '../../vendor/masmerise/livewire-toaster/resources/views/*.blade.php';
-@source  '../../resources/**/*.blade.php';
+@source '../../resources/**/*.blade.php';
 
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
@@ -46,6 +48,11 @@ themes: false;
     --color-accent: var(--color-neutral-800);
     --color-accent-content: var(--color-neutral-800);
     --color-accent-foreground: var(--color-white);
+    --color-negative-500: #ef4444;
+    --color-negative-600: #dc2626;
+    --color-negative-700: #b91c1c;
+
+
 }
 
 @layer theme {
@@ -72,7 +79,7 @@ themes: false;
 }
 
 [data-flux-label] {
-    @apply  !mb-0 !leading-tight;
+    @apply !mb-0 !leading-tight;
 }
 
 input:focus[data-flux-control],
@@ -82,11 +89,10 @@ select:focus[data-flux-control] {
 }
 
 [data-flux-primary] {
-  background-color: var(--color-zinc-800) !important;
-  color: var(--color-zinc-50) !important;
+    background-color: var(--color-zinc-800) !important;
+    color: var(--color-zinc-50) !important;
 }
 
 /* \[:where(&)\]:size-4 {
     @apply size-4;
 } */
-

@@ -2,52 +2,124 @@
 
 namespace App\Livewire\Forms;
 
-use App\Models\Modification\ModificationStatus;
-use App\Models\Modification\Project;
-use App\Models\Modification\Requester;
-use App\Models\Modification\Subcontractor;
+use Auth;
 use Livewire\Form;
 use App\Models\Site\Site;
-use Auth;
+use Illuminate\Validation\Rule;
 use Livewire\Attributes\Validate;
+use App\Rules\CommaSeparatedNumber;
+use App\Models\Modification\Project;
+
+use App\Models\Modification\Requester;
+use App\Models\Modification\Modification;
+use App\Models\Modification\Subcontractor;
 use Illuminate\Database\Eloquent\Collection;
+use App\Models\Modification\ModificationStatus;
 
 class ModificationForm extends Form
 {
-   
-    public $site_code='';
-    public $subcontractor_id;
+
+    public $id;
+    public $site_code = '';
+    public $subcontractor_id = '';
     public $pending = "";
-    public $est_cost = 0;
-    public $final_cost = 0;
+    public $est_cost;
+    public $final_cost;
     public $request_date = '';
-    public $requester_id = null;
-    public $project_id = null;
-    public $modification_status_id = null;
+    public $requester_id = '';
+    public $project_id = '';
+    public $modification_status_id = '';
     public $cw_date = '';
     public $d6_date = '';
     public $description = "";
     public $reported = 0;
     public $reported_at = '';
-    public $zone_id = null;
-    public $area_id = null;
-    public $action_owner = null;
+    public $zone_id = '';
+    public $area_id = '';
+    public $action_owner = '';
+    public $action_id = '';
 
 
     public function setModificationDefaultAttributes($site)
     {
-        $this->site_code=$site->site_code;
+        $this->site_code = $site->site_code;
 
-        $this->action_owner=Auth::user()->id;
+        $this->action_owner = Auth::user()->id;
 
-        $this->zone_id=$site->zone_id;
+        $this->zone_id = $site->zone_id;
 
-        $this->area_id=$site->area_id;
+        $this->area_id = $site->area_id;
+    }
 
-       
-        
+    public function mount(Modification $modification)
+    {
+        $this->id = $modification->id;
 
+        // $this->site_code = $modification->site_code;
+        $this->subcontractor_id = $modification->subcontractor_id;
+        $this->pending = $modification->pending;
+        $this->est_cost = $modification->est_cost;
+        $this->final_cost = $modification->final_cost;
+        $this->request_date = $modification->request_date;
+        $this->requester_id = $modification->requester_id;
+        $this->project_id = $modification->project_id;
+        $this->modification_status_id = $modification->modification_status_id;
+        $this->cw_date = $modification->cw_date;
+        $this->d6_date = $modification->d6_date;
+        $this->description = $modification->description;
+        $this->reported = $modification->reported;
+        $this->reported_at = $modification->reported_at;
+        // $this->zone_id = $modification->zone_id;
+        // $this->area_id = $modification->area_id;
+        // $this->action_owner = $modification->action_owner;
+        $this->action_id = $modification->action_id;
     }
 
 
+    public function rules()
+    {
+        $rules = [
+            "site_code" => ['required', 'exists:sites,site_code'],
+            "subcontractor_id" => ["required", "exists:subcontractors,id"],
+            "action_id" => ["required", "array"],
+            "action_id.*" => ['required', 'exists:actions,id'],
+            "description" => ["nullable", "string", 'regex:/^[a-zA-Z0-9\-_!@#$%^&*(),.?":{}\n\t|<> ]+$/'], //////regex for special chars, chars,numbers,spaces,underscore,dash
+            "pending" => ['nullable', 'string', 'regex:/^[a-zA-Z0-9\-_!@#$%^&*(),.?":{}\n\t|<> ]+$/'],
+            "request_date" => "required|date",
+            "cw_date" => [" nullable", "date", "requiredIf:status,done", "after_or_equal:request_date"],
+            "d6_date" => [" nullable", "date", "requiredIf:status,done", "after_or_equal:request_date"],
+            "modification_status_id" => ["required", 'exists:modification_status,id'],
+            "requester_id" => ["required", 'exists:requesters,id'],
+            "project_id" => ["required", 'exists:projects,id'],
+            "est_cost" => ["required_if:modification_status,1,2,3",new CommaSeparatedNumber],
+            "final_cost" => ["nullable", "required_if:modification_status,1",new CommaSeparatedNumber],
+            "reported" => ["required",  Rule::in([1, 0])],
+            "reported_at" => ["nullable", "date", "required_if:reported,1"],
+            'area_id' => ['required', 'exists:areas,id'],
+            'zone_id' => ['required', 'exists:zones,id'],
+            'action_owner' => ['required', 'exists:users,id']
+
+        ];
+
+        if (request()->route('modification.update')) {
+
+            $rules['id'] = ["required", "exists:modification,id"];
+        }
+
+        return $rules;
+    }
+
+    protected function messages()
+    {
+        return
+            [
+                "est_cost.required_if" => "Estimated cost is required",
+                "subcontractor_id.required"=>"The subcontractor is required",
+                "requester_id.required"=>"The Requester is required",
+                "modification_status_id.required"=>"The status is required",
+                "project_id.required"=>"The project is required",
+                "action_id.required"=>"The action is required",
+                 "final_cost.required_if" => "Final cost is required",
+            ];
+    }
 }

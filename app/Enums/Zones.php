@@ -17,6 +17,30 @@ enum Zones: string
     case DELTA_SOUTH = "Delta South";
     case NORTH_COAST = "North Coast";
 
+
+    public function getCodes()
+    {
+        return match ($this) {
+            self::CAIRO_SOUTH => 'CS',
+            self::CAIRO_EAST => 'CE',
+            self::CAIRO_NORTH => 'CN',
+            self::GIZA => 'GZ',
+            self::DELTA_NORTH => 'DN',
+            self::DELTA_SOUTH => "DS",
+            self::NORTH_COAST => "NC",
+            self::ALEX => "AL",
+            self::NORTH_UPPER => 'NU',
+            self::RED_SEA => 'RE',
+            self::SOUTH_UPPER => 'SU',
+            self::SINAI => 'SI',
+        };
+    }
+     public static function getCodeByValue(string $value): ?string /// self::tryFrom($value) attempts to create an enum instance from the string value If successful, it calls getCodes() on that instance.If the value doesn't match any enum case, tryFrom() returns null, and the method returns null
+    {
+        $zone = self::tryFrom($value);
+        return $zone?->getCodes();
+    }
+
     public static function HGLIZones() //////static means the function could be called in the class without creating object ex: Zones::HGLIZones
     {
         return [
