@@ -25,7 +25,7 @@ final class AllUsersTable extends PowerGridComponent
 
                 ->icon('default-eye')
                 ->class('cursor-pointer')
-                ->dispatch('clickToEdit', ['id' => $row->id]),
+                ->dispatch('clickToGoUserDetail', ['id' => $row->id]),
         ];
     }
 
@@ -80,8 +80,8 @@ final class AllUsersTable extends PowerGridComponent
 
         ];
     }
-    #[On('clickToEdit')]
-    public function clickToEdit(int $id)
+    #[On('clickToGoUserDetail')]
+    public function clickToGoUserDetail(int $id)
     {
         return redirect()->route('user.show', ['user' => $id]);
     }

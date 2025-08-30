@@ -120,7 +120,7 @@ class Site extends Model
 
     public function modifications(): HasMany
     {
-        return $this->hasMany(Modification::class, 'site_code');
+        return $this->hasMany(Modification::class, 'site_code','site_code');
     }
 
 

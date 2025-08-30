@@ -186,7 +186,7 @@
     {{ $slot }}
     <x-toaster-hub />
     <livewire:components.dynamic-modal />
-      <x-dialog z-index="z-50" blur="md" align="center" />
+      <x-dialog z-index="z-50" blur="sm" align="center" />
        @wireUiScripts
     @fluxScripts
   

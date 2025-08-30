@@ -28,7 +28,7 @@ final class CascadesTable extends PowerGridComponent
 
                 ->icon('default-eye')
                 ->class('cursor-pointer')
-                ->dispatch('clickToEdit', ['site_code' => $row->code]),
+                ->dispatch('clickToGOSiteDetails', ['site_code' => $row->code]),
         ];
     }
 
@@ -122,8 +122,8 @@ final class CascadesTable extends PowerGridComponent
         ];
     }
 
-    #[On('clickToEdit')]
-    public function clickToEdit(string $site_code)
+    #[On('clickToGOSiteDetails')]
+    public function clickToGOSiteDetails(string $site_code)
     {
         return redirect()->route('site.show', ['site' => $site_code]);
     }

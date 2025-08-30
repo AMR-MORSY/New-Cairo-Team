@@ -25,7 +25,7 @@
                                     :placeholder="$readonly ? null : 'Enter Subcontractor'" class="w-full" />
                             @endif
 
-                          
+
                         </flux:field>
 
 
@@ -38,9 +38,8 @@
                             @else
                                 <flux:input wire:model="form.project_id" :readonly="$readonly"
                                     :placeholder="$readonly ? null : 'Enter Site Name'" class="w-full" />
-                                
                             @endif
-                          
+
                         </flux:field>
                         <flux:field>
                             <flux:label>Actions *</flux:label>
@@ -50,9 +49,8 @@
                             @else
                                 <flux:input wire:model="form.action_id" :readonly="$readonly"
                                     :placeholder="$readonly ? null : 'Enter Site Name'" class="w-full" />
-                              
                             @endif
-                       
+
                         </flux:field>
 
                         <flux:field>
@@ -63,9 +61,8 @@
                             @else
                                 <flux:input wire:model="form.requester_id" :readonly="$readonly"
                                     :placeholder="$readonly ? null : 'Enter Site Name'" class="w-full" />
-                               
                             @endif
-                          
+
                         </flux:field>
 
                         <flux:field>
@@ -76,9 +73,8 @@
                             @else
                                 <flux:input wire:model="form.modification_status_id" :readonly="$readonly"
                                     :placeholder="$readonly ? null : 'Enter Site Name'" class="w-full" />
-                               
                             @endif
-                        
+
                         </flux:field>
 
                         <flux:field>
@@ -90,7 +86,6 @@
                             @else
                                 <flux:input wire:model="form.request_date" :readonly="$readonly"
                                     :placeholder="$readonly ? null : 'Enter Site Name'" class="w-full" />
-                               
                             @endif
                             <flux:error name="form.request_date" />
                         </flux:field>
@@ -103,7 +98,6 @@
                             @else
                                 <flux:input wire:model="form.cw_date" :readonly="$readonly"
                                     :placeholder="$readonly ? null : 'Enter CW Date'" class="w-full" />
-                             
                             @endif
                             <flux:error name="form.cw_date" />
                         </flux:field>
@@ -115,7 +109,6 @@
                             @else
                                 <flux:input wire:model="form.d6_date" :readonly="$readonly"
                                     :placeholder="$readonly ? null : 'Enter D6 Date'" class="w-full" />
-                               
                             @endif
                             <flux:error name="form.d6_date" />
                         </flux:field>
@@ -175,7 +168,6 @@
                             @else
                                 <flux:input wire:model="form.reported_at" :readonly="$readonly"
                                     :placeholder="$readonly ? null : 'Enter reporting Date'" class="w-full" />
-                               
                             @endif
                             <flux:error name="form.reported_at" />
                         </flux:field>
@@ -209,6 +201,46 @@
                         </flux:field>
 
 
+                        @if ($target == 'Details')
+                            <flux:field>
+                                <flux:label>WO code *</flux:label>
+
+                                <flux:input wire:model="form.wo_code" :readonly="$readonly"
+                                    :placeholder="$readonly ? null : 'Enter reporting Date'" class="w-full" />
+
+
+
+                            </flux:field>
+                            <flux:field>
+                                <flux:label>Action Owner *</flux:label>
+
+                                <flux:input wire:model="form.action_owner" :readonly="$readonly"
+                                    :placeholder="$readonly ? null : 'Enter reporting Date'" class="w-full" />
+
+
+
+                            </flux:field>
+                              <flux:field>
+                                <flux:label>Zone *</flux:label>
+
+                                <flux:input wire:model="form.zone_id" :readonly="$readonly"
+                                    :placeholder="$readonly ? null : 'Enter reporting Date'" class="w-full" />
+
+
+
+                            </flux:field>
+                                <flux:field>
+                                <flux:label>Area *</flux:label>
+
+                                <flux:input wire:model="form.area_id" :readonly="$readonly"
+                                    :placeholder="$readonly ? null : 'Enter reporting Date'" class="w-full" />
+
+
+
+                            </flux:field>
+                        @endif
+
+
 
                     </div>
 
@@ -219,7 +251,7 @@
 
                 </div>
                 @if ($target == 'Update')
-                    <flux:button variant="primary" color="zinc" wire:click='updateSite' class=" cursor-pointer">
+                    <flux:button variant="primary" color="zinc" wire:click='update' class=" cursor-pointer">
                         Update</flux:button>
                 @endif
                 @if ($target == 'New')

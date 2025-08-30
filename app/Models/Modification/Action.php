@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Action extends Model
 {
+
+     protected $hidden=['created_at','updated_at'];
     
 
 

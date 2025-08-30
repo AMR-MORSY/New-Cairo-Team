@@ -38,6 +38,7 @@ class ModificationForm extends Form
     public $area_id = '';
     public $action_owner = '';
     public $action_id = '';
+    public $wo_code = '';
 
 
     public function setModificationDefaultAttributes($site)
@@ -51,11 +52,11 @@ class ModificationForm extends Form
         $this->area_id = $site->area_id;
     }
 
-    public function mount(Modification $modification)
+    public function setModificationDetails(Modification $modification)
     {
         $this->id = $modification->id;
 
-        // $this->site_code = $modification->site_code;
+        $this->site_code = $modification->site_code;
         $this->subcontractor_id = $modification->subcontractor_id;
         $this->pending = $modification->pending;
         $this->est_cost = $modification->est_cost;
@@ -69,10 +70,11 @@ class ModificationForm extends Form
         $this->description = $modification->description;
         $this->reported = $modification->reported;
         $this->reported_at = $modification->reported_at;
-        // $this->zone_id = $modification->zone_id;
-        // $this->area_id = $modification->area_id;
-        // $this->action_owner = $modification->action_owner;
+        $this->zone_id = $modification->zone_id;
+        $this->area_id = $modification->area_id;
+        $this->action_owner = $modification->action_owner;
         $this->action_id = $modification->action_id;
+        $this->wo_code = $modification->wo_code;
     }
 
 
@@ -86,13 +88,13 @@ class ModificationForm extends Form
             "description" => ["nullable", "string", 'regex:/^[a-zA-Z0-9\-_!@#$%^&*(),.?":{}\n\t|<> ]+$/'], //////regex for special chars, chars,numbers,spaces,underscore,dash
             "pending" => ['nullable', 'string', 'regex:/^[a-zA-Z0-9\-_!@#$%^&*(),.?":{}\n\t|<> ]+$/'],
             "request_date" => "required|date",
-            "cw_date" => [" nullable", "date", "requiredIf:status,done", "after_or_equal:request_date"],
-            "d6_date" => [" nullable", "date", "requiredIf:status,done", "after_or_equal:request_date"],
+            "cw_date" => [" nullable", "date", "required_if:modification_status,1,3", "after_or_equal:request_date"],
+            "d6_date" => [" nullable", "date", "required_if:modification_status,1,3", "after_or_equal:request_date","after_or_equal:cw_date"],
             "modification_status_id" => ["required", 'exists:modification_status,id'],
             "requester_id" => ["required", 'exists:requesters,id'],
             "project_id" => ["required", 'exists:projects,id'],
-            "est_cost" => ["required_if:modification_status,1,2,3",new CommaSeparatedNumber],
-            "final_cost" => ["nullable", "required_if:modification_status,1",new CommaSeparatedNumber],
+            "est_cost" => ["required_if:modification_status,1,2,3", new CommaSeparatedNumber],
+            "final_cost" => ["nullable", "required_if:modification_status,1", new CommaSeparatedNumber],
             "reported" => ["required",  Rule::in([1, 0])],
             "reported_at" => ["nullable", "date", "required_if:reported,1"],
             'area_id' => ['required', 'exists:areas,id'],
@@ -114,12 +116,12 @@ class ModificationForm extends Form
         return
             [
                 "est_cost.required_if" => "Estimated cost is required",
-                "subcontractor_id.required"=>"The subcontractor is required",
-                "requester_id.required"=>"The Requester is required",
-                "modification_status_id.required"=>"The status is required",
-                "project_id.required"=>"The project is required",
-                "action_id.required"=>"The action is required",
-                 "final_cost.required_if" => "Final cost is required",
+                "subcontractor_id.required" => "The subcontractor is required",
+                "requester_id.required" => "The Requester is required",
+                "modification_status_id.required" => "The status is required",
+                "project_id.required" => "The project is required",
+                "action_id.required" => "The action is required",
+                "final_cost.required_if" => "Final cost is required",
             ];
     }
 }

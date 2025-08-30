@@ -5,8 +5,9 @@ namespace App\Livewire\Modifications\Actions;
 use Livewire\Component;
 use App\Models\Site\Site;
 use WireUi\Traits\WireUiActions;
+use App\Models\Modification\Modification;
 
-class ShowModification extends Component
+class SiteModifications extends Component
 {
     use WireUiActions;
 
@@ -14,13 +15,22 @@ class ShowModification extends Component
     public $site;
     public function mount(Site $site)
     {
+        $this->modifications = $site->modifications()->with([
+            "project",
+            'subcontractor',
+            'actions',
+            'requester',
+            'actionOwner',
+            'modification_status',
+            'area',
+            'zone'
+        ])->get();
 
-        $this->modifications = $site->modifications()->get();
-        $this->site=$site;
+        //  dd(( number_format($this->modifications[0]['est_cost'], 2)));
 
-        // dd($this->modifications);
-        // $this->infoDialog();
+       
     }
+
     // public function infoDialog(): void
     // {
     //     $this->dialog()->show([
@@ -53,6 +63,6 @@ class ShowModification extends Component
     // }
     public function render()
     {
-        return view('livewire.modifications.actions.show-modification',['site'=>$this->site,'modifications'=>$this->modifications]);
+        return view('livewire.modifications.actions.site-modifications', ['site' => $this->site, 'modifications' => $this->modifications]);
     }
 }

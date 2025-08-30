@@ -25,25 +25,27 @@ final class SearchedSitesTable extends PowerGridComponent
 
                 ->icon('default-eye')
                 ->class('cursor-pointer')
-                ->dispatch('clickToEdit', ['site_code' => $row->site_code]),
+                ->dispatch('clickToGOSiteDetails', ['site_code' => $row->site_code]),
         ];
     }
     public function datasource(): Collection
     {
-       
-        
-        return collect($this->props['data']) ;
+
+
+        return collect($this->props['data']);
     }
 
     public function setUp(): array
     {
-       
+
 
         return [
             PowerGrid::header()
                 ->showSearchInput(),
             PowerGrid::footer()
                 ->showRecordCount(),
+            PowerGrid::responsive()
+                ->fixedColumns('Code', 'Name'),
         ];
     }
 
@@ -74,9 +76,9 @@ final class SearchedSitesTable extends PowerGridComponent
         ];
     }
 
-    
-    #[On('clickToEdit')]
-    public function clickToEdit(string $site_code)
+
+    #[On('clickToGOSiteDetails')]
+    public function clickToGOSiteDetails(string $site_code)
     {
         return redirect()->route('site.show', ['site' => $site_code]);
     }

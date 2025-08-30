@@ -93,6 +93,6 @@ select:focus[data-flux-control] {
     color: var(--color-zinc-50) !important;
 }
 
-/* \[:where(&)\]:size-4 {
-    @apply size-4;
-} */
+.modal-backdrop {
+    backdrop-filter: blur(4px);
+}
