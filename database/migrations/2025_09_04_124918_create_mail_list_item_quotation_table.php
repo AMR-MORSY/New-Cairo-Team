@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('price_list_item_quotation', function (Blueprint $table) {
+        Schema::create('mail_list_item_quotation', function (Blueprint $table) {
             $table->id();
              $table->foreignId('quotation_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
-             $table->foreignId('price_list_item_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
+             $table->foreignId('mail_list_item_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
              $table->decimal('supply_price',8,2)->default(0.00);
              $table->decimal('install_price',8,2)->default(0.00);
              $table->decimal('quantity',8,1);
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('price_list_item_quotation');
+        Schema::dropIfExists('mail_list_item_quotation');
     }
 };

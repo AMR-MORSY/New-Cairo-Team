@@ -1,5 +1,5 @@
 
-<div class="flex items-start max-md:flex-col">
+<div class="flex items-start  max-md:flex-col">
     <div class="me-10 w-full pb-4 md:w-[220px]">
      
         {{ $links ?? '' }}
@@ -11,7 +11,7 @@
         <flux:heading size="xl">{{ $heading ?? '' }}</flux:heading>
         <flux:subheading>{{ $subheading ?? '' }}</flux:subheading>
 
-        <div class="w-full ">
+        <div class="w-full max-w-4xl ">
             {{ $slot }}
         </div>
     </div>

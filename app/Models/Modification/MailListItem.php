@@ -2,12 +2,13 @@
 
 namespace App\Models\Modification;
 
+use App\Models\Modification\Quotation;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class PriceListItem extends Model
+class MailListItem extends Model
 {
-    protected $table="price_list_items";
+    protected $table="mail_list_items";
 
     protected $hidden =['created_at','updated_at'];
 
@@ -24,6 +25,6 @@ class PriceListItem extends Model
 
     public function quotations():BelongsToMany
     {
-        return $this->belongsToMany(Quotation::class)->withPivot(['id','supply_price','install_price','item_price','quantity','scope']);
+        return $this->belongsToMany(Quotation::class)->withPivot(['supply_price','install_price','item_price','quantity','scope']);
     }
 }

@@ -4,7 +4,7 @@
         <div x-data x-show="true" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0"
             x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200"
             x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
-            class="fixed bg-gray-800/40 backdrop-blur-sm backdrop-saturate-150 inset-0 z-100 flex items-center justify-center p-4" style="display: none;" x-show="true">
+            class="fixed bg-gray-800/40 backdrop-blur-sm backdrop-saturate-150 inset-0 z-20 flex items-center justify-center p-4" style="display: none;" x-show="true">
 
             <!-- Modal Dialog -->
             <div x-show="true" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 scale-95"

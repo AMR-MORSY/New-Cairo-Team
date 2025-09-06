@@ -15,7 +15,7 @@
              {{ __('Delete') }}
          </flux:navlist.item>
 
-         <flux:navlist.item :href="route('modification.quotation',$modification->id)" wire:navigate>
+         <flux:navlist.item :href="route('quotation.details',$modification->id)" wire:navigate>
              {{ __('Quotation') }}
          </flux:navlist.item>
 
