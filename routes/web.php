@@ -28,3 +28,7 @@ require __DIR__.'/site.php';
 require __DIR__.'/users.php';
 
 require __DIR__.'/modification.php';
+
+require __DIR__.'/permissions.php';
+
+require __DIR__.'/roles.php';

@@ -26,7 +26,7 @@ class Zone extends Model
 
     public function users()
     {
-        return $this->belongsToMany(User::class, 'team_user')
+        return $this->belongsToMany(User::class,'area_user')
             ->withPivot(['area_id', 'joined_at', 'status'])
             ->withTimestamps();
     }

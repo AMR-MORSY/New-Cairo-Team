@@ -101,10 +101,7 @@ final class SiteModificationsTable extends PowerGridComponent
                 ->sortable(),
             Column::make('Owner', 'actionOwner'),
             Column::make('Project', 'project'),
-            // Column::add()
-            //     ->title('Project')
-            //     ->field('project')
-            //     ->editOnClick(),
+         
             Column::make('Request_date', 'request_date'),
             Column::make('Est. Cost', 'est_cost_formatted'),
             Column::make('Final Cost', 'final_cost_formatted'),

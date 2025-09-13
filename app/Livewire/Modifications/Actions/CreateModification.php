@@ -48,8 +48,6 @@ class CreateModification extends Component
 
         $this->validate();
 
-        // dd( $this->form->all());
-        // dd(gettype($this->form->final_cost));
         $modification = Modification::create(
             $this->form->all()
         );

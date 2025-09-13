@@ -14,10 +14,14 @@ class ShowUsers extends Component
 
     public function mount()
     {
-        $this->users=User::all();
+        $this->users=User::with(['areas'])->get();
+
+        //  dd($this->users);
     }
+
+
     public function render()
     {
-        return view('livewire.users.actions.show-users');
+        return view('livewire.users.actions.show-users',['users'=>$this->users]);
     }
 }

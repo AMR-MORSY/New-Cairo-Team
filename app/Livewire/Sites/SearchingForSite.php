@@ -59,6 +59,7 @@ class SearchingForSite extends Component
 
 
 
+        $this->search='';
      
 
 

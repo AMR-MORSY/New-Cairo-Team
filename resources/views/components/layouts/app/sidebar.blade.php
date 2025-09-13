@@ -20,15 +20,25 @@
                 <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')"
                     wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
 
-                     <flux:navlist.item icon="home" :href="route('users.index')" :current="request()->routeIs('users.index')"
-                    wire:navigate>{{ __('Users') }}</flux:navlist.item>
+
 
 
             </flux:navlist.group>
 
+            <flux:navlist.group expandable icon="home" :heading="__('Users')" class="lg:grid">
+
+                <flux:navlist.item :href="route('users.index')" :current="request()->routeIs('users.index')"
+                    wire:navigate>{{ __('All') }}</flux:navlist.item>
+                <flux:navlist.item :href="route('permission.index')" :current="request()->routeIs('permission.index')"
+                    wire:navigate>{{ __('Permissions') }}</flux:navlist.item>
+                <flux:navlist.item :href="route('role.index')" :current="request()->routeIs('role.index')"
+                    wire:navigate>{{ __('Roles') }}</flux:navlist.item>
+            </flux:navlist.group>
+
 
             <flux:navlist.group expandable :heading="__('Sites')" class="lg:grid">
-                <flux:navlist.item :href="route('site.create')" :current="request()->routeIs('site.create')" wire:navigate>
+                <flux:navlist.item :href="route('site.create')" :current="request()->routeIs('site.create')"
+                    wire:navigate>
                     <div class=" flex items-center gap-1 ">
                         <flux:icon.plus-circle />
                         <p>{{ __('New Site') }} </p>
@@ -50,7 +60,7 @@
             </flux:navlist.group>
 
             <flux:navlist.group expandable heading="Modifications" class=" lg:grid">
-                
+
                 <flux:navlist.item href="#">
                     <div class=" flex items-center gap-1">
                         <flux:icon.magnifying-glass />
@@ -88,11 +98,20 @@
                         <p> Invoices</p>
                     </div>
                 </flux:navlist.item>
+
+                <flux:navlist.item :href="route('pos')" :current="request()->routeIs('pos')"
+                    wire:navigate>
+                    <div class=" flex items-center gap-1 ">
+                        <flux:icon.plus-circle />
+                        <p>{{ __('POs') }} </p>
+                    </div>
+
+                </flux:navlist.item>
             </flux:navlist.group>
         </flux:navlist>
 
         <flux:spacer />
-       
+
         <!-- Desktop User Menu -->
         <flux:dropdown class="hidden lg:block" position="bottom" align="start">
             <flux:profile :name="auth()->user()->name" :initials="auth()->user()->initials()"
@@ -120,7 +139,8 @@
                 <flux:menu.separator />
 
                 <flux:menu.radio.group>
-                    <flux:menu.item :href="route('settings.profile')" icon="cog" wire:navigate>{{ __('Settings') }}
+                    <flux:menu.item :href="route('settings.profile')" icon="cog" wire:navigate>
+                        {{ __('Settings') }}
                     </flux:menu.item>
                 </flux:menu.radio.group>
 
@@ -167,7 +187,8 @@
                 <flux:menu.separator />
 
                 <flux:menu.radio.group>
-                    <flux:menu.item :href="route('settings.profile')" icon="cog" wire:navigate>{{ __('Settings') }}
+                    <flux:menu.item :href="route('settings.profile')" icon="cog" wire:navigate>
+                        {{ __('Settings') }}
                     </flux:menu.item>
                 </flux:menu.radio.group>
 
@@ -186,10 +207,12 @@
     {{ $slot }}
     <x-toaster-hub />
     <livewire:components.dynamic-modal />
-      <x-dialog z-index="z-50" blur="sm" align="center" />
-       @wireUiScripts
+    <x-dialog z-index="z-50" blur="sm" align="center" />
+    @wireUiScripts
     @fluxScripts
-  
+
+    @livewire('wire-elements-modal')
+
 </body>
 
 </html>

@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Tables\Users;
 
+use App\Models\Area;
 use Livewire\Attributes\On;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
@@ -37,7 +38,7 @@ final class AllUsersTable extends PowerGridComponent
 
     public function setUp(): array
     {
-        $this->showRadioButton();
+
 
         return [
             PowerGrid::header()
@@ -54,8 +55,10 @@ final class AllUsersTable extends PowerGridComponent
     {
         return PowerGrid::fields()
             ->add('id')
+           
             ->add('name')
             ->add('email');
+          
         // ->add('created_at_formatted', function ($entry) {
         //     return Carbon::parse($entry->created_at)->format('d/m/Y');
         // });
@@ -72,6 +75,7 @@ final class AllUsersTable extends PowerGridComponent
 
             Column::make('Email', 'email')
                 ->sortable(),
+          
 
             Column::action('View')
 

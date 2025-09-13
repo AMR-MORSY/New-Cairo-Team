@@ -2,6 +2,7 @@
 <?php
 
 use App\Livewire\Modifications\Actions\CreateModification;
+use App\Livewire\Modifications\Actions\CreatePO;
 use App\Livewire\Modifications\Actions\DeleteModification;
 use App\Livewire\Modifications\Actions\ModificationDetails;
 use App\Livewire\Modifications\Actions\QuotationCreate;
@@ -10,7 +11,7 @@ use App\Livewire\Modifications\Actions\QuotationUpdate;
 use App\Livewire\Modifications\Actions\SiteModifications;
 use App\Livewire\Modifications\Actions\SubmitQuotation;
 use App\Livewire\Modifications\Actions\UpdateModification;
-
+use App\Livewire\Modifications\POs;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth'])->prefix('modification')->group(function () {
@@ -23,4 +24,11 @@ Route::middleware(['auth'])->prefix('modification')->group(function () {
     Route::get('quotation/{modification}', QuotationDetails::class)->name('quotation.details');
     Route::get('create/quotation/{modification}', QuotationCreate::class)->name('quotation.create');
     Route::get('update/quotation/{quotation}', QuotationUpdate::class)->name('quotation.update');
+   
+});
+
+
+Route::middleware(['auth'])->prefix('po')->group(function () {
+
+     Route::get('pos',POs::class)->name('pos');
 });

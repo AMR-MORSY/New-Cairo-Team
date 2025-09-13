@@ -39,14 +39,14 @@ class User extends Authenticatable
 
     public function areas():BelongsToMany
     {
-        return $this->belongsToMany(Area::class, 'area_user')
-            ->withPivot(['zone_id', 'joined_at', 'status'])
+        return $this->belongsToMany(Area::class,'area_user')
+            ->withPivot(['zone_id', 'joined_at', 'status',])
             ->withTimestamps();
     }
 
     public function zones()
     {
-        return $this->belongsToMany(Zone::class, 'team_user')
+        return $this->belongsToMany(Zone::class,'area_user')
             ->withPivot(['area_id', 'joined_at', 'status'])
             ->withTimestamps();
     }
@@ -60,6 +60,7 @@ class User extends Authenticatable
     public function getAreaAndZone()
     {
         $teamUser = $this->areas()->first();
+       
         if ($teamUser) {
             return [
                 'area' => $teamUser,

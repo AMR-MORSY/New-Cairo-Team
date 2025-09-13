@@ -8,6 +8,7 @@ use App\Models\Zone;
 use App\Models\Site\Site;
 use App\Models\Site\Modification;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Area extends Model
@@ -31,9 +32,9 @@ class Area extends Model
         return $this->hasMany(Zone::class);
     }
 
-    public function users()
+    public function users():BelongsToMany
     {
-        return $this->belongsToMany(User::class, 'area_user')
+        return $this->belongsToMany(User::class,'area_user')
             ->withPivot(['zone_id', 'joined_at', 'status'])
             ->withTimestamps();
     }

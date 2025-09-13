@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Modification\ModificationStatus;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\Modification\ModificationReservation;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
@@ -64,6 +65,12 @@ class Modification extends Model
 
 
     ];
+
+
+    public function reservations():HasMany
+    {
+        return $this->hasMany(ModificationReservation::class);
+    }
 
     public function site(): BelongsTo
     {

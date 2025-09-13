@@ -5,6 +5,7 @@
             <livewire:modifications.modification-links :site="$site" :modifications="$modifications" />
         </x-slot:links> --}}
 
+        {{-- @dd($modifications) --}}
         @if (count($modifications) > 0)
             <livewire:tables.modification.site-modifications-table :modifications="$modifications"/>
         @else

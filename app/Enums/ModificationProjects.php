@@ -21,4 +21,26 @@ enum ModificationProjects: string
     case TX_MODIFICATION = "Tx Modification";
     case G2G = "G2G";
     case NEW_SITES = "New Sites";
+
+
+    
+
+    public function projectPoType()
+    {
+        return match ($this) {
+            self::TDD => "ROLLOUT",
+            self::LTE => "ROLLOUT",
+            self::G5 => "ROLLOUT",
+            self::B2B => "B2B"
+        };
+    }
+
+       public static function getPOByValue(string $value): ?string /// self::tryFrom($value) attempts to create an enum instance from the string value If successful, it calls getCodes() on that instance.If the value doesn't match any enum case, tryFrom() returns null, and the method returns null
+    {
+        $project = self::tryFrom($value);
+        return $project?->projectPoType();
+    }
+
+
+
 }

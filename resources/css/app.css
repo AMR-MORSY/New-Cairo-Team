@@ -19,6 +19,10 @@
 @source '../../vendor/livewire/flux-pro/stubs/**/*.blade.php';
 @source '../../vendor/livewire/flux/stubs/**/*.blade.php';
 
+@source '../../vendor/wire-elements/modal/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source inline("{sm:,md:,lg:,xl:,2xl:,}max-w-{sm,md,lg,xl,2xl,3xl,4xl,5xl,6xl,7xl}");
+
 @custom-variant dark (&:where(.dark, .dark *));
 
 
@@ -93,6 +97,10 @@ select:focus[data-flux-control] {
     color: var(--color-zinc-50) !important;
 }
 
-.modal-backdrop {
+/* .modal-backdrop {
     backdrop-filter: blur(4px);
+} */
+
+#modal-container {
+    z-index: 500 !important;
 }
