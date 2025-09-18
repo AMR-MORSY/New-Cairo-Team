@@ -3,6 +3,7 @@
 namespace App\Livewire\Modifications\Actions;
 
 use Livewire\Component;
+use App\Models\Site\Site;
 use Illuminate\Support\Collection;
 use App\Models\Modification\Action;
 use App\Models\Modification\Project;
@@ -25,6 +26,8 @@ class ModificationDetails extends Component
     public Collection $projects;
     public Collection $actions;
 
+    public $site;
+
 
     public function mount(
         Project $project,
@@ -39,7 +42,10 @@ class ModificationDetails extends Component
         $this->modificationStatus = $modification_status->all();
         $this->projects = $project->all();
         $this->actions = $action->all();
-        $this->modification=$modification;
+        $this->modification = $modification->load('reservation');
+        $this->site = Site::where('site_code', $modification->site_code)->first();
+
+      
         /////////////////////////////////////////////////////because the form will present the data in input type text as readonly all id attributes should present the name not id number before the modification details goes to form
         $modification->subcontractor_id = $modification->subcontractor->name;
         $modification->requester_id = $modification->requester->name;
@@ -56,11 +62,11 @@ class ModificationDetails extends Component
             $modification->reported = "Yes";
         }
 
-      
+
         $this->form->setModificationDetails($modification);
     }
     public function render()
     {
-        return view('livewire.modifications.actions.modification-details');
+        return view('livewire.modifications.actions.modification-details', ["modification" => $this->modification, 'site' => $this->site]);
     }
 }

@@ -14,12 +14,16 @@ class QuotationDetails extends Component
     public object|null $modification = null;
     public object|null $quotation = null;
 
-    public Collection|null $quotationItems=null;
+    public Collection|null $quotationItems = null;
+
+    public $site;
 
     public function mount(Modification $modification)
     {
 
         $this->modification = $modification;
+
+        $this->site = $modification->site;
 
         if ($this->modification->quotation) {
             $this->quotation = $modification->quotation->load(['priceListItems', 'mailListItems']);

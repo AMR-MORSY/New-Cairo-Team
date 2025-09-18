@@ -15,6 +15,7 @@ class SiteModifications extends Component
     public $site;
     public function mount(Site $site)
     {
+        $this->site=$site;
         $this->modifications = $site->modifications()->with([
             "project",
             'subcontractor',
@@ -23,9 +24,11 @@ class SiteModifications extends Component
             'actionOwner',
             'modification_status',
             'area',
-            'zone'
+            'zone',
+            'reservation'
         ])->get();
 
+       
        
 
        

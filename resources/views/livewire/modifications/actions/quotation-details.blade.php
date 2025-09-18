@@ -4,9 +4,9 @@
         <x-viewLayouts.main-view-layout :heading="__('Quotation Details')" :subheading="__('You will find very important information about the modification Quotation here. ')">
 
 
-            {{-- <x-slot:links>
-                    <livewire:modifications.modification-links :modification="$modification" />
-                </x-slot:links> --}}
+            <x-slot:links>
+                    <livewire:modifications.modification-links :modification="$modification" :site="$site" />
+                </x-slot:links>
 
             @if ($quotation)
                 <livewire:tables.modification.quotation-items-table :quotationItems="$quotationItems" target="details" />

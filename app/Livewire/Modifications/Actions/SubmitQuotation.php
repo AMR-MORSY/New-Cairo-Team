@@ -156,9 +156,18 @@ class SubmitQuotation extends Component
             }
         }
 
-        return redirect()->route('quotation.details',['modification'=>$this->modification->id]);
+        return redirect()->route('quotation.details', ['modification' => $this->modification->id]);
     }
 
+    // private function getSelectedItemsTotalCost($selectedItems)
+    // {
+    //     $newSelected = array_map(function ($item) {
+    //         return  $item['item_price'] = $this->getItemPrice(floatval($item['quantity']), $item['scope'], floatval($item['installation']), floatval($item['supply']));
+    //     }, $selectedItems,);
+
+    //     $totalCost=array_sum($newSelected);
+    //     return $totalCost;
+    // }
 
     #[On("insert_Quotation")]
     public function uploadQuotation($selectedItems)
@@ -166,6 +175,8 @@ class SubmitQuotation extends Component
 
 
         if (!$this->modification->quotation) {
+            // $totalCost=$this->getSelectedItemsTotalCost($selectedItems);
+
             $this->quotation = Quotation::create([
                 'modification_id' =>  $this->modification->id
             ]);
@@ -186,12 +197,10 @@ class SubmitQuotation extends Component
                     array_push($errors, $mailListItem);
                 }
             }
-            if(count($errors)>0)
-            {
+            if (count($errors) > 0) {
                 Toaster::error('Item already exists');
-            }
-            else{
-                $this->quotation=$this->modification->quotation;
+            } else {
+                $this->quotation = $this->modification->quotation;
                 $this->createPivotTable($selectedItems);
             }
         }

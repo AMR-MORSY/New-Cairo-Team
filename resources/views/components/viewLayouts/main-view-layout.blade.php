@@ -11,7 +11,7 @@
         <flux:heading size="xl">{{ $heading ?? '' }}</flux:heading>
         <flux:subheading>{{ $subheading ?? '' }}</flux:subheading>
 
-        <div class="w-full max-w-4xl ">
+        <div class="w-full max-w-6xl ">
             {{ $slot }}
         </div>
     </div>

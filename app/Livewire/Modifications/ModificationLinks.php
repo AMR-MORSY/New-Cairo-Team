@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Modifications;
 
+use App\Models\Modification\Modification;
 use Livewire\Component;
 use Masmerise\Toaster\Toaster;
 use WireUi\Traits\WireUiActions;
@@ -9,14 +10,17 @@ use WireUi\Traits\WireUiActions;
 class ModificationLinks extends Component
 {
     use WireUiActions;
-    // public $site;
+
+    public $site;
+
+
     public $modification;
 
-    public $site_code;
 
     public function delete()
     {
-        $this->site_code = $this->modification->site_code;
+        //  dd($this->modification);
+
 
 
         $this->dialog()->confirm([
@@ -29,12 +33,20 @@ class ModificationLinks extends Component
     }
 
     public function deleteModification()
+
     {
-        $this->modification->delete();
+
+        if ($this->modification->modification_status_id == 2) {/////////modification still in progress
+            $this->modification->reservation->update(['status' => 'cancelled']); ////////cancel the reservation
+            $this->modification->reservation->po->decrement('in_progress', $this->modification->reservation->amount); ///////decrement the po in progress amount by the reserved amount
+            $this->modification->reservation->po->increment('on_hand', $this->modification->reservation->amount); //////increment the po on hand amount to be used by other users
+            $this->modification->delete();
+        }
+
 
         Toaster::success('Modification deleted Successfully');
 
-        return redirect()->route('site.modifications', ['site' => $this->site_code]);
+        return redirect()->route('site.modifications', ['site' => $this->site->site_code]);
     }
     public function render()
     {

@@ -1,6 +1,5 @@
 <?php
 
-use App\Enums\ModificationPOs;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,10 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('pos', function (Blueprint $table) {
+        Schema::create('purchase_orders', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('subcontractor_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
-            $table->string('po_number')->unique();
+             $table->string('po_number')->unique();
             $table->string('type',50)->unique();
             $table->decimal('amount', 10, 2)->default(0);
             $table->decimal('invoiced', 10, 2)->default(0);
@@ -31,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pos');
+        Schema::dropIfExists('purchase_orders');
     }
 };

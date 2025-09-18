@@ -11,10 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('quotations', function (Blueprint $table) {
+        Schema::create('over_pos', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('modification_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
-            $table->boolean('is_active')->default(false);
+            $table->foreignId('modification_reservation_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
+            $table->decimal('amount', 10, 2)->default(0);
             $table->timestamps();
         });
     }
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('quotations');
+        Schema::dropIfExists('over_pos');
     }
 };

@@ -12,6 +12,7 @@ use App\Livewire\Forms\ModificationForm;
 use App\Models\Modification\Modification;
 use App\Models\Modification\Subcontractor;
 use App\Models\Modification\ModificationStatus;
+use App\Models\Modification\OverPo;
 
 class UpdateModification extends Component
 {
@@ -26,6 +27,7 @@ class UpdateModification extends Component
     public Collection $projects;
     public Collection $actions;
 
+    public $site;
 
     public function mount(
         Project $project,
@@ -41,26 +43,83 @@ class UpdateModification extends Component
         $this->projects = $project->all();
         $this->actions = $action->all();
 
-        $this->modification=$modification;
+        $this->modification = $modification;
 
-        $modificationActions=$modification->actions->pluck('id');
-        $modification->action_id= $modificationActions->toArray();
-        
+        $this->site = $modification->site;
+
+        $modificationActions = $modification->actions->pluck('id');
+        $modification->action_id = $modificationActions->toArray();
+
         $this->form->setModificationDetails($modification);
     }
 
+    private function manipulatePO($quotationAmount, $reservedAmount)
+    {
+        $this->modification->reservation->po->decrement('in_progress', $reservedAmount);
+        $this->modification->reservation->po->increment('on_hand', $reservedAmount);
+        $this->modification->reservation->po->increment('invoiced', $quotationAmount);
+        $this->modification->reservation->po->decrement('on_hand', $quotationAmount);
+    }
+    private function adjustPO($quotationAmount, $reservedAmount)
+    {
+        if ($quotationAmount <= $reservedAmount) { ////////////////////////////////////////////////quotation amount might be less or equal the reserved amount/in progress. in this case every thing is going normal with the PO
+            $this->manipulatePO($quotationAmount, $reservedAmount);
+        } else { ////////////////////////////////////////////////quotation amount might be greater. problem starts to appear
+
+            $quotationReservedDiff = $quotationAmount - $reservedAmount;
+            $onHand = $this->modification->reservation->po->getAvailableAmount();
+            if ($quotationReservedDiff <= $onHand) /////// in this case we do not have a problem with the PO
+            {
+                $this->manipulatePO($quotationAmount, $reservedAmount);
+            } else {
+                $overPo = OverPo::create([
+                    'modification_reservation_id' => $this->modification->reservation->id,
+                    'amount' => $quotationAmount
+                ]);
+            }
+        }
+    }
     public function update()
     {
         $this->validate();
 
-        $this->modification->update(
-            $this->form->all()
-        );
+        if ($this->form->modification_status_id == 1 || $this->form->modification_status_id == 3) {
+            $quotation = $this->modification->quotation()->where('is_active', 0)->first(); //////////check if there is a quotation for this modification 
+            if ($quotation) {
+                $quotationAmount = $quotation->sumMailListItems() + $quotation->sumPriceListItems();
+                if ($this->modification->reservation->status == 'active') //////////////////means that modification was in progress and the user submit quotation and want to update the modification to done/waiting D6
+                {
 
-        $this->modification->actions()->sync($this->form->action_id); // Replace all existing relationships with the new array
-        Toaster::success('Modification updated Successfully');
+                    $reservedAmount = $this->modification->reservation->amount;
+                    $this->adjustPO($quotationAmount, $reservedAmount);
+                    $this->modification->quotation->update(['is_active', 1]);
+                    $this->modification->reservation->update(['status', 'completed']);
+                } elseif ($this->modification->reservation->status == 'expired') {
+                    $onHand = $this->modification->reservation->po->getAvailableAmount();
+                    if ($quotationAmount <= $onHand) {
+                        $this->modification->reservation->po->increment('invoiced', $quotationAmount);
+                        $this->modification->reservation->po->decrement('on_hand', $quotationAmount);
+                    } else {
+                        $overPo = OverPo::create([
+                            'modification_reservation_id' => $this->modification->reservation->id,
+                            'amount' => $quotationAmount
+                        ]);
+                    }
+                    $this->modification->quotation->update(['is_active', 1]);
+                    $this->modification->reservation->update(['status', 'completed']);
+                }
+                // $this->modification->update(
+                //     $this->form->all()
+                // );
 
-        return redirect()->route('modification.details', $this->modification->id);
+                // $this->modification->actions()->sync($this->form->action_id); // Replace all existing relationships with the new array
+                // Toaster::success('Modification updated Successfully');
+
+                // return redirect()->route('modification.details', $this->modification->id);
+            } else {
+                return redirect()->back()->with('quotation_error', 'You have to submit Quotation');
+            }
+        }
     }
     public function render()
     {

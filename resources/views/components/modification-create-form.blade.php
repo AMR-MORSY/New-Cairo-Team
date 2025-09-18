@@ -41,17 +41,7 @@
                             @endif
 
                         </flux:field>
-                        <flux:field>
-                            <flux:label>Actions *</flux:label>
-                            @if ($target == 'Update' || $target == 'New')
-                                <x-select wire:model="form.action_id" placeholder="Select Actions" multiselect
-                                    :options="$actions" option-label="name" option-value="id" />
-                            @else
-                                <flux:input wire:model="form.action_id" :readonly="$readonly"
-                                    :placeholder="$readonly ? null : 'Enter Site Name'" class="w-full" />
-                            @endif
 
-                        </flux:field>
 
                         <flux:field>
                             <flux:label>Requester *</flux:label>
@@ -126,19 +116,16 @@
 
                             <flux:error name="form.est_cost" />
                         </flux:field>
-                        <flux:field>
-                            <flux:label>Final Cost *</flux:label>
-                            @if ($target == 'Update' || $target == 'New')
-                                <flux:input wire:model="form.final_cost" class="w-full" x-mask:dynamic="$money($input)"
-                                    placeholder="Enter final Cost" />
-                            @else
+                        @if ($target == 'Details')
+                            <flux:field>
+                                <flux:label>Final Cost *</flux:label>
+
                                 <flux:input wire:model="form.final_cost" x-mask:dynamic="$money($input)"
                                     :placeholder="$readonly ? null : 'Enter final Cost'" :readonly="$readonly"
                                     class="w-full" />
-                            @endif
 
-                            <flux:error name="form.final_cost" />
-                        </flux:field>
+                            </flux:field>
+                        @endif
 
                         <flux:field>
                             <flux:label>Reported *</flux:label>
@@ -200,6 +187,35 @@
                             <flux:error name="form.pending" />
                         </flux:field>
 
+                        @if ($modification)
+
+                            @if ($modification->reservation->is_expired)
+                                <flux:field>
+                                    <flux:label>Validation *</flux:label>
+                                    <flux:input wire:model="form.reservation_status" :readonly="$readonly"
+                                        class="w-full" />
+                                </flux:field>
+                            @else
+                                <flux:field>
+                                    <flux:label>Expires At *</flux:label>
+                                    <flux:input wire:model="form.expires_at" :readonly="$readonly" class="w-full" />
+                                </flux:field>
+                            @endif
+
+                        @endif
+
+
+                        <flux:field>
+                            <flux:label>Actions *</flux:label>
+                            @if ($target == 'Update' || $target == 'New')
+                                <x-select wire:model="form.action_id" placeholder="Select Actions" multiselect
+                                    :options="$actions" option-label="name" option-value="id" />
+                            @else
+                                <flux:input wire:model="form.action_id" :readonly="$readonly"
+                                    :placeholder="$readonly ? null : 'Enter Site Name'" class="w-full" />
+                            @endif
+
+                        </flux:field>
 
                         @if ($target == 'Details')
                             <flux:field>
@@ -220,7 +236,7 @@
 
 
                             </flux:field>
-                              <flux:field>
+                            <flux:field>
                                 <flux:label>Zone *</flux:label>
 
                                 <flux:input wire:model="form.zone_id" :readonly="$readonly"
@@ -229,7 +245,7 @@
 
 
                             </flux:field>
-                                <flux:field>
+                            <flux:field>
                                 <flux:label>Area *</flux:label>
 
                                 <flux:input wire:model="form.area_id" :readonly="$readonly"
@@ -242,7 +258,12 @@
 
 
 
+
+
+
+
                     </div>
+
 
 
 

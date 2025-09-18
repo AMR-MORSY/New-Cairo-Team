@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\Modification\ModificationReservation;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Modification extends Model
 {
@@ -67,9 +68,9 @@ class Modification extends Model
     ];
 
 
-    public function reservations():HasMany
+    public function reservation():HasOne
     {
-        return $this->hasMany(ModificationReservation::class);
+        return $this->hasOne(ModificationReservation::class);
     }
 
     public function site(): BelongsTo
@@ -128,6 +129,19 @@ class Modification extends Model
         $W_o_Code = $zone . "-00" . $lastModificationId + 1;
         $this->wo_code = $W_o_Code;
     }
+
+    protected function calculateFinalCost()
+    {
+        $quotation=$this->quotation()->where('is_active',1)->first();
+        if($quotation)
+        {
+            $this->final_cost=$quotation->sumMailListItems() + $quotation->sumPriceListItems();
+
+        }
+        else{
+            $this->final_cost=0;
+        }
+    }
     protected static function boot()
     {
         parent::boot();
@@ -135,6 +149,7 @@ class Modification extends Model
 
         static::creating(function ($model) {
             $model->createWOCode();
+            $model->calculateFinalCost();
             $requestDate = Carbon::parse($model->request_date);
             $model->month = $requestDate->monthName;
             $model->year = $requestDate->year;

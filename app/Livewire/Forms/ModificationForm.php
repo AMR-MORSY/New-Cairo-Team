@@ -40,6 +40,9 @@ class ModificationForm extends Form
     public $action_id = '';
     public $wo_code = '';
 
+    public $expires_at='';
+    public $reservation_status='';
+
 
     public function setModificationDefaultAttributes($site)
     {
@@ -75,6 +78,9 @@ class ModificationForm extends Form
         $this->action_owner = $modification->action_owner;
         $this->action_id = $modification->action_id;
         $this->wo_code = $modification->wo_code;
+
+        $this->expires_at=$modification->reservation->expires_at_for_user;
+        $this->reservation_status=$modification->reservation->status;
     }
 
 
@@ -88,13 +94,12 @@ class ModificationForm extends Form
             "description" => ["nullable", "string", 'regex:/^[a-zA-Z0-9\-_!@#$%^&*(),.?":{}\n\t|<> ]+$/'], //////regex for special chars, chars,numbers,spaces,underscore,dash
             "pending" => ['nullable', 'string', 'regex:/^[a-zA-Z0-9\-_!@#$%^&*(),.?":{}\n\t|<> ]+$/'],
             "request_date" => "required|date",
-            "cw_date" => [" nullable", "date", "required_if:modification_status,1,3", "after_or_equal:request_date"],
-            "d6_date" => [" nullable", "date", "required_if:modification_status,1,3", "after_or_equal:request_date","after_or_equal:cw_date"],
+            "cw_date" => [" nullable", "date", "required_if:modification_status_id,1,3", "after_or_equal:request_date"],
+            "d6_date" => [" nullable", "date", "required_if:modification_status_id,1", "after_or_equal:request_date", "after_or_equal:cw_date"],
             "modification_status_id" => ["required", 'exists:modification_status,id'],
             "requester_id" => ["required", 'exists:requesters,id'],
             "project_id" => ["required", 'exists:projects,id'],
-            "est_cost" => ["required_if:modification_status,1,2,3", new CommaSeparatedNumber],
-            "final_cost" => ["nullable", "required_if:modification_status,1", new CommaSeparatedNumber],
+            "est_cost" => ["required_if:modification_status_id,1,2,3", new CommaSeparatedNumber],
             "reported" => ["required",  Rule::in([1, 0])],
             "reported_at" => ["nullable", "date", "required_if:reported,1"],
             'area_id' => ['required', 'exists:areas,id'],
@@ -121,7 +126,38 @@ class ModificationForm extends Form
                 "modification_status_id.required" => "The status is required",
                 "project_id.required" => "The project is required",
                 "action_id.required" => "The action is required",
-                "final_cost.required_if" => "Final cost is required",
+                "cw_date.required_if" => "Civil work date is required when status is waiting D6 or Done",
+                "d6_date.required_if" => "D6 date is required when status is  Done"
+
             ];
+    }
+
+
+    public function checkPOOnHandAmount($POs)
+    {
+        $onHands = [];
+        $POsWithSufficientOnHand = [];
+        if (count($POs) > 0) {
+            foreach ($POs as $PO) {
+                $onHand = $PO->getAvailableAmount();
+
+                $new['id'] = $PO->id;
+                $new['amount'] = $onHand;
+                array_push($onHands, $new);
+            }
+
+            $POsWithSufficientOnHand = array_filter($onHands, function ($onHand) {
+                $estCostFloatValue = floatval(str_replace(',', '', $this->est_cost));
+                return $onHand['amount'] >= $estCostFloatValue;
+            });
+
+            $onHands = [];
+            if (count($POsWithSufficientOnHand) > 0) {
+                $onHands[] = $POsWithSufficientOnHand[0];
+            }
+
+            return $onHands;
+        }
+        return $onHands;
     }
 }

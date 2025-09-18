@@ -72,14 +72,7 @@
                         <flux:field>
                             <flux:label>Severity *</flux:label>
                             @if ($target == 'Update' || $target == 'Create')
-                                {{-- <flux:select wire:model="form.severity" type="text" clearable
-                                    :placeholder="$readonly ? null : 'Enter Site Severity'" class="w-full">
-                                    @foreach (('App\Enums\SiteSeverities')::cases() as $severity)
-                                        <flux:select.option :value="$severity->value">{{ $severity->name }}
-                                        </flux:select.option>
-                                    @endforeach
-
-                                </flux:select> --}}
+                                
                                    <x-select-enums wire:model="form.severity" :enumOptions="('App\Enums\SiteSeverities')::cases()" class="w-full"
                                     placeholder="Enter Site Severity" />
                             @else
@@ -93,14 +86,7 @@
                         <flux:field>
                             <flux:label>Category *</flux:label>
                             @if ($target == 'Update' || $target == 'Create')
-                                {{-- <flux:select wire:model="form.category" type="text" placeholder="Enter Site Category"
-                                    class="w-full">
-                                    @foreach (('App\Enums\SiteCategories')::cases() as $category)
-                                        <flux:select.option :value="$category->value">{{ $category->name }}
-                                        </flux:select.option>
-                                    @endforeach
-
-                                </flux:select> --}}
+                              
                                 <x-select-enums wire:model="form.category" :enumOptions="('App\Enums\SiteCategories')::cases()" class="w-full"
                                     placeholder="Enter Site Category" />
                             @else
@@ -114,14 +100,7 @@
                         <flux:field>
                             <flux:label>Type *</flux:label>
                             @if ($target == 'Update' || $target == 'Create')
-                                {{-- <flux:select wire:model="form.type" type="text" placeholder="Enter Site Type"
-                                    class="w-full">
-                                    @foreach (('App\Enums\SiteTypies')::cases() as $type)
-                                        <flux:select.option :value="$type->value">{{ $type->name }}
-                                        </flux:select.option>
-                                    @endforeach
-
-                                </flux:select> --}}
+                               
                                 <x-select-enums wire:model="form.type" :enumOptions="('App\Enums\SiteTypies')::cases()" class="w-full"
                                     placeholder="Enter Site Type" />
                             @else
