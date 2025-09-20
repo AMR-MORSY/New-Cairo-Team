@@ -15,6 +15,7 @@ class Invoice extends Model
     protected $fillable = [
         'modification_reservation_id',
         'amount',
+        'reserved_at'
 
     ];
     

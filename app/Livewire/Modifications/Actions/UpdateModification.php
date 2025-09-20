@@ -97,7 +97,7 @@ class UpdateModification extends Component
         $this->validate();
 
         $quotation = $this->modification->quotation()->where('is_active', 0)->first(); //////////check if there is an inactive quotation for this modification 
-        $activeQuotation = $this->modification->quotation()->where('is_active', 0)->first(); //////////check if there is an active quotation for this modification 
+        $activeQuotation = $this->modification->quotation()->where('is_active', 1)->first(); //////////check if there is an active quotation for this modification 
 
         if ($this->form->modification_status_id == 1 || $this->form->modification_status_id == 3) { /////////////////done or waiting D6
 
@@ -107,7 +107,7 @@ class UpdateModification extends Component
                 {
 
                     $reservedAmount = $this->modification->reservation->amount;
-                    dd($quotationAmount);
+
                     $this->adjustPO($quotationAmount, $reservedAmount);
                 } elseif ($this->modification->reservation->status == 'expired') {
                     $onHand = $this->modification->reservation->po->getAvailableAmount();
@@ -137,7 +137,7 @@ class UpdateModification extends Component
                 Toaster::success('Modification updated Successfully');
 
                 return redirect()->route('modification.details', $this->modification->id);
-            } elseif ($activeQuotation) {
+            } elseif ($activeQuotation) { ////////////////////update modification's data only
                 $this->modification->update(
                     $this->form->all()
                 );
@@ -151,11 +151,22 @@ class UpdateModification extends Component
             }
         } elseif ($this->form->modification_status_id == 2) /////////////in progress
         {
-            if ($quotation) {
 
-                
+            $invoice = $this->modification->reservation->invoice;
+            $overPo = $this->modification->reservation->overPo;
 
+          
 
+            if ($invoice || $overPo) {
+                Toaster::error('The modification is already invoiced, you can not make it in progress')->duration('7000');
+            } elseif ($this->form->is_expired && $this->form->activate == 1) { //////////the user wants to activate the expired reservation + updating any form data
+
+                $this->form->inprogressFormSubmission($this->modification);
+
+                return redirect()->route('modification.details', $this->modification->id);
+            } elseif ($this->form->is_expired && $this->form->activate != 1) {
+                Toaster::error('The modification is already expired, you must activate it before any update')->duration('7000');
+            } else {
                 $this->modification->update(
                     $this->form->all()
                 );
@@ -164,6 +175,7 @@ class UpdateModification extends Component
                 Toaster::success('Modification updated Successfully');
 
                 return redirect()->route('modification.details', $this->modification->id);
+
             }
         }
     }

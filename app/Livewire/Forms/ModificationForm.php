@@ -3,18 +3,22 @@
 namespace App\Livewire\Forms;
 
 use Auth;
+use Carbon\Carbon;
 use Livewire\Form;
 use App\Models\Site\Site;
+use Masmerise\Toaster\Toaster;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Validate;
+
 use App\Rules\CommaSeparatedNumber;
 use App\Models\Modification\Project;
-
 use App\Models\Modification\Requester;
 use App\Models\Modification\Modification;
+use App\Models\Modification\PurchaseOrder;
 use App\Models\Modification\Subcontractor;
 use Illuminate\Database\Eloquent\Collection;
 use App\Models\Modification\ModificationStatus;
+use App\Models\Modification\ModificationReservation;
 
 class ModificationForm extends Form
 {
@@ -29,8 +33,8 @@ class ModificationForm extends Form
     public $requester_id = '';
     public $project_id = '';
     public $modification_status_id = '';
-    public $cw_date = '';
-    public $d6_date = '';
+    public string|null $cw_date = null;
+    public string |null $d6_date = null;
     public $description = "";
     public $reported = 0;
     public $reported_at = '';
@@ -40,10 +44,10 @@ class ModificationForm extends Form
     public $action_id = '';
     public $wo_code = '';
 
-    public $expires_at='';
-    public $reservation_status='';
+    public $expires_at = '';
+    public $reservation_status = '';
     public $is_expired;
-    public $activate;
+    public $activate = "";
 
 
     public function setModificationDefaultAttributes($site)
@@ -81,10 +85,9 @@ class ModificationForm extends Form
         $this->action_id = $modification->action_id;
         $this->wo_code = $modification->wo_code;
 
-        $this->expires_at=$modification->reservation->expires_at_for_user;
-        $this->reservation_status=$modification->reservation->status;
-        $this->is_expired=$modification->reservation->is_expired;
-        
+        $this->expires_at = $modification->reservation->expires_at_for_user;
+        $this->reservation_status = $modification->reservation->status;
+        $this->is_expired = $modification->reservation->is_expired;
     }
 
 
@@ -100,7 +103,24 @@ class ModificationForm extends Form
             "request_date" => "required|date",
             "cw_date" => [" nullable", "date", "required_if:modification_status_id,1,3", "after_or_equal:request_date"],
             "d6_date" => [" nullable", "date", "required_if:modification_status_id,1", "after_or_equal:request_date", "after_or_equal:cw_date"],
-            "modification_status_id" => ["required", 'exists:modification_status,id'],
+            "modification_status_id" => ["required", 'exists:modification_status,id',  function ($attribute, $value, $fail)  {
+               
+                $cwDate = $this->cw_date;
+                $d6Date = $this->d6_date;
+
+                // Both dates are null - must be "2"
+                if ((is_null($cwDate)||$cwDate=='') && (is_null($d6Date)||$d6Date=='')) {
+                    if ($value != 2) {
+                        $fail('The modification status must be "in progress" when both cw_date and d6_date are null.');
+                    }
+                }
+                // At least one date is not null - must be "1" or "3"
+                else {
+                    if (!in_array($value, [1, 3])) {
+                        $fail('The modification status must be "Done" or "waiting D6" when either cw_date or d6_date is provided.');
+                    }
+                }
+            }],
             "requester_id" => ["required", 'exists:requesters,id'],
             "project_id" => ["required", 'exists:projects,id'],
             "est_cost" => ["required_if:modification_status_id,1,2,3", new CommaSeparatedNumber],
@@ -163,5 +183,93 @@ class ModificationForm extends Form
             return $onHands;
         }
         return $onHands;
+    }
+
+    private function updateInprogressForm($onHands, $modification)
+    {
+        $modification->update(
+            $this->all()
+        );
+       
+
+        $modification->actions()->sync($this->action_id);
+        $expiresAt = Carbon::now()->addDays(intval(env('MODIFICATION_EXPIRATION_PERIOD', 20)));
+
+        $modification->reservation->update([
+            'modification_id' => $modification->id,
+            'purchase_order_id' => $onHands[0]['id'],
+            'status' => 'active',
+            'amount' => $this->est_cost,
+            'reserved_at' => now(),
+            'expires_at' => $expiresAt,
+
+        ]);
+
+        return $modification;
+    }
+
+    private function createInprogressForm($onHands)
+    {
+        $modification = Modification::create(
+            $this->all()
+        );
+      
+
+        $modification->actions()->attach($this->action_id);
+        $expiresAt = Carbon::now()->addDays(intval(env('MODIFICATION_EXPIRATION_PERIOD', 20)));
+        $modificationReservation = ModificationReservation::create([
+            'modification_id' => $modification->id,
+            'purchase_order_id' => $onHands[0]['id'],
+            'status' => 'active',
+            'amount' => $this->est_cost,
+            'reserved_at' => now(),
+            'expires_at' => $expiresAt,
+
+        ]);
+        Toaster::success('Modification created Successfully');
+        return $modification;
+    }
+
+    public function inprogressFormSubmission($modification = null)
+    {
+        $project = Project::find($this->project_id);
+        $projectPOName = $project->getProjectPOName();
+        $subcontractor = Subcontractor::find($this->subcontractor_id);
+
+        $POs = $subcontractor->getSubcontractorAvailablePOs($projectPOName);
+
+        if (count($POs) > 0) {
+            $onHands = $this->checkPOOnHandAmount($POs); //////array of POs on hand amount
+            if (count($onHands) > 0) {
+
+              
+
+                $po = PurchaseOrder::find($onHands[0]['id']);
+                $estCostFloatValue = floatval(str_replace(',', '', $this->est_cost));
+
+
+
+                $po->increment('in_progress', $estCostFloatValue);
+                $po->decrement('on_hand', $estCostFloatValue);
+
+                if (!$modification) {
+                    $modification = $this->createInprogressForm($onHands);
+
+                    return redirect()->route('modification.details', $modification->id);
+                } elseif ($modification) {
+                    $updatedModification = $this->updateInprogressForm($onHands, $modification);
+                    return redirect()->route('modification.details', $updatedModification->id);
+                }
+
+              
+
+            } else {
+                $subcontractorName = $subcontractor->name;
+                Toaster::error("There is no available POs with sufficient amount to cover this modification for . $subcontractorName ");
+            }
+        } else {
+            $subcontractorName = $subcontractor->name;
+            Toaster::error("There is no available POs for . $subcontractorName ");
+        }
     }
 }

@@ -199,15 +199,17 @@
                             </flux:field>
 
                             @if ($modification->reservation->is_expired)
-                                @if ($target == 'Update' )
-                                    <flux:select wire:model="form.activate" placeholder="Activate" class="w-full">
+                                @if ($target == 'Update')
+                                    <flux:field>
+                                        <flux:label>Activate *</flux:label>
+                                        <flux:select wire:model="form.activate" placeholder="Activate" class="w-full">
 
-                                        <flux:select.option value=0>
-                                        </flux:select.option>
-                                        <flux:select.option value=1>Activate
-                                        </flux:select.option>
+                                          
+                                            <flux:select.option :value=1>Activate
+                                            </flux:select.option>
 
-                                    </flux:select>
+                                        </flux:select>
+                                    </flux:field>
                                 @endif
 
 

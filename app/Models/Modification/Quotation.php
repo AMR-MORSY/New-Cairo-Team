@@ -15,7 +15,7 @@ class Quotation extends Model
 
     protected $hidden = ['created_at', 'updated_at'];
 
-    protected $fillable = ['modification_id'];
+    protected $fillable = ['modification_id','is_active'];
 
 
     public function modification(): BelongsTo

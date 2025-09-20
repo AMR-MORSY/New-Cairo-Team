@@ -68,7 +68,7 @@ class Modification extends Model
     ];
 
 
-    public function reservation():HasOne
+    public function reservation(): HasOne
     {
         return $this->hasOne(ModificationReservation::class);
     }
@@ -132,14 +132,11 @@ class Modification extends Model
 
     protected function calculateFinalCost()
     {
-        $quotation=$this->quotation()->where('is_active',1)->first();
-        if($quotation)
-        {
-            $this->final_cost=$quotation->sumMailListItems() + $quotation->sumPriceListItems();
-
-        }
-        else{
-            $this->final_cost=0;
+        $quotation = $this->quotation()->where('is_active', 1)->first();
+        if ($quotation) {
+            $this->final_cost = $quotation->sumMailListItems() + $quotation->sumPriceListItems();
+        } else {
+            $this->final_cost = 0;
         }
     }
     protected static function boot()
@@ -149,10 +146,14 @@ class Modification extends Model
 
         static::creating(function ($model) {
             $model->createWOCode();
-            $model->calculateFinalCost();
+
             $requestDate = Carbon::parse($model->request_date);
             $model->month = $requestDate->monthName;
             $model->year = $requestDate->year;
+        });
+
+        static::updating(function ($model) {
+            $model->calculateFinalCost();
         });
     }
 
@@ -228,24 +229,24 @@ class Modification extends Model
         );
     }
 
-    protected function finalCost(): Attribute
-    {
-        return Attribute::make(
-            set: function ($value) {
-                if (is_string($value)) {
-                    // Convert comma to dot for decimal separator
-                    $value = str_replace(',', '', $value);
-                    return (float)$value;
-                }
-                return $value;
-            },
-            get: function ($value) {
+    // protected function finalCost(): Attribute
+    // {
+    //     return Attribute::make(
+    //         set: function ($value) {
+    //             if (is_string($value)) {
+    //                 // Convert comma to dot for decimal separator
+    //                 $value = str_replace(',', '', $value);
+    //                 return (float)$value;
+    //             }
+    //             return $value;
+    //         },
+    //         get: function ($value) {
 
-                return (float) $value;
-            }
+    //             return (float) $value;
+    //         }
 
-        );
-    }
+    //     );
+    // }
     protected function estCost(): Attribute
     {
         return Attribute::make(
@@ -267,7 +268,7 @@ class Modification extends Model
     }
 
 
-    public function quotation()
+    public function quotation(): HasOne
     {
         return $this->hasOne(Quotation::class);
     }

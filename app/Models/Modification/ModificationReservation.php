@@ -4,6 +4,7 @@ namespace App\Models\Modification;
 
 use App\Models\Modification\PO;
 use App\Models\Modification\OverPo;
+use App\Models\Modification\Invoice;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Modification\Modification;
@@ -57,9 +58,9 @@ class ModificationReservation extends Model
     }
 
     // Check if reservation is expired
-    public function getIsExpiredAttribute()
+    public function getIsExpiredAttribute():bool
     {
-        return $this->expires_at < now();
+        return $this->expires_at < now() && $this->status=='expired';
     }
 
     protected function amount(): Attribute
@@ -84,5 +85,9 @@ class ModificationReservation extends Model
     public function overPo():HasOne
     {
         return $this->hasOne(OverPoInvoice::class);
+    }
+     public function invoice():HasOne
+    {
+        return $this->hasOne(Invoice::class);
     }
 }

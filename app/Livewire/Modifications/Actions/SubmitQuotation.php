@@ -2,16 +2,18 @@
 
 namespace App\Livewire\Modifications\Actions;
 
-use App\Models\Modification\MailListItem;
 use Livewire\Component;
 use Livewire\Attributes\On;
 use Masmerise\Toaster\Toaster;
 use Livewire\Attributes\Reactive;
 use Livewire\Attributes\Validate;
+use App\Models\Modification\Invoice;
+use App\Models\Modification\Quotation;
+use App\Models\Modification\MailListItem;
 use App\Models\Modification\Modification;
 use Illuminate\Support\Facades\Validator;
+use App\Models\Modification\OverPoInvoice;
 use App\Models\Modification\PriceListItem;
-use App\Models\Modification\Quotation;
 use Illuminate\Database\Eloquent\Collection;
 
 class SubmitQuotation extends Component
@@ -33,15 +35,6 @@ class SubmitQuotation extends Component
 
 
 
-    // public function mount(Modification $modification)
-    // {
-
-    //      $this->modification = $modification;
-
-    //     $this->quotation = $modification->quotation;
-
-
-    // }
     public function searchPriceList()
     {
 
@@ -159,15 +152,51 @@ class SubmitQuotation extends Component
         return redirect()->route('quotation.details', ['modification' => $this->modification->id]);
     }
 
-    // private function getSelectedItemsTotalCost($selectedItems)
-    // {
-    //     $newSelected = array_map(function ($item) {
-    //         return  $item['item_price'] = $this->getItemPrice(floatval($item['quantity']), $item['scope'], floatval($item['installation']), floatval($item['supply']));
-    //     }, $selectedItems,);
+    private function getSelectedItemsTotalCost($selectedItems)
+    {
+        $newSelected = array_map(function ($item) {
+            return  $item['item_price'] = $this->getItemPrice(floatval($item['quantity']), $item['scope'], floatval($item['installation']), floatval($item['supply']));
+        }, $selectedItems,);
 
-    //     $totalCost=array_sum($newSelected);
-    //     return $totalCost;
-    // }
+        $totalCost = array_sum($newSelected);
+        return $totalCost;
+    }
+
+    private function manipulatePO($po, $invoiceAmount, $totalCost, $target)
+    {
+        $po->decrement('invoiced', $invoiceAmount);
+        $po->increment('on_hand', $invoiceAmount);
+        $onHand = $po->getAvailableAmount();
+        if ($totalCost <= $onHand) {
+            $po->increment('invoiced', $totalCost);
+            $po->decrement('on_hand', $totalCost);
+            if ($target == 'invoice') {
+                $this->modification->reservation->invoice->update(['amount' => $totalCost]);
+            } else {
+                $this->modification->reservation->overPo->update(['amount' => $totalCost]);
+            }
+        } else {
+            $po->increment('invoiced', $totalCost);
+            $po->decrement('on_hand', $totalCost);
+            if ($target == 'invoice') {
+                $overPo = OverPoInvoice::create([
+                    'modification_reservation_id' => $this->modification->reservation->id,
+                    'amount' => $totalCost,
+                    'reserved_at' => now(),
+                ]);
+
+                $this->modification->reservation->invoice->delete();
+            } else {
+                $invoice = Invoice::create([
+                    'modification_reservation_id' => $this->modification->reservation->id,
+                    'amount' => $totalCost,
+                    'reserved_at' => now(),
+                ]);
+
+                $this->modification->reservation->overPo->delete();
+            }
+        }
+    }
 
     #[On("insert_Quotation")]
     public function uploadQuotation($selectedItems)
@@ -175,13 +204,13 @@ class SubmitQuotation extends Component
 
 
         if (!$this->modification->quotation) {
-            // $totalCost=$this->getSelectedItemsTotalCost($selectedItems);
+
 
             $this->quotation = Quotation::create([
                 'modification_id' =>  $this->modification->id
             ]);
             $this->createPivotTable($selectedItems);
-        } else {
+        } else { /////////////////update the existing quotation items
 
 
             $errors = [];
@@ -201,7 +230,25 @@ class SubmitQuotation extends Component
                 Toaster::error('Item already exists');
             } else {
                 $this->quotation = $this->modification->quotation;
-                $this->createPivotTable($selectedItems);
+                if ($this->quotation->is_active == 1) { //////////////////////this means the quotation is invoiced
+                    $selectedItemsCost = $this->getSelectedItemsTotalCost($selectedItems);
+                    $totalCost = $selectedItemsCost + $this->modification->quotation->sumPriceListItems() + $this->modification->quotation->sumMailListItems();
+                    $po = $this->modification->reservation->po;
+                  
+                    if ($this->modification->reservation->invoice) {
+                        $invoiceAmount = $this->modification->reservation->invoice->amount;
+                        $this->manipulatePO($po, $invoiceAmount, $totalCost, 'invoice');
+                       
+                    } elseif ($this->modification->reservation->overPo) {
+                        $invoiceAmount = $this->modification->reservation->overPo->amount;
+                        $this->manipulatePO($po, $invoiceAmount, $totalCost, 'overPo');
+                    }
+                    $this->modification->update(['final_cost' => $totalCost]);
+                    $this->createPivotTable($selectedItems);
+                
+                } else {
+                    $this->createPivotTable($selectedItems);
+                }
             }
         }
     }

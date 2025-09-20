@@ -31,10 +31,10 @@ class PurchaseOrder extends Model
     protected $casts = [
 
         "in_progress" => 'decimal:2',
-        "on_hand" => 'decimal:2'
+        "on_hand" => 'decimal:2',
+        'invoiced' => 'decimal:2'
     ];
 
-  
 
 
 
