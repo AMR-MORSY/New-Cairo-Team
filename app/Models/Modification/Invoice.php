@@ -3,14 +3,14 @@
 namespace App\Models\Modification;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Modification\ModificationReservation;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class OverPo extends Model
+class Invoice extends Model
 {
+      protected $hidden = ['updated_at', 'created_at'];
 
-    protected $hidden = ['updated_at', 'created_at'];
-
-    protected $table = "over_pos";
+    protected $table = "invoices";
 
     protected $fillable = [
         'modification_reservation_id',
@@ -20,7 +20,8 @@ class OverPo extends Model
     
     protected $casts = [
 
-        "in_progress" => 'decimal:2',
+        "amount" => 'decimal:2',
+        "reserved_at"=>'datetime'
        
     ];
 

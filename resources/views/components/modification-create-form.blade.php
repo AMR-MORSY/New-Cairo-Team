@@ -188,20 +188,30 @@
                         </flux:field>
 
                         @if ($modification)
+                            <flux:field>
+                                <flux:label>Validation *</flux:label>
+                                <flux:input wire:model="form.reservation_status" :readonly="$readonly"
+                                    class="w-full" />
+                            </flux:field>
+                            <flux:field>
+                                <flux:label>Expires At *</flux:label>
+                                <flux:input wire:model="form.expires_at" :readonly="$readonly" class="w-full" />
+                            </flux:field>
 
                             @if ($modification->reservation->is_expired)
-                                <flux:field>
-                                    <flux:label>Validation *</flux:label>
-                                    <flux:input wire:model="form.reservation_status" :readonly="$readonly"
-                                        class="w-full" />
-                                </flux:field>
-                            @else
-                                <flux:field>
-                                    <flux:label>Expires At *</flux:label>
-                                    <flux:input wire:model="form.expires_at" :readonly="$readonly" class="w-full" />
-                                </flux:field>
-                            @endif
+                                @if ($target == 'Update' )
+                                    <flux:select wire:model="form.activate" placeholder="Activate" class="w-full">
 
+                                        <flux:select.option value=0>
+                                        </flux:select.option>
+                                        <flux:select.option value=1>Activate
+                                        </flux:select.option>
+
+                                    </flux:select>
+                                @endif
+
+
+                            @endif
                         @endif
 
 

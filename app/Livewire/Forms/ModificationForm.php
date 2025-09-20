@@ -42,6 +42,8 @@ class ModificationForm extends Form
 
     public $expires_at='';
     public $reservation_status='';
+    public $is_expired;
+    public $activate;
 
 
     public function setModificationDefaultAttributes($site)
@@ -81,6 +83,8 @@ class ModificationForm extends Form
 
         $this->expires_at=$modification->reservation->expires_at_for_user;
         $this->reservation_status=$modification->reservation->status;
+        $this->is_expired=$modification->reservation->is_expired;
+        
     }
 
 

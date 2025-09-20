@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('over_pos', function (Blueprint $table) {
+        Schema::create('over_po_invoices', function (Blueprint $table) {
             $table->id();
             $table->foreignId('modification_reservation_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->decimal('amount', 10, 2)->default(0);
+            $table->timestamp('reserved_at')->nullable();
             $table->timestamps();
         });
     }

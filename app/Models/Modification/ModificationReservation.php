@@ -7,6 +7,7 @@ use App\Models\Modification\OverPo;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Modification\Modification;
+use App\Models\Modification\OverPoInvoice;
 use App\Models\Modification\PurchaseOrder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -82,6 +83,6 @@ class ModificationReservation extends Model
 
     public function overPo():HasOne
     {
-        return $this->hasOne(OverPo::class);
+        return $this->hasOne(OverPoInvoice::class);
     }
 }
