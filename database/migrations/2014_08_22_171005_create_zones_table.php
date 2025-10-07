@@ -19,10 +19,10 @@ return new class extends Migration
             $table->enum('code', array_column(Zones::cases(), 'value'))->unique(); // cairo_east, cairo_north, etc.
             $table->text('description')->nullable();
             $table->boolean('is_active')->default(true);
-            $table->foreignId('area_id')->constrained()->onDelete('cascade');
+            $table->foreignId('team_id')->constrained()->onDelete('cascade');
             $table->timestamps();
 
-              $table->index(['area_id', 'is_active']);
+              $table->index(['team_id', 'is_active']);
         });
     }
 

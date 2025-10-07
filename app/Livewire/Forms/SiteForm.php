@@ -34,7 +34,7 @@ class SiteForm extends Form
     public  $type = '';
     public  $sharing = 'No';
     public  $host = '';
-    public  $area_id = '';
+    public  $team_id = '';
     public  $zone_id = '';
     public  $gest = '';
     public  $cells_2G = 0;
@@ -63,7 +63,7 @@ class SiteForm extends Form
         $this->type = $site->type;
         $this->sharing = $site->sharing;
         $this->host = $site->host;
-        $this->area_id = $site->area_id;
+        $this->team_id = $site->team_id;
         $this->zone_id = $site->zone_id;
         $this->gest = $site->gest;
         $this->cells_2G = $site->cells_2G;
@@ -106,7 +106,7 @@ class SiteForm extends Form
             "cells_3G" => ["nullable", "regex:/^[1-9][0-9]?$|^100$|^0$/"],
             "cells_4G" => ["nullable", "regex:/^[1-9][0-9]?$|^100$|^0$/"],
             "status" => ["required", new Enum(Status::class)],
-            "area_id" => ['required','exists:areas,id']
+            "team_id" => ['required','exists:teams,id']
 
         ];
         if ($this->isUpdate) {

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Livewire;
+namespace App\Livewire\Modals;
 
 use Livewire\Attributes\On;
 use Spatie\Permission\Models\Role;
@@ -35,6 +35,6 @@ class PermissionsModal extends ModalComponent
 
     public function render()
     {
-        return view('livewire.permissions-modal',['permissions'=>$this->permissions]);
+        return view('livewire.modals.permissions-modal',['permissions'=>$this->permissions]);
     }
 }

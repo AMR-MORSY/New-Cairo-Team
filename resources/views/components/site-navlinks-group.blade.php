@@ -10,7 +10,7 @@
          </flux:navlist.item>
          <flux:navlist.item href="#" wire:navigate>{{ __('NUR') }}
          </flux:navlist.item>
-         <flux:navlist.item href="#" wire:navigate>
+         <flux:navlist.item :href="route('battery.show',$site->site_code)" wire:navigate>
              {{ __('Batteries Data') }}
          </flux:navlist.item>
          <flux:navlist.item href="#" wire:navigate>{{ __('Site Data') }}

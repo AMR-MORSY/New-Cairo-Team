@@ -73,12 +73,14 @@ class SubmitQuotation extends Component
     }
 
 
-    #[On("removeSelectedItem")]
+    #[On('removeItem')]
     public function removeSelectedItem($id)
     {
+
         $this->selectedItems = array_filter($this->selectedItems, function ($item) use ($id) {
             return $item['id'] != $id;
         });
+
 
         $selectedItems = collect($this->selectedItems);
 
@@ -164,21 +166,15 @@ class SubmitQuotation extends Component
 
     private function manipulatePO($po, $invoiceAmount, $totalCost, $target)
     {
-        $po->decrement('invoiced', $invoiceAmount);
-        $po->increment('on_hand', $invoiceAmount);
-        $onHand = $po->getAvailableAmount();
-        if ($totalCost <= $onHand) {
-            $po->increment('invoiced', $totalCost);
-            $po->decrement('on_hand', $totalCost);
-            if ($target == 'invoice') {
+        if ($target == 'invoice') {
+            $po->decrement('invoiced', $invoiceAmount);
+            $po->increment('on_hand', $invoiceAmount);
+            $onHand = $po->getAvailableAmount();
+            if ($totalCost <= $onHand) {
+                $po->increment('invoiced', $totalCost);
+                $po->decrement('on_hand', $totalCost);
                 $this->modification->reservation->invoice->update(['amount' => $totalCost]);
             } else {
-                $this->modification->reservation->overPo->update(['amount' => $totalCost]);
-            }
-        } else {
-            $po->increment('invoiced', $totalCost);
-            $po->decrement('on_hand', $totalCost);
-            if ($target == 'invoice') {
                 $overPo = OverPoInvoice::create([
                     'modification_reservation_id' => $this->modification->reservation->id,
                     'amount' => $totalCost,
@@ -186,14 +182,21 @@ class SubmitQuotation extends Component
                 ]);
 
                 $this->modification->reservation->invoice->delete();
-            } else {
+            }
+        } else {
+            $onHand = $po->getAvailableAmount();
+            if ($totalCost <= $onHand) {
+                $po->increment('invoiced', $totalCost);
+                $po->decrement('on_hand', $totalCost);
                 $invoice = Invoice::create([
                     'modification_reservation_id' => $this->modification->reservation->id,
                     'amount' => $totalCost,
                     'reserved_at' => now(),
                 ]);
-
                 $this->modification->reservation->overPo->delete();
+            } else {
+
+                $this->modification->reservation->overPo->update(['amount' => $totalCost]);
             }
         }
     }
@@ -234,21 +237,20 @@ class SubmitQuotation extends Component
                     $selectedItemsCost = $this->getSelectedItemsTotalCost($selectedItems);
                     $totalCost = $selectedItemsCost + $this->modification->quotation->sumPriceListItems() + $this->modification->quotation->sumMailListItems();
                     $po = $this->modification->reservation->po;
-                  
+
                     if ($this->modification->reservation->invoice) {
                         $invoiceAmount = $this->modification->reservation->invoice->amount;
                         $this->manipulatePO($po, $invoiceAmount, $totalCost, 'invoice');
-                       
                     } elseif ($this->modification->reservation->overPo) {
                         $invoiceAmount = $this->modification->reservation->overPo->amount;
                         $this->manipulatePO($po, $invoiceAmount, $totalCost, 'overPo');
                     }
-                    $this->modification->update(['final_cost' => $totalCost]);
+
                     $this->createPivotTable($selectedItems);
-                
                 } else {
                     $this->createPivotTable($selectedItems);
                 }
+                $this->modification->calculateFinalCost();
             }
         }
     }

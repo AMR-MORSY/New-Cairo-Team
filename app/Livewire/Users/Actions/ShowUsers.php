@@ -14,7 +14,7 @@ class ShowUsers extends Component
 
     public function mount()
     {
-        $this->users=User::with(['areas'])->get();
+        $this->users=User::with(['teams'])->get();
 
         //  dd($this->users);
     }

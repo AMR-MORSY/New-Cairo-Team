@@ -154,23 +154,23 @@
                         </flux:field>
 
                         <flux:field>
-                            <flux:label>Area *</flux:label>
+                            <flux:label>Team *</flux:label>
                             @if ($target == 'Update' || $target == 'Create')
-                                <flux:select wire:model="form.area_id" type="text" placeholder="Enter Area"
+                                <flux:select wire:model="form.team_id" type="text" placeholder="Enter Team"
                                     class="w-full">
-                                    @foreach ($areas as $area)
-                                        <flux:select.option :value="$area->id">{{ $area->code }}
+                                    @foreach ($teams as $team)
+                                        <flux:select.option :value="$team->id">{{ $team->code }}
                                         </flux:select.option>
                                     @endforeach
 
                                 </flux:select>
                               
                             @else
-                                <flux:input wire:model="form.area_id" :placeholder="$readonly ? null : 'Enter Area'"
+                                <flux:input wire:model="form.team_id" :placeholder="$readonly ? null : 'Enter Team'"
                                     :readonly="$readonly" class="w-full" />
                             @endif
 
-                            <flux:error name="form.area_id" />
+                            <flux:error name="form.team_id" />
                         </flux:field>
                         <flux:field>
                             <flux:label>VF Code *</flux:label>

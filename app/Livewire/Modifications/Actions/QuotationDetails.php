@@ -18,6 +18,8 @@ class QuotationDetails extends Component
 
     public $site;
 
+    public string |null $subHeading='';
+
     public function mount(Modification $modification)
     {
 
@@ -34,6 +36,15 @@ class QuotationDetails extends Component
             $combined = array_merge($priceListItems, $mailListItems);
 
             $this->quotationItems = collect($combined);
+
+            if($this->quotation->is_active==0)
+            {
+                $this->subHeading="This quotation is not active; to activate, update the modification status to waiting D6 or Done";
+            }
+            else{
+                 $this->subHeading="This quotation is active.";
+
+            }
         }
 
 

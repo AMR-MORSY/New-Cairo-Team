@@ -15,11 +15,12 @@ class CheckTeamPermission
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next, string $permission): Response
+    public function handle(Request $request, Closure $next, string|null $permission=null): Response
     {
+       
         $user = Auth::user();
         $teamAndZone = $user->getAreaAndZone();
-        $team = $teamAndZone['area'];
+        $team = $teamAndZone['team'];
 
         if (!$team) {
             Toaster::error('You are not assigned to any team. Please contact your administrator.');
@@ -27,10 +28,11 @@ class CheckTeamPermission
         }
 
        
-        setPermissionsTeamId($team->id);
+        // setPermissionsTeamId($team->id);
 
         if (!$user->hasPermissionTo($permission)) {
-            abort(403, "You don't have permission to {$permission} in your team.");
+            Toaster::error( "You don't have permission to {$permission} in your team.")->duration(7000);
+             return redirect()->back();
         }
 
         return $next($request);

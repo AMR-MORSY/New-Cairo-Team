@@ -61,18 +61,40 @@ class ModificationForm extends Form
         $this->area_id = $site->area_id;
     }
 
+    public function updateFormAttributes()
+    {
+        return [
+            "site_code" ,       
+            "action_id" , 
+            "description" , 
+            "pending" ,
+            "request_date" ,
+            "cw_date" ,
+            "d6_date",
+            "modification_status_id" ,
+            "requester_id" ,  
+            "est_cost" ,
+            "reported" ,
+            "reported_at",
+            'area_id' ,
+            'zone_id' ,
+            'action_owner'
+
+        ];
+    }
+
     public function setModificationDetails(Modification $modification)
     {
         $this->id = $modification->id;
 
         $this->site_code = $modification->site_code;
-        $this->subcontractor_id = $modification->subcontractor_id;
+        $this->subcontractor_id = $modification->subcontractor->name;
         $this->pending = $modification->pending;
         $this->est_cost = $modification->est_cost;
         $this->final_cost = $modification->final_cost;
         $this->request_date = $modification->request_date;
         $this->requester_id = $modification->requester_id;
-        $this->project_id = $modification->project_id;
+        $this->project_id = $modification->project->name;
         $this->modification_status_id = $modification->modification_status_id;
         $this->cw_date = $modification->cw_date;
         $this->d6_date = $modification->d6_date;
@@ -95,7 +117,7 @@ class ModificationForm extends Form
     {
         $rules = [
             "site_code" => ['required', 'exists:sites,site_code'],
-            "subcontractor_id" => ["required", "exists:subcontractors,id"],
+            // "subcontractor_id" => ["required", "exists:subcontractors,id"],
             "action_id" => ["required", "array"],
             "action_id.*" => ['required', 'exists:actions,id'],
             "description" => ["nullable", "string", 'regex:/^[a-zA-Z0-9\-_!@#$%^&*(),.?":{}\n\t|<> ]+$/'], //////regex for special chars, chars,numbers,spaces,underscore,dash
@@ -103,13 +125,13 @@ class ModificationForm extends Form
             "request_date" => "required|date",
             "cw_date" => [" nullable", "date", "required_if:modification_status_id,1,3", "after_or_equal:request_date"],
             "d6_date" => [" nullable", "date", "required_if:modification_status_id,1", "after_or_equal:request_date", "after_or_equal:cw_date"],
-            "modification_status_id" => ["required", 'exists:modification_status,id',  function ($attribute, $value, $fail)  {
-               
+            "modification_status_id" => ["required", 'exists:modification_status,id',  function ($attribute, $value, $fail) {
+
                 $cwDate = $this->cw_date;
                 $d6Date = $this->d6_date;
 
                 // Both dates are null - must be "2"
-                if ((is_null($cwDate)||$cwDate=='') && (is_null($d6Date)||$d6Date=='')) {
+                if ((is_null($cwDate) || $cwDate == '') && (is_null($d6Date) || $d6Date == '')) {
                     if ($value != 2) {
                         $fail('The modification status must be "in progress" when both cw_date and d6_date are null.');
                     }
@@ -122,7 +144,7 @@ class ModificationForm extends Form
                 }
             }],
             "requester_id" => ["required", 'exists:requesters,id'],
-            "project_id" => ["required", 'exists:projects,id'],
+            // "project_id" => ["required", 'exists:projects,id'],
             "est_cost" => ["required_if:modification_status_id,1,2,3", new CommaSeparatedNumber],
             "reported" => ["required",  Rule::in([1, 0])],
             "reported_at" => ["nullable", "date", "required_if:reported,1"],
@@ -135,6 +157,10 @@ class ModificationForm extends Form
         if (request()->route('modification.update')) {
 
             $rules['id'] = ["required", "exists:modification,id"];
+        } elseif (request()->route('modification.create')) {
+
+            $rules["subcontractor_id"] = ["required", "exists:subcontractors,id"];
+            $rules["project_id"] = ["required", 'exists:projects,id'];
         }
 
         return $rules;
@@ -190,7 +216,7 @@ class ModificationForm extends Form
         $modification->update(
             $this->all()
         );
-       
+
 
         $modification->actions()->sync($this->action_id);
         $expiresAt = Carbon::now()->addDays(intval(env('MODIFICATION_EXPIRATION_PERIOD', 20)));
@@ -213,7 +239,7 @@ class ModificationForm extends Form
         $modification = Modification::create(
             $this->all()
         );
-      
+
 
         $modification->actions()->attach($this->action_id);
         $expiresAt = Carbon::now()->addDays(intval(env('MODIFICATION_EXPIRATION_PERIOD', 20)));
@@ -242,7 +268,7 @@ class ModificationForm extends Form
             $onHands = $this->checkPOOnHandAmount($POs); //////array of POs on hand amount
             if (count($onHands) > 0) {
 
-              
+
 
                 $po = PurchaseOrder::find($onHands[0]['id']);
                 $estCostFloatValue = floatval(str_replace(',', '', $this->est_cost));
@@ -260,9 +286,6 @@ class ModificationForm extends Form
                     $updatedModification = $this->updateInprogressForm($onHands, $modification);
                     return redirect()->route('modification.details', $updatedModification->id);
                 }
-
-              
-
             } else {
                 $subcontractorName = $subcontractor->name;
                 Toaster::error("There is no available POs with sufficient amount to cover this modification for . $subcontractorName ");

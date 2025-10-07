@@ -11,16 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('area_user', function (Blueprint $table) {
+        Schema::create('team_user', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('area_id')->constrained()->onDelete('cascade');
+            $table->foreignId('team_id')->constrained()->onDelete('cascade');
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('zone_id')->nullable()->constrained()->onDelete('set null');
             $table->timestamp('joined_at')->useCurrent();
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamps();
 
-            $table->unique(['area_id', 'user_id']);
+            $table->unique(['team_id', 'user_id']);
             $table->index(['user_id', 'status']);
         });
     }
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('area_user');
+        Schema::dropIfExists('team_user');
     }
 };

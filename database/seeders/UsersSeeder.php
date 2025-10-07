@@ -2,7 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Enums\Zones;
 use App\Models\Area;
+use App\Models\Team;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -19,16 +21,21 @@ class UsersSeeder extends Seeder
     public function run(): void
     {
 
-        $teams = Area::with('zones')->get();
+        $teams = Team::with('zones')->get();
 
         foreach ($teams as $team) {
-            $areaManagerRole = Role::where('name', $team->code . '_area_manager')
+            $teamManagerRole = Role::where('name', $team->code . '_team_manager')
                 ->where('team_id', $team->id)
                 ->firstOrFail();
 
-            $zoneManagerRole = Role::where('name', $team->code . '_zone_manager')
-                ->where('team_id', $team->id)
-                ->firstOrFail();
+            if ($team->zones->count() > 0) {
+                foreach ($team->zones as $zone) {
+                    $zoneCode = Zones::getCodeByValue($zone->code);
+                    $zoneManagerRole = Role::where('name', $zoneCode . '_zone_manager')
+                        ->where('team_id', $team->id)
+                        ->firstOrFail();
+                }
+            }
 
             $siteEngineerRole = Role::where('name', $team->code . '_site_engineer')
                 ->where('team_id', $team->id)
@@ -46,40 +53,40 @@ class UsersSeeder extends Seeder
             ]);
 
             // Assign team manager role
-           
-              DB::table('model_has_roles')->insert([
-                'role_id' => $areaManagerRole->id,
+
+            DB::table('model_has_roles')->insert([
+                'role_id' => $teamManagerRole->id,
                 'model_type' => User::class,
                 'model_id' => $teamManager->id,
                 'team_id' => $team->id // ← THIS IS THE KEY
             ]);
-         
+
             // Create Zone Managers and site Engineers for each zone
             foreach ($team->zones as $zone) {
                 // Zone Manager
                 $zoneManager = User::create([
                     'name' => $zone->name . ' Zone Manager',
-                    'email' => strtolower($team->code . '_' . $zone->code . '_zone_manager@company.com'),
+                    'email' => strtolower($team->code . '_' . str_replace(" ", "_", $zone->code) . '_zone_manager@company.com'),
                     'password' => bcrypt("@Mobinil@2020"),
                 ]);
                 $team->users()->attach($zoneManager->id, [
                     'zone_id' => $zone->id,
                     'status' => 'active'
                 ]);
-           
-                  DB::table('model_has_roles')->insert([
+
+                DB::table('model_has_roles')->insert([
                     'role_id' => $zoneManagerRole->id,
                     'model_type' => User::class,
                     'model_id' => $zoneManager->id,
                     'team_id' => $team->id
                 ]);
-             
+
 
                 // site Engineers (2 per zone)
                 for ($i = 1; $i <= 2; $i++) {
                     $engineer = User::create([
                         'name' => $zone->name . ' Site Engineer ' . $i,
-                        'email' => strtolower($team->code . '_' . $zone->code . '_engineer_' . $i . '@company.com'),
+                        'email' => strtolower($team->code . '_' . str_replace(" ", "_", $zone->code) . '_engineer_' . $i . '@company.com'),
                         'password' => bcrypt("@Mobinil@2020"),
                     ]);
 
@@ -88,14 +95,13 @@ class UsersSeeder extends Seeder
                         'status' => 'active'
                     ]);
 
-                   
-                        DB::table('model_has_roles')->insert([
+
+                    DB::table('model_has_roles')->insert([
                         'role_id' => $siteEngineerRole->id,
                         'model_type' => User::class,
                         'model_id' => $engineer->id,
                         'team_id' => $team->id
                     ]);
-                   
                 }
             }
         }

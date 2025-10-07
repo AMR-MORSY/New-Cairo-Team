@@ -6,7 +6,7 @@ use Toaster;
 use Livewire\Component;
 use Livewire\Attributes\On;
 use App\Livewire\Forms\POForm;
-use App\Models\Modification\PO;
+use App\Models\Modification\PurchaseOrder;
 use Illuminate\Support\Collection;
 use App\Models\Modification\Subcontractor;
 
@@ -30,13 +30,13 @@ class ViewPOs extends Component
             Toaster::error('Choose Subcontractor.');
             return;
         } elseif ($this->form->po_number != null) {
-            $this->POs = PO::with('subcontractor')->where('subcontractor_id', $this->form->subcontractor_id)->where('po_number', $this->form->po_number)->get();
+            $this->POs = PurchaseOrder::with('subcontractor')->where('subcontractor_id', $this->form->subcontractor_id)->where('po_number', $this->form->po_number)->get();
         } elseif ($this->form->type != null) {
-            $this->POs = PO::with('subcontractor')->where('subcontractor_id', $this->form->subcontractor_id)->where('type', $this->form->type)->get();
+            $this->POs = PurchaseOrder::with('subcontractor')->where('subcontractor_id', $this->form->subcontractor_id)->where('type', $this->form->type)->get();
         } elseif ($this->form->status != null) {
-            $this->POs = PO::with('subcontractor')->where('subcontractor_id', $this->form->subcontractor_id)->where('status', $this->form->status)->get();
+            $this->POs = PurchaseOrder::with('subcontractor')->where('subcontractor_id', $this->form->subcontractor_id)->where('status', $this->form->status)->get();
         } else {
-            $this->POs = PO::with('subcontractor')->where('subcontractor_id', $this->form->subcontractor_id)->get();
+            $this->POs = PurchaseOrder::with('subcontractor')->where('subcontractor_id', $this->form->subcontractor_id)->get();
         }
 
         if (count($this->POs) > 0) {
@@ -44,6 +44,7 @@ class ViewPOs extends Component
         } else {
             Toaster::error('No POs found');
         }
+        $this->form->reset();
     }
 
 

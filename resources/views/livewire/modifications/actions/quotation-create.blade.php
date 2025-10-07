@@ -19,7 +19,7 @@
 
             @if ($quotationItems)
                 <p class=" mt-6 text-decoration-underline decoration-1"> Quotation Items:</p>
-                <livewire:tables.modification.quotation-items-table :quotationItems="$quotationItems" target="" />
+                <livewire:tables.modification.quotation-items-table :quotationItems="$quotationItems" target="create" />
             @endif
 
 

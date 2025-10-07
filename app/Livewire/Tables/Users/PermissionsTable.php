@@ -2,16 +2,17 @@
 
 namespace App\Livewire\Tables\Users;
 
+use App\Models\Team;
 use Livewire\Attributes\On;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 use PowerComponents\LivewirePowerGrid\Button;
 use PowerComponents\LivewirePowerGrid\Column;
 use PowerComponents\LivewirePowerGrid\PowerGridFields;
 use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
 
 final class PermissionsTable extends PowerGridComponent
 {
@@ -30,8 +31,8 @@ final class PermissionsTable extends PowerGridComponent
                     ->icon('default-eye')
                     ->tooltip('View Permissions')
                     ->class('cursor-pointer')
-                    ->openModal('permissions-modal', ['role_id' => $row->id]),
-                 Button::add('edit-stock')
+                    ->openModal('modals.permissions-modal', ['role_id' => $row->id]),
+                Button::add('edit-stock')
                     ->icon('default-trash')
                     ->class('cursor-pointer text-red-500')
                     ->tooltip('delete Role')
@@ -63,6 +64,16 @@ final class PermissionsTable extends PowerGridComponent
 
     public function datasource(): Collection
     {
+        if ($this->dataType == "roles") {
+            $this->data = $this->data->map(function ($role) {
+
+                $role->team = Team::find($role->team_id);
+                return $role;
+            });
+             return $this->data;
+        }
+        // dd($this->data);
+
         return $this->data;
     }
 
@@ -86,7 +97,7 @@ final class PermissionsTable extends PowerGridComponent
                 ->add('id')
                 ->add('name')
                 ->add('guard_name')
-                ->add('team', fn($model) =>$model['teams'] ? $model['teams']['code']:'Generic');
+                ->add('team', fn($model) => $model->team ? $model->team->code:'Global');
         }
         return PowerGrid::fields()
             ->add('id')
@@ -142,7 +153,7 @@ final class PermissionsTable extends PowerGridComponent
         return redirect()->route('permission.index');
     }
 
-      #[On('deleteRole')]
+    #[On('deleteRole')]
 
     public function deleteRole($role_id)
     {

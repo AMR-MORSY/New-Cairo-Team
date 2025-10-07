@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Livewire\Forms\POForm;
 use Masmerise\Toaster\Toaster;
 use App\Models\Modification\PO;
+use App\Models\Modification\PurchaseOrder;
 use Illuminate\Support\Collection;
 use App\Models\Modification\Subcontractor;
 
@@ -28,7 +29,7 @@ class CreatePO extends Component
 
         $this->validate();
 
-        $po = PO::create($this->form->all());
+        $po = PurchaseOrder::create($this->form->all());
 
         if ($po) {
               Toaster::success('Po created Successfully');

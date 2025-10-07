@@ -2,8 +2,11 @@
 
 namespace App\Livewire\Modifications\Actions;
 
+use App\Models\Area;
+use App\Models\User;
 use Livewire\Component;
 use App\Models\Site\Site;
+use App\Charts\MonthlyUserChart;
 use Illuminate\Support\Collection;
 use App\Models\Modification\Action;
 use App\Models\Modification\Project;
@@ -28,6 +31,7 @@ class ModificationDetails extends Component
 
     public $site;
 
+    // public $chart;
 
     public function mount(
         Project $project,
@@ -35,8 +39,10 @@ class ModificationDetails extends Component
         Requester $requester,
         ModificationStatus $modification_status,
         Action $action,
-        Modification $modification
+        Modification $modification,
+
     ) {
+        // $this->chart=$chart->build();
         $this->subcontractors = $subcontractor->all();
         $this->requesters = $requester->all();
         $this->modificationStatus = $modification_status->all();
@@ -45,7 +51,7 @@ class ModificationDetails extends Component
         $this->modification = $modification->load('reservation');
         $this->site = Site::where('site_code', $modification->site_code)->first();
 
-      
+
         /////////////////////////////////////////////////////because the form will present the data in input type text as readonly all id attributes should present the name not id number before the modification details goes to form
         $modification->subcontractor_id = $modification->subcontractor->name;
         $modification->requester_id = $modification->requester->name;
@@ -64,9 +70,12 @@ class ModificationDetails extends Component
 
 
         $this->form->setModificationDetails($modification);
+
+    
     }
-    public function render()
+    public function render(MonthlyUserChart $chart)
     {
-        return view('livewire.modifications.actions.modification-details', ["modification" => $this->modification, 'site' => $this->site]);
+        $chartInstance = $chart->build();
+        return view('livewire.modifications.actions.modification-details', ["modification" => $this->modification, 'site' => $this->site, 'chart' =>  $chartInstance]);
     }
 }

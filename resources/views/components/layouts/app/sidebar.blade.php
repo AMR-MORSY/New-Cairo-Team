@@ -61,24 +61,16 @@
 
             <flux:navlist.group expandable heading="Modifications" class=" lg:grid">
 
-                <flux:navlist.item href="#">
+                <flux:navlist.item href="#" :href="route('modification.search')"
+                    :current="request()->routeIs('modification.search')" wire:navigate>
                     <div class=" flex items-center gap-1">
                         <flux:icon.magnifying-glass />
-                        <p>Category</p>
+                        <p>{{ __('Search') }} </p>
+
                     </div>
                 </flux:navlist.item>
-                <flux:navlist.item href="#">
-                    <div class=" flex items-center gap-1">
-                        <flux:icon.magnifying-glass />
-                        <p> Dates</p>
-                    </div>
-                </flux:navlist.item>
-                <flux:navlist.item href="#">
-                    <div class=" flex items-center gap-1">
-                        <flux:icon.magnifying-glass />
-                        <p> Work Order</p>
-                    </div>
-                </flux:navlist.item>
+              
+               
                 <flux:navlist.item href="#">
                     <div class=" flex items-center gap-1">
                         <flux:icon.magnifying-glass />
@@ -92,15 +84,8 @@
                     </div>
 
                 </flux:navlist.item>
-                <flux:navlist.item href="#">
-                    <div class=" flex items-center gap-1">
-                        <flux:icon.newspaper />
-                        <p> Invoices</p>
-                    </div>
-                </flux:navlist.item>
-
-                <flux:navlist.item :href="route('pos')" :current="request()->routeIs('pos')"
-                    wire:navigate>
+             
+                <flux:navlist.item :href="route('pos')" :current="request()->routeIs('pos')" wire:navigate>
                     <div class=" flex items-center gap-1 ">
                         <flux:icon.plus-circle />
                         <p>{{ __('POs') }} </p>
@@ -206,12 +191,15 @@
 
     {{ $slot }}
     <x-toaster-hub />
-    <livewire:components.dynamic-modal />
-    <x-dialog z-index="z-50"  align="center" />
+
+    <x-dialog z-index="z-50" align="center" />
     @wireUiScripts
-    @fluxScripts
+
 
     @livewire('wire-elements-modal')
+    @fluxScripts
+
+   
 
 </body>
 

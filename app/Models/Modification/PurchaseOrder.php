@@ -2,13 +2,18 @@
 
 namespace App\Models\Modification;
 
+use Auth;
+use App\Policies\PurchaseOrderPolicy;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Modification\Subcontractor;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\Modification\ModificationReservation;
-use Auth;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Attributes\UsePolicy;
+
+
+#[UsePolicy(PurchaseOrderPolicy::class)]
 
 class PurchaseOrder extends Model
 {
@@ -85,7 +90,7 @@ class PurchaseOrder extends Model
 
     public function reservations(): HasMany
     {
-        return $this->hasMany(ModificationReservation::class);
+        return $this->hasMany(ModificationReservation::class,'purchase_order_id');
     }
 
     // Get available amount  (total - reserved+Invoiced)

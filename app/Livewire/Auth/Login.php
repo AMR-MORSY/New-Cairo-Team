@@ -43,7 +43,35 @@ class Login extends Component
         RateLimiter::clear($this->throttleKey());
         Session::regenerate();
 
+        $this->setPermissionTeamId();
+
+
+
         $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
+    }
+
+    protected function setPermissionTeamId()
+    {
+        $user = Auth::user();
+        $teamAndZone = $user->getTeamAndZone();
+        $team = $teamAndZone['team'];
+        $zone = $teamAndZone['zone'];
+
+        // Share team and zone data with all views
+        view()->share('currentTeam', $team);
+        view()->share('currentZone', $zone);
+        view()->share('userTeamAndZone', $teamAndZone);
+
+        if ($team) {
+            session(['team_id' => $team->id]);
+
+            return;
+        }
+        session(['team_id' => null]);
+
+
+
+        return;
     }
 
     /**
@@ -72,6 +100,6 @@ class Login extends Component
      */
     protected function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->email).'|'.request()->ip());
+        return Str::transliterate(Str::lower($this->email) . '|' . request()->ip());
     }
 }

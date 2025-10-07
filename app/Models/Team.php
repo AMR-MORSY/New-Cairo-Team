@@ -11,9 +11,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Area extends Model
+class Team extends Model
 {
-    protected $table = 'areas';
+    protected $table = 'teams';
     protected $fillable = [
         'name',
         'code',
@@ -34,7 +34,7 @@ class Area extends Model
 
     public function users():BelongsToMany
     {
-        return $this->belongsToMany(User::class,'area_user')
+        return $this->belongsToMany(User::class,'team_user')
             ->withPivot(['zone_id', 'joined_at', 'status'])
             ->withTimestamps();
     }
@@ -50,7 +50,7 @@ class Area extends Model
     {
         return $this->users()->whereHas('roles', function ($query) use ($roleName) {
             $query->where('name', $roleName)
-                ->where('area_id', $this->id);
+                ->where('team_id', $this->id);
         })->get();
     }
 

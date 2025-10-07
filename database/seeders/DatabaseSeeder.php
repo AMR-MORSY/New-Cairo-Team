@@ -9,7 +9,9 @@ use Illuminate\Database\Seeder;
 use Database\Seeders\UsersSeeder;
 use Database\Seeders\ProjectsSeeder;
 use Database\Seeders\RequestersSeeder;
+use Database\Seeders\ModificationSeeder;
 use Database\Seeders\AreasAndZonesSeeder;
+use Database\Seeders\TeamsAndZonesSeeder;
 use Database\Seeders\SubcontractorsSeeder;
 use Database\Seeders\ModificationStatusSeeder;
 use Database\Seeders\ModificationActionsSeeder;
@@ -23,14 +25,16 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            AreasAndZonesSeeder::class,
-            ModificationRolesAndPermissionsSeeder::class,
-            UsersSeeder::class,
-            ProjectsSeeder::class,
-            ModificationActionsSeeder::class,
-            SubcontractorsSeeder::class,
-            RequestersSeeder::class,
-            ModificationStatusSeeder::class
+            // TeamsAndZonesSeeder::class,
+            // ModificationRolesAndPermissionsSeeder::class,
+            // UsersSeeder::class,
+            // ProjectsSeeder::class,
+            // ModificationActionsSeeder::class,
+            // SubcontractorsSeeder::class,
+            // RequestersSeeder::class,
+            // ModificationStatusSeeder::class
+
+             ModificationSeeder::class
             
            
 

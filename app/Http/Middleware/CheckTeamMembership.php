@@ -24,22 +24,32 @@ class CheckTeamMembership
         }
         // Check if user belongs to any team
 
-        if ($user->areas()->count() === 0) {
-            Toaster::error('You are not assigned to any team. Please contact your administrator.');
-            return redirect()->back();
-            // abort(403, 'You are not assigned to any team. Please contact your administrator.');
-        }
+        // if ($user->areas()->count() === 0) {
+      
+        //       abort(403, 'You are not assigned to any team. Please contact your administrator.');
+        //        return redirect()->back();
+        // }
 
+       
+
+        setPermissionsTeamId(session('team_id')); /////////when the user logged in, team_id stored in the session 
+
+        
+
+    //    $user->unsetRelation('roles')->unsetRelation('permissions');
+
+     
+       
         // Get user's team and zone info
-        $teamAndZone = $user->getAreaAndZone();
+        // $teamAndZone = $user->getAreaAndZone();
     
-        $area = $teamAndZone['area'];
-        $zone = $teamAndZone['zone'];
+        // $area = $teamAndZone['area'];
+        // $zone = $teamAndZone['zone'];
 
-        // Share team and zone data with all views
-        view()->share('currentTeam', $area);
-        view()->share('currentZone', $zone);
-        view()->share('userTeamAndZone', $teamAndZone);
+        // // Share team and zone data with all views
+        // view()->share('currentTeam', $area);
+        // view()->share('currentZone', $zone);
+        // view()->share('userTeamAndZone', $teamAndZone);
 
         return $next($request);
        

@@ -13,7 +13,7 @@ use PowerComponents\LivewirePowerGrid\PowerGridFields;
 use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
 
-final class QuotationSelectedPriceListItemsTable extends PowerGridComponent
+final class QuotationSelectedPriceListItemsTable extends PowerGridComponent///////the items after being selected from modal table are inserted here 
 {
     public string $tableName = 'quotation-selected-price-list-items-table-ve5d4p-table';
 
@@ -123,10 +123,10 @@ final class QuotationSelectedPriceListItemsTable extends PowerGridComponent
         ];
     }
 
-    #[On('removeItem')]
-    public function removeItem($id)
-    {
-        // Dispatch to parent to remove the item
-        $this->dispatch('removeSelectedItem', id: $id);
-    }
+  
+    // public function removeItem($id)
+    // {
+    //     // Dispatch to parent to remove the item
+    //     $this->dispatch('removeSelectedItem', id: $id);
+    // }
 }

@@ -1,7 +1,13 @@
 <div>
+    {{-- @if ($quotation->is_active==0)
+    
+        
+    @else
+        
+    @endif --}}
 
     <section class="w-full">
-        <x-viewLayouts.main-view-layout :heading="__('Quotation Details')" :subheading="__('You will find very important information about the modification Quotation here. ')">
+        <x-viewLayouts.main-view-layout :heading="__('Quotation Details')" :subheading="$subHeading">
 
 
             <x-slot:links>

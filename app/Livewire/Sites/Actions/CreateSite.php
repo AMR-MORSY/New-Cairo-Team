@@ -9,6 +9,7 @@ use App\Models\Site\Site;
 use Masmerise\Toaster\Toast;
 use Masmerise\Toaster\Toaster;
 use App\Livewire\Forms\SiteForm;
+use App\Models\Team;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
@@ -17,20 +18,20 @@ class CreateSite extends Component
 {
     public SiteForm $form;
 
-    public $zones, $areas;
+    public $zones, $teams;
 
     public function mount()
     {
 
         $this->zones = Zone::all();
-        $this->areas = Area::all();
+        $this->teams = Team::all();
     }
 
     public function create()
     {
         $validated = $this->validate();
 
-        dd($this->form->all());
+     
         Site::create([
             "site_name" => $this->form->site_name,
             "site_code" => $this->form->site_code,
@@ -42,7 +43,7 @@ class CreateSite extends Component
             "type" => $this->form->type,
             "sharing" => $this->form->sharing,
             "host" => $this->form->host,
-            "area_id" => $this->form->area_id,
+            "team_id" => $this->form->team_id,
             "zone_id" => $this->form->zone_id,
             "gest" => $this->form->gest,
             "cells_2G" => $this->form->cells_2G,

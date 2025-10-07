@@ -17,7 +17,7 @@
                     <div class="grid grid-cols-1 xl:grid-cols-2  2xl:grid-cols-3 gap-6">
                         <flux:field>
                             <flux:label>Subcontractor *</flux:label>
-                            @if ($target == 'Update' || $target == 'New')
+                            @if ( $target == 'New')
                                 <x-select-named-options wire:model="form.subcontractor_id" :options="$subcontractors"
                                     placeholder="Enter subcontractor" />
                             @else
@@ -32,7 +32,7 @@
 
                         <flux:field>
                             <flux:label>Project *</flux:label>
-                            @if ($target == 'Update' || $target == 'New')
+                            @if ( $target == 'New')
                                 <x-select-named-options wire:model="form.project_id" :options="$projects"
                                     placeholder="Enter project" />
                             @else

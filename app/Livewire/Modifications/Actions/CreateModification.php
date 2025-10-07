@@ -4,6 +4,8 @@ namespace App\Livewire\Modifications\Actions;
 
 use Toaster;
 use Carbon\Carbon;
+use App\Models\Area;
+use App\Models\User;
 use Livewire\Component;
 use App\Models\Site\Site;
 use App\Models\Modification\PO;
@@ -46,6 +48,7 @@ class CreateModification extends Component
 
 
         $this->form->setModificationDefaultAttributes($site);
+
     }
 
 
@@ -54,7 +57,7 @@ class CreateModification extends Component
 
     public function create()
     {
-        // dd($this->form->all());
+
 
         $this->validate();
 
@@ -63,53 +66,6 @@ class CreateModification extends Component
             return;
         }
         $this->form->inprogressFormSubmission();
-
-        // $project = Project::find($this->form->project_id);
-        // $projectPOName = $project->getProjectPOName();
-        // $subcontractor = Subcontractor::find($this->form->subcontractor_id);
-
-        // $POs = $subcontractor->getSubcontractorAvailablePOs($projectPOName);
-
-        // if (count($POs) > 0) {
-        //     $onHands = $this->form->checkPOOnHandAmount($POs); //////array of POs on hand amount
-        //     if (count($onHands) > 0) {
-        //         // dd($onHands);
-        //         $modification = Modification::create(
-        //             $this->form->all()
-        //         );
-
-        //         $po = PurchaseOrder::find($onHands[0]['id']);
-        //         $estCostFloatValue = floatval(str_replace(',', '', $this->form->est_cost));
-
-
-
-        //         $po->increment('in_progress', $estCostFloatValue);
-        //         $po->decrement('on_hand', $estCostFloatValue);
-
-        //         $modification->actions()->attach($this->form->action_id);
-        //         $expiresAt = Carbon::now()->addDays(intval(env('MODIFICATION_EXPIRATION_PERIOD', 20)));
-        //         $modificationReservation = ModificationReservation::create([
-        //             'modification_id' => $modification->id,
-        //             'purchase_order_id' => $onHands[0]['id'],
-        //             'status' => 'active',
-        //             'amount' => $this->form->est_cost,
-        //             'reserved_at' => now(),
-        //             'expires_at' => $expiresAt,
-
-        //         ]);
-        //         Toaster::success('Modification created Successfully');
-
-        //         return redirect()->route('modification.details', $modification->id);
-        //     } else {
-        //         $subcontractorName = $subcontractor->name;
-        //         Toaster::error("There is no available POs with sufficient amount to cover this modification for . $subcontractorName ");
-        //     }
-        // } else {
-        //     $subcontractorName = $subcontractor->name;
-        //     Toaster::error("There is no available POs for . $subcontractorName ");
-
-        //     return;
-        // }
     }
     public function render()
     {

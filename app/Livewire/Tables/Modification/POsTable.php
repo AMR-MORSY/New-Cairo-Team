@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Tables\Modification;
 
+use App\Policies\PurchaseOrderPolicy;
+use Auth;
 use Livewire\Attributes\On;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
@@ -95,7 +97,17 @@ final class POsTable extends PowerGridComponent
     public function actions($row): array
     {
 
+
         return [
+            Button::add('po-modifications')
+                ->slot('In progress modifications')
+                ->class('cursor-pointer text-blue-500')
+                ->route('po.inprogress.modifications', ['purchaseOrder' => $row->id]),
+            Button::add('po-modifications')
+                ->slot('Invoiced modifications')
+                ->class('cursor-pointer text-green-500')
+                ->route('po.invoiced.modifications', ['purchaseOrder' => $row->id]),
+            // ->can(Auth::user()->isModificationAdmin()),
 
             Button::add('edit-stock')
                 ->icon('default-trash')
@@ -105,7 +117,4 @@ final class POsTable extends PowerGridComponent
                 ->dispatch('removePO', ['id' => $row->id]),
         ];
     }
-
-
-
 }

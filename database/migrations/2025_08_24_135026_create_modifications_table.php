@@ -27,15 +27,14 @@ return new class extends Migration
             $table->date('d6_date')->nullable();
             $table->date('cw_date')->nullable();
             $table->string('wo_code', 20)->unique();
-            $table->decimal('final_cost', 8, 2)->nullable();
+            $table->decimal('final_cost', 8, 2)->default(0);
             $table->decimal('est_cost', 8, 2);
             $table->boolean('reported')->default(false);
             $table->date('reported_at')->nullable();
             $table->softDeletes();
-            $table->foreignId('invoice_id')->nullable()->constrained()->onDelete('cascade');
             $table->string('month', 20)->nullable();
             $table->integer('year')->nullable();
-            $table->foreignId('area_id')->constrained()->onDelete('cascade');
+            $table->foreignId('team_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

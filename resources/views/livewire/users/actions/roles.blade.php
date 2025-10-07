@@ -37,23 +37,26 @@
                         <flux:input wire:model="newRole" placeholder="Role" class="w-full" />
                         <flux:error name="newRole" />
                     </flux:field>
+                    <flux:field>
+                        <flux:label>Permission *</flux:label>
+                        <x-select wire:model="newPermissions"
+                            placeholder="More than one permission could be assigned to the created Role" multiselect
+                            :options="$permissions" option-label="name" option-value="name" />
+                    </flux:field>
+                    <flux:field>
+                        <flux:label>Team *</flux:label>
+                        <flux:select wire:model="team_id" class="w-full">
+                            <flux:select.option :value="null" selected>Role could be assigned to area or
+                                considered generic</flux:select.option>
+                            @foreach ($teams as $team)
+                                <flux:select.option :value="$team->id">{{ $team->code }}</flux:select.option>
+                            @endforeach
 
-                    <flux:label>Permission *</flux:label>
-                    <x-select wire:model="newPermissions"
-                        placeholder="More than one permission could be assigned to the created Role" multiselect
-                        :options="$permissions" option-label="name" option-value="name" />
 
-                    <flux:label>Area *</flux:label>
-                    <flux:select wire:model="team_id"  class="w-full">
-                           <flux:select.option :value="null" selected>Role could be assigned to area or considered generic</flux:select.option>
-                        @foreach ($areas as $area)
-                            <flux:select.option :value="$area->id">{{ $area->code }}</flux:select.option>
-                          
-                        @endforeach
-                         
+                        </flux:select>
+                        <flux:error name="team_id" />
+                    </flux:field>
 
-                    </flux:select>
-                    <flux:error name="team_id" />
                     {{-- <x-select wire:model="team_id"
                         placeholder="Role could be assigned to multiple areas or considered generic" multiselect
                         :options="$areas" option-label="code" option-value="id" /> --}}

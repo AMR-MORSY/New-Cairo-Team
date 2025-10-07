@@ -43,10 +43,10 @@ return new class extends Migration
 
            $table->foreignId('zone_id')->constrained()->onDelete('cascade');
 
-            $table->foreignId('area_id')->constrained()->onDelete('cascade');
-            $table->integer("cells_2G")->nullable();
-            $table->integer("cells_3G")->nullable();
-            $table->integer("cells_4G")->nullable();
+            $table->foreignId('team_id')->constrained()->onDelete('cascade');
+            $table->integer("cells_2G")->default(0);
+            $table->integer("cells_3G")->default(0);
+            $table->integer("cells_4G")->default(0);
             $table->enum("status",array_column(Status::cases(),'value'))->default("On Air");
 
             $table->timestamps();

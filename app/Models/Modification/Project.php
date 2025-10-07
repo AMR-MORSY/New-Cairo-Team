@@ -4,6 +4,7 @@ namespace App\Models\Modification;
 
 use App\Enums\ModificationProjects;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Project extends Model
 {
@@ -17,5 +18,12 @@ class Project extends Model
 
           $POName = ModificationProjects::getPOByValue($this->name);
           return $POName;
+     }
+
+
+     public function modifications():HasMany
+     {
+        return  $this->hasMany(Modification::class);
+
      }
 }

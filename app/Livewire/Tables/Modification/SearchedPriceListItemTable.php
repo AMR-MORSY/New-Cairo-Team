@@ -19,7 +19,7 @@ use PowerComponents\LivewirePowerGrid\PowerGridFields;
 use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
 
-final class SearchedPriceListItemTable extends PowerGridComponent
+final class SearchedPriceListItemTable extends PowerGridComponent///////table contains search result items. It is shown in the modal
 {
     public string $tableName = 'searched-price-list-item-table-sj5yal-table';
 

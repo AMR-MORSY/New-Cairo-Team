@@ -2,16 +2,19 @@
 
 namespace App\Livewire\Users\Actions;
 
+use Toaster;
 use App\Models\Area;
+use App\Models\Team;
 use App\Models\User;
 use Livewire\Component;
-use Illuminate\Support\Collection;
+use WireUi\Traits\WireUiActions;
 use Livewire\Attributes\Validate;
+use Illuminate\Support\Collection;
 use Spatie\Permission\Models\Role;
-use Toaster;
 
 class ShowSingleUser extends Component
 {
+    use WireUiActions;
     public object $user;
     public array $rolesAndPermissions;
 
@@ -33,11 +36,11 @@ class ShowSingleUser extends Component
     public $zones;
     public function mount(User $user)
     {
-        $this->teams = Area::all();
+        $this->teams = Team::all();
 
-        $this->teamAndZone = $user->getAreaAndZone();
-        // dd($this->teamAndZone);
-        $team = $this->teamAndZone['area'];
+        $this->teamAndZone = $user->getTeamAndZone();
+
+        $team = $this->teamAndZone['team'];
 
         if ($team) {
             $this->team_id = $team->id; ////if the user does not belong to any team, only the generic roles could be assigned
@@ -86,32 +89,24 @@ class ShowSingleUser extends Component
             $this->user->removeRole($role);
         }
 
-        if ($this->user->areas()->where('user_id', $this->user->id)->exists()) {
+        if ($this->user->teams()->where('user_id', $this->user->id)->exists()) {
 
             //delete all user's areas with zones
-            $this->user->areas()->newPivotQuery()
+            $this->user->teams()->newPivotQuery()
                 ->where('user_id', $this->user->id)
                 ->delete();
 
             // Create new relationship
-            $this->user->areas()->attach($this->newTeam, [
+            $this->user->teams()->attach($this->newTeam, [
                 'zone_id' => $this->newZone,
-                // 'area_id' => $this->newTeam
+
 
             ]);
-
-
-            // // Update existing
-            // $this->user->areas()->updateExistingPivot($this->newTeam, [
-            //     'zone_id' => $this->newZone,
-            //     // 'area_id' => $this->newTeam
-
-            // ]);
         } else {
             // Create new relationship
-            $this->user->areas()->attach($this->newTeam, [
+            $this->user->teams()->attach($this->newTeam, [
                 'zone_id' => $this->newZone,
-                // 'area_id' => $this->newTeam
+
 
             ]);
         }
@@ -119,7 +114,7 @@ class ShowSingleUser extends Component
     }
     public function updatedNewTeam($value)
     {
-        $team = Area::find($value);
+        $team = Team::find($value);
         $this->zones = $team->zones()->get();
     }
 
@@ -127,6 +122,7 @@ class ShowSingleUser extends Component
     {
 
 
+    //   dd($this->newRoles);
 
         setPermissionsTeamId($this->team_id);
         // dd($this->newRoles);
@@ -135,6 +131,28 @@ class ShowSingleUser extends Component
         Toaster::success('Roles updated Successfully');
 
         return redirect()->route('user.show', ['user' => $this->user->id]);
+    }
+
+    public function delete()
+    {
+        $this->user->teams()->newPivotQuery()
+            ->where('user_id', $this->user->id)
+            ->delete();
+        Toaster::success('Team deleted Successfully');
+
+        return redirect()->route('user.show', ['user' => $this->user->id]);
+    }
+
+    public function deleteTeam()
+    {
+
+        $this->dialog()->confirm([
+            'title' => 'Are you Sure?',
+            'description' => 'Delete this Team?',
+            'acceptLabel' => 'Yes, delete it',
+            'method' => 'delete',
+            'params' => 'Saved',
+        ]);
     }
 
     public function render()

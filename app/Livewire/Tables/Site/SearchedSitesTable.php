@@ -32,6 +32,8 @@ final class SearchedSitesTable extends PowerGridComponent
     {
 
 
+      
+     
         return collect($this->props['data']);
     }
 
@@ -44,8 +46,7 @@ final class SearchedSitesTable extends PowerGridComponent
                 ->showSearchInput(),
             PowerGrid::footer()
                 ->showRecordCount(),
-            PowerGrid::responsive()
-                ->fixedColumns('Code', 'Name'),
+          
         ];
     }
 

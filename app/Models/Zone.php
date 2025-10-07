@@ -19,15 +19,15 @@ class Zone extends Model
     {
         return $this->hasMany(Site::class);
     }
-    public function area()
+    public function team()
     {
-        return $this->belongsTo(Area::class);
+        return $this->belongsTo(Team::class);
     }
 
     public function users()
     {
-        return $this->belongsToMany(User::class,'area_user')
-            ->withPivot(['area_id', 'joined_at', 'status'])
+        return $this->belongsToMany(User::class,'team_user')
+            ->withPivot(['team_id', 'joined_at', 'status'])
             ->withTimestamps();
     }
 
@@ -39,12 +39,12 @@ class Zone extends Model
     // Get zone manager
     public function getZoneManager()
     {
-        $roleName = $this->area->code . '_zone_manager';
-        return $this->area->users()
+        $roleName = $this->team->code . '_zone_manager';
+        return $this->team->users()
             ->wherePivot('zone_id', $this->id)
             ->whereHas('roles', function ($query) use ($roleName) {
                 $query->where('name', $roleName)
-                    ->where('area_id', $this->area_id);
+                    ->where('team_id', $this->team_id);
             })->first();
     }
 }

@@ -8,11 +8,13 @@ use App\Enums\Areas;
 use App\Enums\Guest;
 use App\Enums\Zones;
 use App\Models\Area;
+use App\Models\Team;
 use App\Models\Zone;
 use App\Enums\Status;
 use App\Enums\SiteTypies;
 use App\Enums\SiteSharing;
 use App\Models\Site\Cascade;
+use App\Policies\SitePolicy;
 use App\Enums\SiteCategories;
 use App\Enums\SiteSeverities;
 use Illuminate\Database\Eloquent\Model;
@@ -20,11 +22,13 @@ use App\Models\Modification\Modification;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 
+#[UsePolicy(SitePolicy::class)]
 class Site extends Model
 {
 
-    protected $appends = ['nodal_name', 'nodal_code','zone_name','area_name'];
+    protected $appends = ['nodal_name', 'nodal_code','zone_name','team_name'];
     protected $table = 'sites';
 
     protected $hidden = ["created_at", 'updated_at'];
@@ -93,9 +97,9 @@ class Site extends Model
         return $this->belongsTo(Zone::class);
     }
 
-    public function area(): BelongsTo
+    public function team(): BelongsTo
     {
-        return $this->belongsTo(Area::class);
+        return $this->belongsTo(Team::class);
     }
 
     
@@ -107,11 +111,11 @@ class Site extends Model
             }
         );
     }
-    protected function areaName(): Attribute
+    protected function teamName(): Attribute
     {
         return  Attribute::make(
             get: function () {
-                return $this->area->code;
+                return $this->team->code;
             }
         );
     }
@@ -127,5 +131,10 @@ class Site extends Model
     public function cascades(): HasMany
     {
         return $this->hasMany(Cascade::class, 'nodal_code', 'site_code'); //// because we do not follow the name convention and replaced site_id reference with nodal_code as the reference is the site code not the id, so we have to mention both different foreign and reference   
+    }
+
+    public function batteries():HasMany
+    {
+        return $this->hasMany(Battery::class,'site_code','site_code');
     }
 }

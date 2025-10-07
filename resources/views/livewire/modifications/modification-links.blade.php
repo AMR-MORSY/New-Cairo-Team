@@ -1,15 +1,17 @@
  <flux:navlist.group expandable heading="Quick Links" class=" lg:grid mt-20">
 
      @if (request()->routeIs('site.modifications'))
-         <flux:navlist>
+         {{-- @can('createModification', $site) --}}
+             <flux:navlist>
 
 
-             <flux:navlist.item :href="route('modification.create',$site->site_code)" wire:navigate>
-                 {{ __('New Modification') }}
-             </flux:navlist.item>
+                 <flux:navlist.item :href="route('modification.create',$site->site_code)" wire:navigate>
+                     {{ __('New Modification') }}
+                 </flux:navlist.item>
 
 
-         </flux:navlist>
+             </flux:navlist>
+         {{-- @endcan --}}
      @else
          <flux:navlist>
 
@@ -22,11 +24,11 @@
 
              @if (!request()->routeIs('modification.update'))
                  <flux:navlist.item :href="route('modification.update',$modification->id)" wire:navigate>
-                     {{ __('Update') }}
+                     {{ __('Update modification') }}
                  </flux:navlist.item>
              @endif
              <flux:navlist.item wire:click="delete" class=" cursor-pointer">
-                 {{ __('Delete') }}
+                 {{ __('Delete modification') }}
              </flux:navlist.item>
 
              @if (!request()->routeIs('quotation.details'))

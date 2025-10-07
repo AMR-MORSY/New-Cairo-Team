@@ -15,6 +15,7 @@ class SiteModifications extends Component
     public $site;
     public function mount(Site $site)
     {
+        
         $this->site=$site;
         $this->modifications = $site->modifications()->with([
             "project",

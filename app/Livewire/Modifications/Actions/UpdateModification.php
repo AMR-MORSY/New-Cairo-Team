@@ -84,6 +84,8 @@ class UpdateModification extends Component
                     'reserved_at' => now(),
                 ]);
             } else { ////////////////when the on hand does not cover the diff amount, we will leave the on hand as it is and put this quotation in over po invoices table
+                $this->modification->reservation->po->decrement('in_progress', $reservedAmount);
+                $this->modification->reservation->po->increment('on_hand', $reservedAmount);//////////increase the on hand amount by the reserved amount
                 $overPo = OverPoInvoice::create([
                     'modification_reservation_id' => $this->modification->reservation->id,
                     'amount' => $quotationAmount,
@@ -109,7 +111,7 @@ class UpdateModification extends Component
                     $reservedAmount = $this->modification->reservation->amount;
 
                     $this->adjustPO($quotationAmount, $reservedAmount);
-                } elseif ($this->modification->reservation->status == 'expired') {
+                } elseif ($this->modification->reservation->status == 'expired' || $this->modification->reservation->status == 'cancelled') {
                     $onHand = $this->modification->reservation->po->getAvailableAmount();
                     if ($quotationAmount <= $onHand) {
                         $this->modification->reservation->po->increment('invoiced', $quotationAmount);
@@ -130,7 +132,7 @@ class UpdateModification extends Component
                 $this->modification->quotation->update(['is_active' => 1]);
                 $this->modification->reservation->update(['status' => 'completed']);
                 $this->modification->update(
-                    $this->form->all()
+                   $this->form->only($this->form->updateFormAttributes())
                 );
 
                 $this->modification->actions()->sync($this->form->action_id); // Replace all existing relationships with the new array
@@ -139,7 +141,7 @@ class UpdateModification extends Component
                 return redirect()->route('modification.details', $this->modification->id);
             } elseif ($activeQuotation) { ////////////////////update modification's data only
                 $this->modification->update(
-                    $this->form->all()
+                    $this->form->only($this->form->updateFormAttributes())
                 );
 
                 $this->modification->actions()->sync($this->form->action_id); // Replace all existing relationships with the new array
@@ -155,7 +157,7 @@ class UpdateModification extends Component
             $invoice = $this->modification->reservation->invoice;
             $overPo = $this->modification->reservation->overPo;
 
-          
+
 
             if ($invoice || $overPo) {
                 Toaster::error('The modification is already invoiced, you can not make it in progress')->duration('7000');
@@ -168,14 +170,13 @@ class UpdateModification extends Component
                 Toaster::error('The modification is already expired, you must activate it before any update')->duration('7000');
             } else {
                 $this->modification->update(
-                    $this->form->all()
+                   $this->form->only($this->form->updateFormAttributes())
                 );
 
                 $this->modification->actions()->sync($this->form->action_id); // Replace all existing relationships with the new array
                 Toaster::success('Modification updated Successfully');
 
                 return redirect()->route('modification.details', $this->modification->id);
-
             }
         }
     }

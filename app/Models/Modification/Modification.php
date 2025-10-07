@@ -10,6 +10,7 @@ use App\Models\Zone;
 use App\Models\Site\Site;
 use App\Models\Modification\Action;
 use App\Models\Modification\Project;
+use App\Policies\ModificationPolicy;
 use App\Models\Modification\Quotation;
 use App\Models\Modification\Requester;
 use Illuminate\Database\Eloquent\Model;
@@ -17,12 +18,15 @@ use App\Models\Modification\Subcontractor;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Modification\ModificationStatus;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\Modification\ModificationReservation;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
+
+#[UsePolicy(ModificationPolicy::class)]
 class Modification extends Model
 {
 
@@ -75,7 +79,7 @@ class Modification extends Model
 
     public function site(): BelongsTo
     {
-        return $this->belongsTo(Site::class, 'site_code');
+        return $this->belongsTo(Site::class, 'site_code','site_code');
     }
     public function area(): BelongsTo
     {
@@ -130,13 +134,15 @@ class Modification extends Model
         $this->wo_code = $W_o_Code;
     }
 
-    protected function calculateFinalCost()
+    public function calculateFinalCost()
     {
         $quotation = $this->quotation()->where('is_active', 1)->first();
         if ($quotation) {
-            $this->final_cost = $quotation->sumMailListItems() + $quotation->sumPriceListItems();
+            $quotationCost=$quotation->sumMailListItems() + $quotation->sumPriceListItems();
+            $this->update(['final_cost'=>$quotationCost]);
+           
         } else {
-            $this->final_cost = 0;
+            $this->update(['final_cost'=>0]);
         }
     }
     protected static function boot()
@@ -152,9 +158,9 @@ class Modification extends Model
             $model->year = $requestDate->year;
         });
 
-        static::updating(function ($model) {
-            $model->calculateFinalCost();
-        });
+        // static::updating(function ($model) {
+        //     $model->calculateFinalCost();
+        // });
     }
 
 

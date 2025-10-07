@@ -86,23 +86,24 @@
                         <!--Team Column-->
                         <td class="px-6 py-4">
                             <div class="flex flex-wrap gap-2">
-                                @if ($teamAndZone['area'])
+                                @if ($teamAndZone['team'])
                                     <div class="flex items-center">
                                         <div class="flex-shrink-0 h-8 w-8">
                                             <div
                                                 class="h-8 w-8 rounded-full bg-indigo-100 dark:bg-indigo-900 flex items-center justify-center">
-                                                <svg class="h-4 w-4 text-indigo-600 dark:text-indigo-400" fill="none"
+                                                {{-- <svg class="h-4 w-4 text-indigo-600 dark:text-indigo-400" fill="none" 
                                                     stroke="currentColor" viewBox="0 0 24 24">
                                                     <path stroke-linecap="round" stroke-linejoin="round"
                                                         stroke-width="2"
                                                         d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z">
                                                     </path>
-                                                </svg>
+                                                </svg> --}}
+                                                <flux:icon.trash wire:click="deleteTeam" class=" cursor-pointer text-red-700" />
                                             </div>
                                         </div>
                                         <div class="ml-4">
                                             <div class="text-sm font-medium text-gray-900 dark:text-gray-100">
-                                                {{ $teamAndZone['area']['code'] }}
+                                                {{ $teamAndZone['team']['code'] }}
                                             </div>
                                         </div>
                                     </div>
@@ -173,10 +174,12 @@
 
 
                     <form class="p-6 space-y-8" wire:submit="updateRole">
-                        <flux:label>Role *</flux:label>
-                        <x-select wire:model="newRoles"
-                            placeholder="More than one role could be assigned to the user" multiselect
-                            :options="$teamRoles" option-label="name" option-value="name" />
+                        <flux:field>
+                            <flux:label>Role *</flux:label>
+                            <x-select wire:model="newRoles"
+                                placeholder="More than one role could be assigned to the user" multiselect
+                                :options="$teamRoles" option-label="name" option-value="name" />
+                        </flux:field>
 
                         <flux:button variant="primary" color="zinc" type="submit" class=" cursor-pointer">
                             Update</flux:button>
