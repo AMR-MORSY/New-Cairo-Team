@@ -4,7 +4,7 @@
              <x-site-navlinks-group :site="$site" />
          </x-slot:links> --}}
          {{-- <livewire:Sites.SiteCreationForm :readonly="false" :site="$site" target="Update" /> --}}
-         <x-site-creation-form target="Create" :readonly="false" :zones="$zones" :areas="$areas"/>
+         <x-site-creation-form target="Create" :readonly="false" :zones="$zones" :teams="$teams"/>
 
       
 

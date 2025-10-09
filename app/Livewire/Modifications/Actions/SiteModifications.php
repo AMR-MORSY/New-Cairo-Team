@@ -24,7 +24,7 @@ class SiteModifications extends Component
             'requester',
             'actionOwner',
             'modification_status',
-            'area',
+            'team',
             'zone',
             'reservation'
         ])->get();

@@ -9,7 +9,8 @@
                 <div class="space-y-6">
                     <div class="border-b border-gray-200 pb-2">
 
-                        <flux:heading size="lg"> {{ $target }} Battery Record</flux:heading>
+                        {{-- <flux:heading size="lg"> {{ $target }} Battery Record</flux:heading> --}}
+                         <flux:heading size="lg"> {{ $site->site_code }} - {{$site->site_name}} </flux:heading>
 
 
                     </div>
@@ -72,7 +73,7 @@
 
                         <flux:field>
                             <flux:label>No. Strings *</flux:label>
-                            <flux:input wire:model="form.no_strings" type="number" :readonly="$readonly"
+                            <flux:input wire:model="form.no_strings" type="number" :min="1" :readonly="$readonly"
                                 :placeholder="$readonly ? null : 'Enter no. strings'" class="w-full" />
                             <flux:error name="form.no_strings" />
                         </flux:field>
@@ -109,10 +110,10 @@
                         <flux:field>
                             {{-- <flux:label>Description *</flux:label> --}}
                             @if ($target == 'Update' || $target == 'New')
-                                <flux:textarea label="Comment *" placeholder="Comments..." rows="2"
-                                    wire:model="comment" class="w-full" />
+                                <flux:textarea label="Comment *" placeholder="Comments..." rows="4"
+                                    wire:model="form.comment" class="w-full" />
                             @else
-                                <flux:textarea label="Comment *" wire:model="comment" rows="4"
+                                <flux:textarea label="Comment *" wire:model="form.comment" rows="4"
                                     :placeholder="$readonly ? null : 'Comments...'" :readonly="$readonly"
                                     class="w-full" />
                             @endif
@@ -133,11 +134,11 @@
 
                 </div>
                 @if ($target == 'Update')
-                    <flux:button variant="primary" color="zinc" wire:click='update' class=" cursor-pointer">
+                    <flux:button variant="primary" color="zinc" wire:click='updateBatteryRecord' class=" cursor-pointer">
                         Update</flux:button>
                 @endif
-                @if ($target == 'Create')
-                    <flux:button variant="primary" color="zinc" wire:click='create' class=" cursor-pointer">
+                @if ($target == 'New')
+                    <flux:button variant="primary" color="zinc" wire:click='newBatteryRecord' class=" cursor-pointer">
                         Create</flux:button>
                 @endif
 

@@ -3,9 +3,10 @@
 namespace App\Livewire\Sites\Actions;
 
 use Livewire\Component;
+use App\Models\Site\Site;
+use App\Models\Site\Battery;
 use Masmerise\Toaster\Toaster;
 use App\Livewire\Forms\BatteryForm;
-use App\Models\Site\Battery;
 
 class CreateBattery extends Component
 {
@@ -13,24 +14,31 @@ class CreateBattery extends Component
     public array $categories = [];
 
 
-    public function mount()
+
+
+    public $site;
+    public function mount(Site $site)
     {
         $this->categories = [
             'New',
             'Tested',
             'Used'
         ];
+
+        $this->form->setSiteCode($site->site_code);
+        $this->site=$site;
     }
-    public function create()
+    public function newBatteryRecord()
     {
         $validated = $this->validate();
 
-        Battery::create($this->form->all());
+        $battery = Battery::create($validated);
 
 
 
         Toaster::success('Inserted Successfully');
         $this->form->reset();
+        return redirect()->route('battery.show', ['battery' => $battery->id]);
     }
     public function render()
     {

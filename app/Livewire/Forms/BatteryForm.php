@@ -10,18 +10,18 @@ class BatteryForm extends Form
 {
     public bool $isUpdate = false;
 
-    public $battery;
-
+    public     $battery;
     public     $batteries_brand = '';
-    public     $installation_date = '';
+    public     $installation_date = null;
     public     $no_strings = '';
     public     $category = '';
     public     $stock = '';
     public     $comment = '';
-    public     $theft_case = '';
+    public     $theft_case = null;
     public     $batteries_status = '';
     public     $battery_volt = '';
     public     $battery_amp_hr = '';
+    public     $site_code = '';
 
 
     public function setBattery($battery)
@@ -38,6 +38,12 @@ class BatteryForm extends Form
         $this->batteries_status = $battery->batteries_status;
         $this->battery_volt = $battery->battery_volt;
         $this->battery_amp_hr = $battery->battery_amp_hr;
+        $this->site_code = $battery->site_code;
+    }
+
+    public function setSiteCode($site_code)
+    {
+        $this->site_code=$site_code;
     }
 
     public function rules()
@@ -52,13 +58,13 @@ class BatteryForm extends Form
             "battery_amp_hr" =>  ['nullable', 'max:50'],
             "no_strings" =>  ["required", 'integer', 'max:100'],
             "batteries_status" =>  ['nullable', 'max:50'],
-            "installation_date" => ["requiredIf:theft_case,null", "nullable", "date"],
+            "installation_date" => ["requiredIf:theft_case,null","date"],
             "theft_case" => ["nullable", "date"],
 
         ];
 
-         if ($this->isUpdate) {
-            
+        if ($this->isUpdate) {
+
 
             $rules['site_code'] = ["required", "exists:sites,site_code", Rule::unique('sites', 'site_code')->ignore($this->battery)];
         }
