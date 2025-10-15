@@ -58,7 +58,7 @@ class ModificationDetails extends Component
         $modification->modification_status_id = $modification->modification_status->name;
         $modification->project_id = $modification->project->name;
         $modification->zone_id = $modification->zone->code;
-        $modification->area_id = $modification->area->code;
+        $modification->area_id = $modification->team->code;
         $modification->action_owner = $modification->actionOwner->name;
         $modification->action_id = $modification->actions->pluck('name')->implode(', ');
 

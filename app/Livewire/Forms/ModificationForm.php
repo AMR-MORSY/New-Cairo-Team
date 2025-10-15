@@ -39,7 +39,7 @@ class ModificationForm extends Form
     public $reported = 0;
     public $reported_at = '';
     public $zone_id = '';
-    public $area_id = '';
+    public $team_id = '';
     public $action_owner = '';
     public $action_id = '';
     public $wo_code = '';
@@ -58,7 +58,7 @@ class ModificationForm extends Form
 
         $this->zone_id = $site->zone_id;
 
-        $this->area_id = $site->area_id;
+        $this->team_id = $site->team_id;
     }
 
     public function updateFormAttributes()
@@ -76,7 +76,7 @@ class ModificationForm extends Form
             "est_cost" ,
             "reported" ,
             "reported_at",
-            'area_id' ,
+            'team_id' ,
             'zone_id' ,
             'action_owner'
 
@@ -102,7 +102,7 @@ class ModificationForm extends Form
         $this->reported = $modification->reported;
         $this->reported_at = $modification->reported_at;
         $this->zone_id = $modification->zone_id;
-        $this->area_id = $modification->area_id;
+        $this->team_id = $modification->team_id;
         $this->action_owner = $modification->action_owner;
         $this->action_id = $modification->action_id;
         $this->wo_code = $modification->wo_code;
@@ -148,7 +148,7 @@ class ModificationForm extends Form
             "est_cost" => ["required_if:modification_status_id,1,2,3", new CommaSeparatedNumber],
             "reported" => ["required",  Rule::in([1, 0])],
             "reported_at" => ["nullable", "date", "required_if:reported,1"],
-            'area_id' => ['required', 'exists:areas,id'],
+            'team_id' => ['required', 'exists:teams,id'],
             'zone_id' => ['required', 'exists:zones,id'],
             'action_owner' => ['required', 'exists:users,id']
 

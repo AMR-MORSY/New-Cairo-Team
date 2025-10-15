@@ -17,14 +17,15 @@ use App\Models\Site\Cascade;
 use App\Policies\SitePolicy;
 use App\Enums\SiteCategories;
 use App\Enums\SiteSeverities;
+use App\Models\Site\SiteData;
 use App\Models\Site\PowerData;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Modification\Modification;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
 #[UsePolicy(SitePolicy::class)]
 class Site extends Model
@@ -144,5 +145,9 @@ class Site extends Model
     public function power_data():HasOne
     {
         return $this->hasOne(PowerData::class,'site_code','site_code');
+    }
+     public function site_data():HasOne
+    {
+        return $this->hasOne(SiteData::class,'site_code','site_code');
     }
 }

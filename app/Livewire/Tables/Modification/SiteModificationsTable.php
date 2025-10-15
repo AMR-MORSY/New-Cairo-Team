@@ -122,7 +122,7 @@ final class SiteModificationsTable extends PowerGridComponent
             ->add('site_code')
             ->add('site_name')
             ->add('subcontractor', function ($model) {
-                // Handle both object and string cases
+                // Handle both object and string cases as the excel download library returns the whole object relation  
                 if (is_object($model->subcontractor)) {
                     return $model->subcontractor->name;
                 }

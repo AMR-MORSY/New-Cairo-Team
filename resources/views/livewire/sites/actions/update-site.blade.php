@@ -3,8 +3,8 @@
          <x-slot:links>
              <x-site-navlinks-group :site="$site" />
          </x-slot:links>
-         {{-- <livewire:Sites.SiteCreationForm :readonly="false" :site="$site" target="Update" /> --}}
+      
 
-         <x-site-creation-form target="Update" :readonly="false" :zones="$zones" :areas="$areas" />
+         <x-site-creation-form target="Update" :readonly="false" :zones="$zones" :teams="$teams" />
      </x-viewLayouts.main-view-layout>
  </section>

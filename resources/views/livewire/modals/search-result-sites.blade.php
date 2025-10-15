@@ -1,6 +1,7 @@
  <!-- Modal Dialog -->
  <div>
 
+
      <!-- Modal Header -->
      <div class="px-6 py-4 border-b flex justify-between items-center bg-gray-50">
          <h3 class="text-lg font-semibold text-gray-800">
@@ -18,11 +19,12 @@
      </div>
 
      <!-- Modal Body - Scrollable -->
+   
      <div class="flex-1 overflow-y-auto overflow-x-hidden p-6 max-w-2xl">
 
+      
 
-
-         <livewire:tables.site.searched-sites-table :props="$props" />
+         <livewire:tables.site.searched-sites-table :props="$props" :key="'search-' . now()" />
 
      </div>
 

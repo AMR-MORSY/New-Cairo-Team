@@ -39,11 +39,12 @@ class SearchingForSite extends Component
         }
         $validated = $validator->validated();
         $search = $validated['search'];
-        $sites = Site::with(['zone','team'])->where('site_code', 'like', "%$search%")->orWhere('site_name', 'like', "%$search%")->get();
+        $sites = Site::where('site_code', 'like', "%$search%")->orWhere('site_name', 'like', "%$search%")->get();
 
       
 
         if (count($sites) > 0) {
+        
             $props = [
                 'title' => "Sites",
                 'data' => $sites,

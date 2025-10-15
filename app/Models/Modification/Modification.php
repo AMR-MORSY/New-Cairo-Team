@@ -5,6 +5,7 @@ namespace App\Models\Modification;
 use Carbon\Carbon;
 use App\Enums\Zones;
 use App\Models\Area;
+use App\Models\Team;
 use App\Models\User;
 use App\Models\Zone;
 use App\Models\Site\Site;
@@ -34,7 +35,7 @@ class Modification extends Model
     protected $table = "modifications";
 
     protected $fillable = [
-        'area_id',
+        'team_id',
         'zone_id',
         'action_owner',
         'site_code',
@@ -81,9 +82,9 @@ class Modification extends Model
     {
         return $this->belongsTo(Site::class, 'site_code','site_code');
     }
-    public function area(): BelongsTo
+    public function team(): BelongsTo
     {
-        return $this->belongsTo(Area::class);
+        return $this->belongsTo(Team::class);
     }
 
     public function zone(): BelongsTo

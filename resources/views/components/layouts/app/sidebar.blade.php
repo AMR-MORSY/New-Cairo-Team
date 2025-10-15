@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="dark">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
     @include('partials.head')
@@ -51,15 +51,15 @@
                         <p> Cairo Sites</p>
                     </div>
                 </flux:navlist.item>
-                <flux:navlist.item href="#">
+                <flux:navlist.item :href="route('site.nodals')" :current="request()->routeIs('site.nodals')">
                     <div class=" flex items-center gap-1">
                         <flux:icon.arrow-down-tray />
-                        <p> Download Nodals</p>
+                        <p>{{ __('Nodal sites') }}</p>
                     </div>
                 </flux:navlist.item>
             </flux:navlist.group>
 
-            <flux:navlist.group expandable heading="Modifications" class=" lg:grid">
+            <flux:navlist.group expandable :heading="__('Modifications')" class=" lg:grid">
 
                 <flux:navlist.item href="#" :href="route('modification.search')"
                     :current="request()->routeIs('modification.search')" wire:navigate>
@@ -69,8 +69,8 @@
 
                     </div>
                 </flux:navlist.item>
-              
-               
+
+
                 <flux:navlist.item href="#">
                     <div class=" flex items-center gap-1">
                         <flux:icon.magnifying-glass />
@@ -84,7 +84,7 @@
                     </div>
 
                 </flux:navlist.item>
-             
+
                 <flux:navlist.item :href="route('pos')" :current="request()->routeIs('pos')" wire:navigate>
                     <div class=" flex items-center gap-1 ">
                         <flux:icon.plus-circle />
@@ -189,6 +189,7 @@
         </flux:dropdown>
     </flux:header>
 
+   
     {{ $slot }}
     <x-toaster-hub />
 
@@ -199,7 +200,7 @@
     @livewire('wire-elements-modal')
     @fluxScripts
 
-   
+
 
 </body>
 

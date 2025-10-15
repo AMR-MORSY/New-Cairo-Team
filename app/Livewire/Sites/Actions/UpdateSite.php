@@ -7,13 +7,14 @@ use App\Models\Zone;
 use Livewire\Component;
 use App\Models\Site\Site;
 use App\Livewire\Forms\SiteForm;
+use App\Models\Team;
 
 class UpdateSite extends Component
 {
     public SiteForm $form;
     public $site;
 
-     public $zones,$areas;
+     public $zones,$teams;
 
   
 
@@ -21,7 +22,7 @@ class UpdateSite extends Component
     {
         $this->site=$site;
          $this->zones=Zone::all();
-        $this->areas=Area::all();
+        $this->teams=Team::all();
 
         $this->form->setSite($site);
 
@@ -29,8 +30,7 @@ class UpdateSite extends Component
 
     public function update()
     {
-        // $this->form->zone_id=$this->site->zone_id;
-        //  $this->form->area_id=$this->site->area_id;
+       
          $this->form->isUpdate=true;
          $this->validate();
 

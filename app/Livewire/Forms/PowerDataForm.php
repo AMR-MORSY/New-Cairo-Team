@@ -59,7 +59,7 @@ class PowerDataForm extends Form
         if ($this->isUpdate) {
 
 
-            $rules['site_code'] = ["required", "exists:sites,site_code", Rule::unique('sites', 'site_code')->ignore($this->powerData)];
+            $rules['site_code'] = ["required", "exists:sites,site_code", Rule::unique('site_power_data', 'site_code')->ignore($this->powerData)];
         }
 
         return $rules;

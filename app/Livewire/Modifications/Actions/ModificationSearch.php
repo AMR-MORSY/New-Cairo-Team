@@ -2,7 +2,9 @@
 
 namespace App\Livewire\Modifications\Actions;
 
+use Toaster;
 use Livewire\Component;
+use Livewire\Attributes\Title;
 use Livewire\Attributes\Reactive;
 use Illuminate\Support\Collection;
 use App\Models\Modification\Action;
@@ -12,8 +14,8 @@ use App\Models\Modification\Requester;
 use App\Models\Modification\Modification;
 use App\Models\Modification\Subcontractor;
 use App\Models\Modification\ModificationStatus;
-use Toaster;
 
+#[Title('Modification Search')]
 class ModificationSearch extends Component
 {
     public array $categories = [];
