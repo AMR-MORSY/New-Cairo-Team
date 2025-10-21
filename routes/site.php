@@ -17,6 +17,7 @@ use App\Livewire\Sites\Actions\UpdateSiteData;
 use App\Livewire\Sites\Actions\CreatePowerData;
 use App\Livewire\Sites\Actions\SiteNodals;
 use App\Livewire\Sites\Actions\UpdatePowerData;
+use App\Livewire\Sites\Actions\UpdateSiteCascades;
 
 Route::middleware(['auth'])->prefix('site')->group(function () {
 
@@ -25,6 +26,7 @@ Route::middleware(['auth'])->prefix('site')->group(function () {
   Route::get('update/{site:site_code}', UpdateSite::class)->name('site.update');
   Route::get('create', CreateSite::class)->name('site.create');
   Route::get('nodals', SiteNodals::class)->name('site.nodals');
+  Route::get('update/cascades/{site:site_code}',UpdateSiteCascades::class)->name('site.cascades.update');
  
   Route::get('batteries/{site:site_code}', SiteBatteries::class)->name('site.batteries');
   Route::get('create/battery/{site:site_code}', CreateBattery::class)->name('battery.create');

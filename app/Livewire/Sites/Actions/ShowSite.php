@@ -6,6 +6,8 @@ use Livewire\Component;
 use App\Models\Site\Site;
 use App\Contracts\SiteInterface;
 use App\Livewire\Forms\SiteForm;
+use App\Models\Site\MuxPlan;
+use Toaster;
 
 class ShowSite extends Component
 {
@@ -17,18 +19,20 @@ class ShowSite extends Component
 
     public $newDirectCascades;
 
+    public $muxPlans;
+
     public $indirectCascades;
 
     public function mount(SiteInterface $siteRepositry, Site $site)
     {
-       
+
 
         $this->siteRepository = $siteRepositry;
 
         $this->form->setSite($site); ////this function binds the $site model with the form which contains the site model attributes which could be accessed inside the view 'livewire.sites.actions.show-site' by using the object form
 
         $this->form->zone_id = $site->zone->code; //////override form->zone_id to show the zone name instead of zone id
-        $this->form->team_id = $site->team->code;////////like zone_id
+        $this->form->team_id = $site->team->code; ////////like zone_id
 
         $this->site = $site;
         $directCascades = $site->cascades;
@@ -39,7 +43,31 @@ class ShowSite extends Component
 
         $this->indirectCascades = $this->siteRepository->indirectCascades($directCascades);
         $this->indirectCascades = collect($this->indirectCascades);
+        //  dd([$this->newDirectCascades,$this->indirectCascades]);
     }
+
+    public function muxPlan()
+    {
+        $site_code = $this->site->site_code;
+        $muxPlans = MuxPlan::where('ne', 'like', "%$site_code%")->get();
+        if (count($muxPlans) > 0) {
+
+            $this->muxPlans = $muxPlans;
+            $this->dispatch('mux_plans', mux_plans: $muxPlans);
+        } elseif (!count($muxPlans) > 0) {
+            $muxPlans = MuxPlan::where('fe', 'like', "%$site_code%")->get();
+            if (count($muxPlans) > 0) {
+                $this->muxPlans = $muxPlans;
+                $this->dispatch('mux_plans', mux_plans: $muxPlans);
+            }
+            else{
+                Toaster::error('No Mux Plans available');
+            }
+        } else {
+             Toaster::error('No Mux Plans available');
+        }
+    }
+
     public function render()
     {
         return view('livewire.sites.actions.show-site');

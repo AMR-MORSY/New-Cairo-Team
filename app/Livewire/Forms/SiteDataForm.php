@@ -17,15 +17,15 @@ class SiteDataForm extends Form
     public $address = '';
     public $x_coordinate = '';
     public $y_coordinate = '';
-    public $ntra_cluster = '';
-    public $care_ceo = '';
-    public $axis = '';
-    public $serve_compound = '';
-    public $universities = '';
-    public $hot_spot = '';
+    public $ntra_cluster = "0";
+    public $care_ceo = "0";
+    public $axis = "0";
+    public $serve_compound = "0";
+    public $universities = "0";
+    public $hot_spot = "0";
     public $network_type = '';
     public $last_pm_date = '';
-    public $need_access_permission='';
+    public $need_access_permission="0";
     public $permission_type = '';
 
     public $siteData;

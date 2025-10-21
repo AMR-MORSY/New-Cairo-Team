@@ -23,15 +23,27 @@ final class SearchedSitesTable extends PowerGridComponent
 
     public int $perPage = 0;
 
+   
+
     public function actions($row): array
     {
-        return [
-            Button::add('edit-stock')
-
-                ->icon('default-eye')
-                ->class('cursor-pointer')
-                ->dispatch('clickToGOSiteDetails', ['site_code' => $row->site_code]),
-        ];
+        if ($this->props['target']=='site.cascades.update') {
+            return [
+                Button::add('edit-stock')
+                    ->icon('default-archive-box-arrow-down')
+                    ->tooltip('Add')
+                    ->class('cursor-pointer')
+                    ->dispatch('addSiteToCascades', ['site_code' => $row->site_code]),
+            ];
+        } else {
+            return [
+                Button::add('edit-stock')
+                    ->icon('default-eye')
+                    ->class('cursor-pointer')
+                    ->tooltip('view')
+                    ->dispatch('clickToGOSiteDetails', ['site_code' => $row->site_code]),
+            ];
+        }
     }
     public function datasource(): ?Builder
     {
@@ -94,7 +106,7 @@ final class SearchedSitesTable extends PowerGridComponent
                 ->pageName('searchedSitesPage')
                 ->showRecordCount(),
 
-        ];  
+        ];
     }
 
     public function fields(): PowerGridFields

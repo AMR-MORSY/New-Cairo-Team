@@ -24,7 +24,7 @@ class CreateSiteData extends Component
         $this->form->setSiteCode($site->site_code);
         $this->site = $site;
     }
-    public function newBatteryRecord()
+    public function newSiteData()
     {
         $validated = $this->validate();
 

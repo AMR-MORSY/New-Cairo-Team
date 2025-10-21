@@ -23,12 +23,32 @@ final class CascadesTable extends PowerGridComponent
 
     public function actions($row): array
     {
+        if ($this->cascadesType == 'direct') {
+            if (request()->routeIs('site.cascades.update')) {
+                return [
+                    Button::add('edit-stock')
+                        ->icon('default-trash')
+                        ->class('cursor-pointer text-red-500')
+                        ->confirm('Are you sure you want to delete this PO?')
+                        ->tooltip('Delete')
+                        ->dispatch('removeCascade', ['site_code' => $row->code]),
+                ];
+            } else {
+                return [
+                    Button::add('edit-stock')
+
+                        ->icon('default-eye')
+                        ->class('cursor-pointer')
+                        ->dispatch('clickToGOSiteDetails', ['site_code' => $row->code]),
+                ];
+            }
+        }
         return [
             Button::add('edit-stock')
 
                 ->icon('default-eye')
                 ->class('cursor-pointer')
-                ->dispatch('clickToGOSiteDetails', ['site_code' => $row->code]),
+                ->dispatch('clickToGOSiteDetails', ['site_code' => $row->site_code]),
         ];
     }
 
@@ -56,7 +76,7 @@ final class CascadesTable extends PowerGridComponent
 
     public function setUp(): array
     {
-        $this->showCheckBox();
+
 
         return [
             PowerGrid::header()

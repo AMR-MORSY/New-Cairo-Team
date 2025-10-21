@@ -59,10 +59,10 @@
                         </flux:field>
                         <flux:field>
                             <flux:label>Y.coordinate *</flux:label>
-                            <flux:input wire:model="form.x_coordinate" type="number" :min="1"
+                            <flux:input wire:model="form.y_coordinate" 
                                 :readonly="$readonly" :placeholder="$readonly ? null : 'Enter y.coordinate'"
                                 class="w-full" />
-                            <flux:error name="form.x_coordinate" />
+                            <flux:error name="form.y_coordinate" />
                         </flux:field>
 
                         <flux:field>
@@ -167,7 +167,7 @@
                                 <flux:select wire:model="form.axis" type="text" placeholder="Is Axis?"
                                     class="w-full">
 
-                                    <flux:select.option :value="0">No
+                                    <flux:select.option :value="0" >No
                                     </flux:select.option>
                                     <flux:select.option :value="1">Yes
                                     </flux:select.option>

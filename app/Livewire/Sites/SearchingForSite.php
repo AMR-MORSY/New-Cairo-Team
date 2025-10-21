@@ -16,6 +16,8 @@ class SearchingForSite extends Component
     use Toastable;
     public $search = '';
 
+    public $target;
+
 
     public function show()
     {
@@ -48,6 +50,7 @@ class SearchingForSite extends Component
             $props = [
                 'title' => "Sites",
                 'data' => $sites,
+                'target'=>$this->target
 
             ];
 

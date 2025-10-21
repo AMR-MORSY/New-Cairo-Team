@@ -13,7 +13,7 @@
             <x-app-logo />
         </a>
 
-        <livewire:Sites.SearchingForSite />
+        <livewire:Sites.SearchingForSite target='searchForSite' />
 
         <flux:navlist variant="outline">
             <flux:navlist.group :heading="__('Platform')" class="grid">
