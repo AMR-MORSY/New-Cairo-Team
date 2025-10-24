@@ -26,17 +26,17 @@ return new class extends Migration
             $table->string("RNC", 50)->nullable();
             $table->string('office', 50)->nullable();
 
-            $table->enum('type',array_column(SiteTypies::cases(),'value'));
+            $table->string('type',50);
 
-            $table->enum('category', array_column(SiteCategories::cases(),'value'));
+            $table->string('category', 50);
 
-            $table->enum('severity',array_column(SiteSeverities::cases(),'value'));
+            $table->string('severity',50);
 
-            $table->enum('sharing', array_column(SiteSharing::cases(),'value'));
+            $table->string('sharing',20);
 
-            $table->enum('host', array_column(Host::cases(),'value'))->nullable();
+            $table->string('host', 20)->nullable();
 
-            $table->enum('gest', array_column(Guest::cases(),'value'))->nullable();
+            $table->string('gest', 50)->nullable();
             $table->string("vf_code", 50)->nullable();
             $table->string("et_code", 50)->nullable();
             $table->string("we_code", 50)->nullable();
@@ -47,7 +47,7 @@ return new class extends Migration
             $table->integer("cells_2G")->default(0);
             $table->integer("cells_3G")->default(0);
             $table->integer("cells_4G")->default(0);
-            $table->enum("status",array_column(Status::cases(),'value'))->default("On Air");
+            $table->string("status",20)->default("On Air");
 
             $table->timestamps();
         });

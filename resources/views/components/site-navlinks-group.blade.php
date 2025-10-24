@@ -20,5 +20,8 @@
          <flux:navlist.item :href="route('site.powerData',$site->site_code)" wire:navigate>
              {{ __('Power Data') }}
          </flux:navlist.item>
+         <flux:navlist.item :href="route('site.notes',$site->site_code)" wire:navigate>
+             {{ __('Notes') }}
+         </flux:navlist.item>
      </flux:navlist>
  </flux:navlist.group>

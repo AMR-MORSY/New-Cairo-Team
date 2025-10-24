@@ -61,7 +61,7 @@ class CreateModification extends Component
 
         $this->validate();
 
-        if ($this->form->modification_status_id == 1 or $this->form->modification_status_id == 3) {
+        if ($this->form->modification_status_id == 1 or $this->form->modification_status_id == 3) {/////////////////status done or waiting D6
             Toaster::error('Modification status is considered done or waiting D6 after quotation submission')->duration('7000');
             return;
         }

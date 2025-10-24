@@ -12,7 +12,7 @@
                  {{ __('Back') }}
              </flux:navlist.item>
          @elseif (request()->routeIs('site.siteData'))
-             <flux:navlist.item :href="route('siteData.update',$powerData->id)" wire:navigate>
+             <flux:navlist.item :href="route('siteData.update',$siteData->id)" wire:navigate>
                  {{ __('Update') }}
              </flux:navlist.item>
                <flux:navlist.item wire:click="delete" class=" cursor-pointer">

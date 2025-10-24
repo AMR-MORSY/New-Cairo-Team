@@ -31,8 +31,8 @@ class CreateSite extends Component
     {
         $validated = $this->validate();
 
-     
-        Site::create([
+
+        $site = Site::create([
             "site_name" => $this->form->site_name,
             "site_code" => $this->form->site_code,
             "RNC" => $this->form->RNC,
@@ -57,11 +57,8 @@ class CreateSite extends Component
 
         Toaster::success('Inserted Successfully');
         $this->form->reset();
-        // if ($this->validate()) {
 
-        //     Toaster::error('some fields in the form have errors');
-
-        // }
+        return redirect()->route('site.show', ['site' => $site->site_code]);
     }
     public function render()
     {

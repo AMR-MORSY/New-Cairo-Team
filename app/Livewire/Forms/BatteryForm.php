@@ -8,7 +8,7 @@ use Livewire\Attributes\Validate;
 
 class BatteryForm extends Form
 {
-    public bool $isUpdate = false;
+   
 
     public     $battery;
     public     $batteries_brand = '';
@@ -63,11 +63,7 @@ class BatteryForm extends Form
 
         ];
 
-        if ($this->isUpdate) {
-
-
-            $rules['site_code'] = ["required", "exists:sites,site_code", Rule::unique('sites', 'site_code')->ignore($this->battery)];
-        }
+      
 
         return $rules;
     }

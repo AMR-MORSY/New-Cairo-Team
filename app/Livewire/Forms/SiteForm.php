@@ -13,6 +13,7 @@ use App\Models\Site\Site;
 use App\Enums\SiteSharing;
 use App\Enums\SiteCategories;
 use App\Enums\SiteSeverities;
+use App\Models\Zone;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Validate;
 use Illuminate\Validation\Rules\Enum;
@@ -96,7 +97,17 @@ class SiteForm extends Form
                     $fail('The Sharing must be "yes" when Host/Guest has a value.');
                 }
             },],
-            "zone_id" => ['required','exists:zones,id'],
+            "zone_id" => ['required','exists:zones,id',function($attribute, $value, $fail){
+                $zone=Zone::find($value);
+               
+                $team=$zone->team;
+                if($team->id!=$this->team_id)
+                {
+                    $fail('The selected zone does not belong to this team.');
+
+                }
+
+            }],
             "host" => ['required_if:sharing,Yes', new Enum(Host::class)],
             "gest" => ['required_if:sharing,Yes', 'different:host', new Enum(Guest::class)],
             "vf_code" => ['nullable', 'string', 'max:50'],

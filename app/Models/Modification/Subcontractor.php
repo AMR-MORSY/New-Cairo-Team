@@ -21,9 +21,11 @@ class Subcontractor extends Model
 
      public function getSubcontractorAvailablePOs(string|null $projectName = null)
     {
+      
         $POs=$this->pos()->where('type', $projectName)->where('status', 'open')->get();/////taking into account that the subcontractor might have more than one open PO
 
-      
+       
+    
         return $POs;
     }
 

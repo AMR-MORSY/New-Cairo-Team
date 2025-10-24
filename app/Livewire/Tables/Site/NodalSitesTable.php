@@ -33,10 +33,10 @@ final class NodalSitesTable extends PowerGridComponent
     }
 
     #[On('nodal_sites')]
-    public function nodal_sites($nodalSites)
+    public function nodal_sites($sites)
     {
         // dd($nodalSites);
-        $this->nodalSites = collect($nodalSites);
+        $this->nodalSites = collect($sites);
     }
 
 
@@ -50,6 +50,7 @@ final class NodalSitesTable extends PowerGridComponent
             PowerGrid::footer()
                 ->showPerPage()
                 ->showRecordCount(),
+            PowerGrid::responsive()->fixedColumns('site_code', 'site_name'),
             PowerGrid::exportable(fileName: 'nodal sites')
                 ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV)
         ];
@@ -61,6 +62,9 @@ final class NodalSitesTable extends PowerGridComponent
             ->add('id')
             ->add('site_code')
             ->add('site_name')
+            ->add('category')
+            ->add('nodal_code')
+            ->add('nodal_name')
             ->add('count_cascades')
             ->add('battery_brand')
             ->add('no_strings')
@@ -78,13 +82,27 @@ final class NodalSitesTable extends PowerGridComponent
                 ->searchable()
                 ->sortable(),
 
+                 Column::make('category', 'category')
+                ->searchable()
+                ->sortable(),
+       
+
+
+
             Column::make('count_cascades', 'count_cascades')
                 ->sortable(),
 
             Column::make('battery_brand', 'battery_brand'),
 
             Column::make('no_strings', 'no_strings'),
-            Column::make('installation_date', 'installation_date')
+            Column::make('installation_date', 'installation_date'),
+                 Column::make('nodal_code', 'nodal_code')
+                ->searchable()
+                ->sortable(),
+
+            Column::make('nodal_name', 'nodal_name')
+                ->searchable()
+                ->sortable(),
         ];
     }
 }

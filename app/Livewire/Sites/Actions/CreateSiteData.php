@@ -27,6 +27,8 @@ class CreateSiteData extends Component
     public function newSiteData()
     {
         $validated = $this->validate();
+        
+        // dd($validated);
 
         $battery = SiteData::create($validated);
 
@@ -34,7 +36,7 @@ class CreateSiteData extends Component
 
         Toaster::success('Inserted Successfully');
         $this->form->reset();
-        return redirect()->route('site.powerData', ['site' => $this->site->site_code]);
+        return redirect()->route('site.siteData', ['site' => $this->site->site_code]);
     }
     public function render()
     {

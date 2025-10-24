@@ -8,9 +8,9 @@ use Livewire\Attributes\Validate;
 
 class SiteDataForm extends Form
 {
-    public bool $isUpdate = false;
+   
     public $site_code = '';
-    public $on_air_date = '';
+    public $on_air_date = null;
     public $topology = '';
     public $structure = '';
     public $equip_room = '';
@@ -24,8 +24,8 @@ class SiteDataForm extends Form
     public $universities = "0";
     public $hot_spot = "0";
     public $network_type = '';
-    public $last_pm_date = '';
-    public $need_access_permission="0";
+    public $last_pm_date = null;
+    public $need_access_permission = "0";
     public $permission_type = '';
 
     public $siteData;
@@ -34,7 +34,6 @@ class SiteDataForm extends Form
     public function setSiteData($siteData)
     {
         $this->siteData = $siteData;
-
         $this->site_code = $siteData->site_code;
         $this->on_air_date = $siteData->on_air_date;
         $this->topology = $siteData->topology;
@@ -46,17 +45,56 @@ class SiteDataForm extends Form
         $this->ntra_cluster = $siteData->ntra_cluster;
         $this->care_ceo = $siteData->care_ceo;
         $this->axis = $siteData->axis;
-        $this->serve_compound = $siteData->erve_compound;
+        $this->serve_compound = $siteData->serve_compound;
         $this->universities = $siteData->universities;
         $this->hot_spot = $siteData->hot_spot;
         $this->network_type = $siteData->network_type;
         $this->last_pm_date = $siteData->last_pm_date;
-        $this->need_access_permission=$siteData->need_access_permission;
+        $this->need_access_permission = $siteData->need_access_permission;
         $this->permission_type = $siteData->permission_type;
     }
     public function setSiteCode($site_code)
     {
         $this->site_code = $site_code;
+    }
+
+    public function adjustBooleanValues()
+    {
+        if ($this->ntra_cluster == "0") {
+            $this->ntra_cluster = "No";
+        } else {
+            $this->ntra_cluster = "Yes";
+        }
+        if ($this->care_ceo == "0") {
+            $this->care_ceo = "No";
+        } else {
+            $this->care_ceo = "Yes";
+        }
+        if ($this->axis == "0") {
+            $this->axis = "No";
+        } else {
+            $this->axis = "Yes";
+        }
+        if ($this->serve_compound == "0") {
+            $this->serve_compound = "No";
+        } else {
+            $this->serve_compound = "Yes";
+        }
+        if ($this->universities == "0") {
+            $this->universities = "No";
+        } else {
+            $this->universities = "Yes";
+        }
+        if ($this->hot_spot == "0") {
+            $this->hot_spot = "No";
+        } else {
+            $this->hot_spot = "Yes";
+        }
+        if ($this->need_access_permission == "0") {
+            $this->need_access_permission = "No";
+        } else {
+            $this->need_access_permission = "Yes";
+        }
     }
 
     public function rules()
@@ -83,11 +121,7 @@ class SiteDataForm extends Form
 
         ];
 
-        if ($this->isUpdate) {
-
-
-            $rules['site_code'] = ["required", "exists:sites,site_code", Rule::unique('site_data', 'site_code')->ignore($this->siteData)];
-        }
+      
 
         return $rules;
     }

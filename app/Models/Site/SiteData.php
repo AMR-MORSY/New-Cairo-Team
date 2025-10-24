@@ -12,6 +12,8 @@ class SiteData extends Model
     protected $table='site_data';
     protected $hidden=['created_at','updated_at'];
 
+   
+
     protected $fillable = [
         'site_code',
         "on_air_date",

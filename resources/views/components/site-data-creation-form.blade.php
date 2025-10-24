@@ -68,7 +68,7 @@
                         <flux:field>
                             <flux:label>NTRA *</flux:label>
                             @if ($target == 'Update' || $target == 'New')
-                                <flux:select wire:model="form.ntra_cluster" type="text" placeholder="Is NTRA?"
+                                <flux:select wire:model="form.ntra_cluster"  placeholder="Is NTRA?"
                                     class="w-full">
 
                                     <flux:select.option :value="0">No
@@ -183,7 +183,7 @@
                         <flux:field>
                             <flux:label>Need Permission *</flux:label>
                             @if ($target == 'Update' || $target == 'New')
-                                <flux:select wire:model="form.need_permission" type="text"
+                                <flux:select wire:model="form.need_access_permission" type="text"
                                     placeholder="Need Permission?" class="w-full">
 
                                     <flux:select.option :value="0">No
@@ -194,10 +194,10 @@
 
                                 </flux:select>
                             @else
-                                <flux:input wire:model="form.need_permission" :readonly="$readonly" class="w-full" />
+                                <flux:input wire:model="form.need_access_permission" :readonly="$readonly" class="w-full" />
                             @endif
 
-                            <flux:error name="form.need_permission" />
+                            <flux:error name="form.need_access_permission" />
                         </flux:field>
                         <flux:field>
                             <flux:label>Permission Type *</flux:label>

@@ -45,18 +45,14 @@
                     </div>
 
                 </flux:navlist.item>
-                <flux:navlist.item href="#">
+              
+                <flux:navlist.item :href="route('site.CE.sites')" :current="request()->routeIs('site.CE.sites')">
                     <div class=" flex items-center gap-1">
                         <flux:icon.arrow-down-tray />
-                        <p> Cairo Sites</p>
+                        <p>{{ __('CE Sites') }}</p>
                     </div>
                 </flux:navlist.item>
-                <flux:navlist.item :href="route('site.nodals')" :current="request()->routeIs('site.nodals')">
-                    <div class=" flex items-center gap-1">
-                        <flux:icon.arrow-down-tray />
-                        <p>{{ __('Nodal sites') }}</p>
-                    </div>
-                </flux:navlist.item>
+            
             </flux:navlist.group>
 
             <flux:navlist.group expandable :heading="__('Modifications')" class=" lg:grid">
@@ -189,8 +185,10 @@
         </flux:dropdown>
     </flux:header>
 
-   
+
     {{ $slot }}
+
+
     <x-toaster-hub />
 
     <x-dialog z-index="z-50" align="center" />

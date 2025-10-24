@@ -18,6 +18,7 @@ use App\Policies\SitePolicy;
 use App\Enums\SiteCategories;
 use App\Enums\SiteSeverities;
 use App\Models\Site\SiteData;
+use App\Models\Site\SiteNote;
 use App\Models\Site\PowerData;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Modification\Modification;
@@ -149,5 +150,10 @@ class Site extends Model
      public function site_data():HasOne
     {
         return $this->hasOne(SiteData::class,'site_code','site_code');
+    }
+
+    public function notices():HasMany
+    {
+        return $this->hasMany(SiteNote::class,'site_code','site_code');
     }
 }

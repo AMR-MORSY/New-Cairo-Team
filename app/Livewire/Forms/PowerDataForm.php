@@ -8,7 +8,7 @@ use Livewire\Attributes\Validate;
 
 class PowerDataForm extends Form
 {
-    public bool $isUpdate = false;
+  
 
     public $site_code;
     public $power_source;
@@ -56,11 +56,7 @@ class PowerDataForm extends Form
 
         ];
 
-        if ($this->isUpdate) {
-
-
-            $rules['site_code'] = ["required", "exists:sites,site_code", Rule::unique('site_power_data', 'site_code')->ignore($this->powerData)];
-        }
+       
 
         return $rules;
     }
