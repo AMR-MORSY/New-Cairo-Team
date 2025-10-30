@@ -8,5 +8,6 @@ enum Teams: string
     case HGLI = "HGLI";
     case NGLI = 'NGLI';
     case MODIFICATIONS= "Modifications";
+    case TEST="Test";
     
 }

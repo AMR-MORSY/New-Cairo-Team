@@ -9,15 +9,15 @@
 
 
 
-        <x-modification-create-form target="Details" :readonly="true" :actions="$actions" :modificationStatus="$modificationStatus"
+        <x-modification-creation-form target="Details" :readonly="true" :actions="$actions" :modificationStatus="$modificationStatus"
             :modification="$modification" :subcontractors="$subcontractors" :projects="$projects" :requesters="$requesters" />
 
 
-        <div class=" p-6 m-20 bg-white rounded shadow">
+        {{-- <div class=" p-6 m-20 bg-white rounded shadow">
             {!! $chart->container() !!}
 
         </div>
         <script src="{{ $chart->cdn() }}"></script>
-        {!! $chart->script() !!}
+        {!! $chart->script() !!} --}}
     </x-viewLayouts.main-view-layout>
 </section>

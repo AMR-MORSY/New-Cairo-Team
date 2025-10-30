@@ -14,6 +14,12 @@ class CeSites extends Component
     #[Title('CE Sites')]
     public $sites;
 
+
+    public function mount()
+    {
+        $this->authorize('viewCESites',Site::class);
+    }
+
     private function dispatchSites($siteRepository)
     {
 

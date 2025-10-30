@@ -160,7 +160,7 @@
                         </flux:field>
 
                         <flux:field>
-                            {{-- <flux:label>Description *</flux:label> --}}
+                          
                             @if ($target == 'Update' || $target == 'Create')
                                 <flux:textarea label="Description *" placeholder="Action descriptions..." rows="4"
                                     wire:model="description" class="w-full" />
@@ -174,7 +174,7 @@
                         </flux:field>
 
                         <flux:field>
-                            {{-- <flux:label>Description *</flux:label> --}}
+                          
                             @if ($target == 'Update' || $target == 'New')
                                 <flux:textarea label="Pending *" placeholder="Reasons..." rows="2"
                                     wire:model="pending" class="w-full" />
@@ -186,8 +186,9 @@
 
                             <flux:error name="form.pending" />
                         </flux:field>
-
-                        @if ($modification)
+                      {{-- these fields concerned with new modifications system --}}
+                        
+                        {{-- @if ($modification)
                             <flux:field>
                                 <flux:label>Validation *</flux:label>
                                 <flux:input wire:model="form.reservation_status" :readonly="$readonly"
@@ -214,7 +215,7 @@
 
 
                             @endif
-                        @endif
+                        @endif --}}
 
 
                         <flux:field>

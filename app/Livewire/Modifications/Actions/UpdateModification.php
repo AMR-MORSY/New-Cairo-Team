@@ -85,7 +85,7 @@ class UpdateModification extends Component
                 ]);
             } else { ////////////////when the on hand does not cover the diff amount, we will leave the on hand as it is and put this quotation in over po invoices table
                 $this->modification->reservation->po->decrement('in_progress', $reservedAmount);
-                $this->modification->reservation->po->increment('on_hand', $reservedAmount);//////////increase the on hand amount by the reserved amount
+                $this->modification->reservation->po->increment('on_hand', $reservedAmount); //////////increase the on hand amount by the reserved amount
                 $overPo = OverPoInvoice::create([
                     'modification_reservation_id' => $this->modification->reservation->id,
                     'amount' => $quotationAmount,
@@ -94,90 +94,117 @@ class UpdateModification extends Component
             }
         }
     }
+
+    private function updateModificationAndRedirect()
+    {
+        $this->modification->update(
+            $this->form->only($this->form->updateFormAttributes())
+        );
+
+        $this->modification->actions()->sync($this->form->action_id); // Replace all existing relationships with the new array
+        Toaster::success('Modification updated Successfully');
+
+        return redirect()->route('modification.details', $this->modification->id);
+    }
     public function update()
     {
         $this->validate();
 
-        $quotation = $this->modification->quotation()->where('is_active', 0)->first(); //////////check if there is an inactive quotation for this modification 
+        $inActiveQuotation = $this->modification->quotation()->where('is_active', 0)->first(); //////////check if there is an inactive quotation for this modification 
         $activeQuotation = $this->modification->quotation()->where('is_active', 1)->first(); //////////check if there is an active quotation for this modification 
 
         if ($this->form->modification_status_id == 1 || $this->form->modification_status_id == 3) { /////////////////done or waiting D6
 
-            if ($quotation) {
-                $quotationAmount = $quotation->sumMailListItems() + $quotation->sumPriceListItems();
-                if ($this->modification->reservation->status == 'active') //////////////////means that modification was in progress and the user submit quotation and want to update the modification to done/waiting D6
-                {
+            /////////////////this part concerned with the new modification system
+            // if ($inActiveQuotation) {
+            //     $quotationAmount = $inActiveQuotation->sumMailListItems() + $inActiveQuotation->sumPriceListItems();
+            //     if ($this->modification->reservation->status == 'active') //////////////////means that modification was in progress and the user submit quotation and want to update the modification to done/waiting D6
+            //     {
 
-                    $reservedAmount = $this->modification->reservation->amount;
+            //         $reservedAmount = $this->modification->reservation->amount;
 
-                    $this->adjustPO($quotationAmount, $reservedAmount);
-                } elseif ($this->modification->reservation->status == 'expired' || $this->modification->reservation->status == 'cancelled') {
-                    $onHand = $this->modification->reservation->po->getAvailableAmount();
-                    if ($quotationAmount <= $onHand) {
-                        $this->modification->reservation->po->increment('invoiced', $quotationAmount);
-                        $this->modification->reservation->po->decrement('on_hand', $quotationAmount);
-                        $Invoice = Invoice::create([
-                            'modification_reservation_id' => $this->modification->reservation->id,
-                            'amount' => $quotationAmount,
-                            'reserved_at' => now(),
-                        ]);
-                    } else {
-                        $overPo = OverPoInvoice::create([
-                            'modification_reservation_id' => $this->modification->reservation->id,
-                            'amount' => $quotationAmount,
-                            'reserved_at' => now(),
-                        ]);
-                    }
-                }
+            //         $this->adjustPO($quotationAmount, $reservedAmount);
+            //     } elseif ($this->modification->reservation->status == 'expired' || $this->modification->reservation->status == 'cancelled') {
+            //         $onHand = $this->modification->reservation->po->getAvailableAmount();
+            //         if ($quotationAmount <= $onHand) {
+            //             $this->modification->reservation->po->increment('invoiced', $quotationAmount);
+            //             $this->modification->reservation->po->decrement('on_hand', $quotationAmount);
+            //             $Invoice = Invoice::create([
+            //                 'modification_reservation_id' => $this->modification->reservation->id,
+            //                 'amount' => $quotationAmount,
+            //                 'reserved_at' => now(),
+            //             ]);
+            //         } else {
+            //             $overPo = OverPoInvoice::create([
+            //                 'modification_reservation_id' => $this->modification->reservation->id,
+            //                 'amount' => $quotationAmount,
+            //                 'reserved_at' => now(),
+            //             ]);
+            //         }
+            //     }
+            //     $this->modification->quotation->update(['is_active' => 1]);
+            //     $this->modification->reservation->update(['status' => 'completed']);
+            //     $this->modification->update(
+            //         $this->form->only($this->form->updateFormAttributes())
+            //     );
+
+            //     $this->modification->actions()->sync($this->form->action_id); // Replace all existing relationships with the new array
+            //     Toaster::success('Modification updated Successfully');
+
+            //     return redirect()->route('modification.details', $this->modification->id);
+            // } elseif ($activeQuotation) { ////////////////////update modification's data only
+            //     $this->modification->update(
+            //         $this->form->only($this->form->updateFormAttributes())
+            //     );
+
+            //     $this->modification->actions()->sync($this->form->action_id); // Replace all existing relationships with the new array
+            //     Toaster::success('Modification updated Successfully');
+
+            //     return redirect()->route('modification.details', $this->modification->id);
+            // } else {
+            //     return redirect()->back()->with('quotation_error', 'You have to submit Quotation');
+            // }
+
+            if ($inActiveQuotation) {
+
                 $this->modification->quotation->update(['is_active' => 1]);
-                $this->modification->reservation->update(['status' => 'completed']);
-                $this->modification->update(
-                   $this->form->only($this->form->updateFormAttributes())
-                );
-
-                $this->modification->actions()->sync($this->form->action_id); // Replace all existing relationships with the new array
-                Toaster::success('Modification updated Successfully');
-
-                return redirect()->route('modification.details', $this->modification->id);
+                $this->updateModificationAndRedirect();
             } elseif ($activeQuotation) { ////////////////////update modification's data only
-                $this->modification->update(
-                    $this->form->only($this->form->updateFormAttributes())
-                );
-
-                $this->modification->actions()->sync($this->form->action_id); // Replace all existing relationships with the new array
-                Toaster::success('Modification updated Successfully');
-
-                return redirect()->route('modification.details', $this->modification->id);
+                $this->updateModificationAndRedirect();
             } else {
                 return redirect()->back()->with('quotation_error', 'You have to submit Quotation');
             }
         } elseif ($this->form->modification_status_id == 2) /////////////in progress
         {
+            //////////////this part concerned with modification's new system
 
-            $invoice = $this->modification->reservation->invoice;
-            $overPo = $this->modification->reservation->overPo;
+            // $invoice = $this->modification->reservation->invoice;
+            // $overPo = $this->modification->reservation->overPo;
 
 
 
-            if ($invoice || $overPo) {
-                Toaster::error('The modification is already invoiced, you can not make it in progress')->duration('7000');
-            } elseif ($this->form->is_expired && $this->form->activate == 1) { //////////the user wants to activate the expired reservation + updating any form data
+            // if ($invoice || $overPo) {
+            //     Toaster::error('The modification is already invoiced, you can not make it in progress')->duration('7000');
+            // } elseif ($this->form->is_expired && $this->form->activate == 1) { //////////the user wants to activate the expired reservation + updating any form data
 
-                $this->form->inprogressFormSubmission($this->modification);
+            //     $this->form->inprogressFormSubmission($this->modification);
 
-                return redirect()->route('modification.details', $this->modification->id);
-            } elseif ($this->form->is_expired && $this->form->activate != 1) {
-                Toaster::error('The modification is already expired, you must activate it before any update')->duration('7000');
-            } else {
-                $this->modification->update(
-                   $this->form->only($this->form->updateFormAttributes())
-                );
+            //     return redirect()->route('modification.details', $this->modification->id);
+            // } elseif ($this->form->is_expired && $this->form->activate != 1) {
+            //     Toaster::error('The modification is already expired, you must activate it before any update')->duration('7000');
+            // } else {
+            //     $this->modification->update(
+            //        $this->form->only($this->form->updateFormAttributes())
+            //     );
 
-                $this->modification->actions()->sync($this->form->action_id); // Replace all existing relationships with the new array
-                Toaster::success('Modification updated Successfully');
+            //     $this->modification->actions()->sync($this->form->action_id); // Replace all existing relationships with the new array
+            //     Toaster::success('Modification updated Successfully');
 
-                return redirect()->route('modification.details', $this->modification->id);
-            }
+            //     return redirect()->route('modification.details', $this->modification->id);
+            // }
+
+
+          $this->updateModificationAndRedirect();
         }
     }
     public function render()

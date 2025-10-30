@@ -25,7 +25,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            // TeamsAndZonesSeeder::class,
+            TeamsAndZonesSeeder::class,
             // ModificationRolesAndPermissionsSeeder::class,
             // UsersSeeder::class,
             // ProjectsSeeder::class,
@@ -34,7 +34,7 @@ class DatabaseSeeder extends Seeder
             // RequestersSeeder::class,
             // ModificationStatusSeeder::class
 
-             ModificationSeeder::class
+            //  ModificationSeeder::class
             
            
 

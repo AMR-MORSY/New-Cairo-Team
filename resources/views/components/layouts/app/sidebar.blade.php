@@ -25,34 +25,45 @@
 
             </flux:navlist.group>
 
-            <flux:navlist.group expandable icon="home" :heading="__('Users')" class="lg:grid">
+            @can('handle_users_activities')
+                <flux:navlist.group expandable icon="home" :heading="__('Users')" class="lg:grid">
 
-                <flux:navlist.item :href="route('users.index')" :current="request()->routeIs('users.index')"
-                    wire:navigate>{{ __('All') }}</flux:navlist.item>
-                <flux:navlist.item :href="route('permission.index')" :current="request()->routeIs('permission.index')"
-                    wire:navigate>{{ __('Permissions') }}</flux:navlist.item>
-                <flux:navlist.item :href="route('role.index')" :current="request()->routeIs('role.index')"
-                    wire:navigate>{{ __('Roles') }}</flux:navlist.item>
-            </flux:navlist.group>
+                    <flux:navlist.item :href="route('users.index')" :current="request()->routeIs('users.index')"
+                        wire:navigate>{{ __('All') }}</flux:navlist.item>
+                    <flux:navlist.item :href="route('permission.index')" :current="request()->routeIs('permission.index')"
+                        wire:navigate>{{ __('Permissions') }}</flux:navlist.item>
+                    <flux:navlist.item :href="route('role.index')" :current="request()->routeIs('role.index')"
+                        wire:navigate>{{ __('Roles') }}</flux:navlist.item>
+                </flux:navlist.group>
+            @endcan
+
 
 
             <flux:navlist.group expandable :heading="__('Sites')" class="lg:grid">
-                <flux:navlist.item :href="route('site.create')" :current="request()->routeIs('site.create')"
-                    wire:navigate>
-                    <div class=" flex items-center gap-1 ">
-                        <flux:icon.plus-circle />
-                        <p>{{ __('New Site') }} </p>
-                    </div>
+               
+                    <flux:navlist.item :href="route('site.create')" :current="request()->routeIs('site.create')"
+                        wire:navigate>
+                        <div class=" flex items-center gap-1 ">
+                            <flux:icon.plus-circle />
+                            <p>{{ __('New Site') }} </p>
+                        </div>
 
-                </flux:navlist.item>
-              
+                    </flux:navlist.item>
+             
+
+
+
                 <flux:navlist.item :href="route('site.CE.sites')" :current="request()->routeIs('site.CE.sites')">
                     <div class=" flex items-center gap-1">
                         <flux:icon.arrow-down-tray />
                         <p>{{ __('CE Sites') }}</p>
                     </div>
                 </flux:navlist.item>
+
+
             
+
+
             </flux:navlist.group>
 
             <flux:navlist.group expandable :heading="__('Modifications')" class=" lg:grid">
@@ -73,13 +84,13 @@
                         <p> Price List</p>
                     </div>
                 </flux:navlist.item>
-                <flux:navlist.item href="#">
+                {{-- <flux:navlist.item href="#">
                     <div class=" flex items-center gap-1">
                         <flux:icon.clipboard />
                         <p> Dashboard</p>
                     </div>
 
-                </flux:navlist.item>
+                </flux:navlist.item> --}}
 
                 <flux:navlist.item :href="route('pos')" :current="request()->routeIs('pos')" wire:navigate>
                     <div class=" flex items-center gap-1 ">

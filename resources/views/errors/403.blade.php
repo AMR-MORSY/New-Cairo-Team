@@ -36,7 +36,7 @@
 
                 <div class="flex flex-col space-y-2">
                     <button onclick="window.history.back()"
-                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor-pointer">
                         Go Back
                     </button>
 

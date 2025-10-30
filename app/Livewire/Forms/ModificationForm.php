@@ -28,7 +28,7 @@ class ModificationForm extends Form
     public $subcontractor_id = '';
     public $pending = "";
     public $est_cost;
-    public $final_cost;
+    public $final_cost=0;
     public $request_date = '';
     public $requester_id = '';
     public $project_id = '';
@@ -64,20 +64,20 @@ class ModificationForm extends Form
     public function updateFormAttributes()
     {
         return [
-            "site_code" ,       
-            "action_id" , 
-            "description" , 
-            "pending" ,
-            "request_date" ,
-            "cw_date" ,
+            "site_code",
+            "action_id",
+            "description",
+            "pending",
+            "request_date",
+            "cw_date",
             "d6_date",
-            "modification_status_id" ,
-            "requester_id" ,  
-            "est_cost" ,
-            "reported" ,
+            "modification_status_id",
+            "requester_id",
+            "est_cost",
+            "reported",
             "reported_at",
-            'team_id' ,
-            'zone_id' ,
+            'team_id',
+            'zone_id',
             'action_owner'
 
         ];
@@ -107,9 +107,11 @@ class ModificationForm extends Form
         $this->action_id = $modification->action_id;
         $this->wo_code = $modification->wo_code;
 
-        $this->expires_at = $modification->reservation->expires_at_for_user;
-        $this->reservation_status = $modification->reservation->status;
-        $this->is_expired = $modification->reservation->is_expired;
+        ////////////////////these attributes concerned with New modifications system
+
+        // $this->expires_at = $modification->reservation->expires_at_for_user;
+        // $this->reservation_status = $modification->reservation->status;
+        // $this->is_expired = $modification->reservation->is_expired;
     }
 
 
@@ -258,41 +260,54 @@ class ModificationForm extends Form
 
     public function inprogressFormSubmission($modification = null)
     {
-        $project = Project::find($this->project_id);
-        $projectPOName = $project->getProjectPOName();
-        $subcontractor = Subcontractor::find($this->subcontractor_id);
+        /////////////////////////////////this part concerned with checking subcontractor's PO
+        // $project = Project::find($this->project_id);
+        // $projectPOName = $project->getProjectPOName();
+        // $subcontractor = Subcontractor::find($this->subcontractor_id);
 
-        $POs = $subcontractor->getSubcontractorAvailablePOs($projectPOName);
+        // $POs = $subcontractor->getSubcontractorAvailablePOs($projectPOName);
 
-        if (count($POs) > 0) {
-            $onHands = $this->checkPOOnHandAmount($POs); //////array of POs on hand amount
-            if (count($onHands) > 0) {
-
-
-
-                $po = PurchaseOrder::find($onHands[0]['id']);
-                $estCostFloatValue = floatval(str_replace(',', '', $this->est_cost));
+        // if (count($POs) > 0) {
+        //     $onHands = $this->checkPOOnHandAmount($POs); //////array of POs on hand amount
+        //     if (count($onHands) > 0) {
 
 
 
-                $po->increment('in_progress', $estCostFloatValue);
-                $po->decrement('on_hand', $estCostFloatValue);
+        //         $po = PurchaseOrder::find($onHands[0]['id']);
+        //         $estCostFloatValue = floatval(str_replace(',', '', $this->est_cost));
 
-                if (!$modification) {
-                    $modification = $this->createInprogressForm($onHands);
 
-                    return redirect()->route('modification.details', $modification->id);
-                } elseif ($modification) {
-                    $updatedModification = $this->updateInprogressForm($onHands, $modification);
-                    return redirect()->route('modification.details', $updatedModification->id);
-                }
-            } else {
-                $subcontractorName = $subcontractor->name;
-                Toaster::error("There is no available POs with sufficient amount to cover this modification for . $subcontractorName ");
-            }
-        } else {
-            $subcontractorName = $subcontractor->name;
-            Toaster::error("There is no available POs for . $subcontractorName ");
-        }
+
+        //         $po->increment('in_progress', $estCostFloatValue);
+        //         $po->decrement('on_hand', $estCostFloatValue);
+
+        //         if (!$modification) {
+        //             $modification = $this->createInprogressForm($onHands);
+
+        //             return redirect()->route('modification.details', $modification->id);
+        //         } elseif ($modification) {
+        //             $updatedModification = $this->updateInprogressForm($onHands, $modification);
+        //             return redirect()->route('modification.details', $updatedModification->id);
+        //         }
+        //     } else {
+        //         $subcontractorName = $subcontractor->name;
+        //         Toaster::error("There is no available POs with sufficient amount to cover this modification for . $subcontractorName ");
+        //     }
+        // } else {
+        //     $subcontractorName = $subcontractor->name;
+        //     Toaster::error("There is no available POs for . $subcontractorName ");
+        // }
+
+
+        $modification = Modification::create(
+            $this->all()
+        );
+
+
+        $modification->actions()->attach($this->action_id);
+
+        Toaster::success('Modification created Successfully');
+
+        return redirect()->route('modification.details', $modification->id);
     }
 }

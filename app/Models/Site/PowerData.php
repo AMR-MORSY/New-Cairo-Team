@@ -3,9 +3,12 @@
 namespace App\Models\Site;
 
 use App\Models\Site\Site;
+use App\Policies\PowerDataPolicy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 
+#[UsePolicy(PowerDataPolicy::class)]
 class PowerData extends Model
 {
     protected $table = 'site_power_data';

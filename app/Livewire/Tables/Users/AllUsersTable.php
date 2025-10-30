@@ -46,8 +46,8 @@ final class AllUsersTable extends PowerGridComponent
             PowerGrid::footer()
                 ->showPerPage()
                 ->showRecordCount(),
-            // PowerGrid::responsive()
-            //     ->fixedColumns('name', 'email'),
+            PowerGrid::responsive()
+                ->fixedColumns('Name', 'Email'),
         ];
     }
 
@@ -55,10 +55,10 @@ final class AllUsersTable extends PowerGridComponent
     {
         return PowerGrid::fields()
             ->add('id')
-           
+
             ->add('name')
             ->add('email');
-          
+
         // ->add('created_at_formatted', function ($entry) {
         //     return Carbon::parse($entry->created_at)->format('d/m/Y');
         // });
@@ -74,8 +74,9 @@ final class AllUsersTable extends PowerGridComponent
                 ->sortable(),
 
             Column::make('Email', 'email')
+                ->searchable()
                 ->sortable(),
-          
+
 
             Column::action('View')
 

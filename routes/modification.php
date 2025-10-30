@@ -20,7 +20,7 @@ use App\Livewire\Modifications\Actions\ViewPurchaseOrderInvoicedModifications;
 use App\Livewire\Modifications\Actions\ViewPurchaseOrderInprogressModifications;
 use App\Models\Modification\Modification;
 
-Route::middleware(['auth', 'team.member'])->prefix('modification')->group(function () {
+Route::middleware(['auth','verified','team.member'])->prefix('modification')->group(function () {
 
 
     Route::get('create/{site:site_code}', CreateModification::class)->can('createSiteModifications', 'site')->name('modification.create');
@@ -34,7 +34,7 @@ Route::middleware(['auth', 'team.member'])->prefix('modification')->group(functi
 });
 
 
-Route::middleware(['auth'])->prefix('po')->group(function () {
+Route::middleware(['auth', 'verified'])->prefix('po')->group(function () {
 
     Route::get('pos', POs::class)->can('viewPOs', PurchaseOrder::class)->name('pos');
     Route::get('inprogress/modifications/{purchaseOrder}', ViewPurchaseOrderInprogressModifications::class)->can('viewPurchaseOrderModifications', PurchaseOrder::class)->name('po.inprogress.modifications');

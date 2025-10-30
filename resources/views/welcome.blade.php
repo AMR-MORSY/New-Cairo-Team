@@ -85,7 +85,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>All in One Management Tool - Telecom Sites Management</title>
+    <link rel="icon" href="/orange-app-logo2.svg" sizes="any">
+    <title>All in One</title>
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />
     <style>
@@ -126,6 +127,7 @@
         }
 
         .logo {
+
             font-size: 24px;
             font-weight: 600;
             color: white;
@@ -447,7 +449,14 @@
     <header>
         <div class="container">
             <nav>
-                <div class="logo">All in One Management Tool</div>
+                <div class="logo">
+
+                    <span>All in One</span>
+                    {{-- <div class=" w-4 h-4">
+                        <img src="{{ asset('orange-app-logo2.svg') }}" class=" w-full h-full object-contain" />
+                    </div> --}}
+
+                </div>
                 <ul class="nav-links">
 
 

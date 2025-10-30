@@ -24,11 +24,11 @@ class CheckTeamMembership
         }
         // Check if user belongs to any team
 
-        // if ($user->areas()->count() === 0) {
+        if ($user->teams()->count() === 0) {
       
-        //       abort(403, 'You are not assigned to any team. Please contact your administrator.');
-        //        return redirect()->back();
-        // }
+              abort(403, 'You are not assigned to any team. Please contact your administrator.');
+            
+        }
 
        
 
@@ -36,7 +36,7 @@ class CheckTeamMembership
 
         
 
-    //    $user->unsetRelation('roles')->unsetRelation('permissions');
+       $user->unsetRelation('roles')->unsetRelation('permissions');
 
      
        

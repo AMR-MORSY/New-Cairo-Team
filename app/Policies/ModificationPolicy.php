@@ -14,13 +14,13 @@ class ModificationPolicy
      */
     public function modificationSearch(User $user): Response
     {
-        $userTeamId = getPermissionsTeamId(); ///////as middleware check team already applied on the route before
-        //  dd($userTeamId);
+        // $userTeamId = getPermissionsTeamId(); ///////as middleware check team already applied on the route before
+        $userTeamId = $user->teams()->first()->id;
         if ($user->isModificationAdmin()) { //////////the user with modification admin can view any modification in any area 
             return Response::allow();
         }
        
-        elseif ($userTeamId) {//////////////////////users in teams can search area's modifications
+        elseif (in_array($userTeamId,[1,2,3],true) ) {//////////////////////users in HGLI,AGLI, and NGLI teams can search area's modifications
             return Response::allow();
         }
         return Response::deny('You do not have the right permission to search modifications.');
@@ -31,7 +31,8 @@ class ModificationPolicy
      */
     public function viewModificationDetails(User $user, Modification $modification): Response
     {
-        $userTeamId = getPermissionsTeamId();
+        // $userTeamId = getPermissionsTeamId();
+          $userTeamId = $user->teams()->first()->id;
         if ($user->isModificationAdmin()) { //////////the user with modification admin can view any modification in any area 
             return Response::allow();
         }

@@ -2,12 +2,13 @@
 
 namespace App\Livewire\Sites\Actions;
 
+use Toaster;
+use App\Models\User;
 use Livewire\Component;
 use App\Models\Site\Site;
+use App\Models\Site\MuxPlan;
 use App\Contracts\SiteInterface;
 use App\Livewire\Forms\SiteForm;
-use App\Models\Site\MuxPlan;
-use Toaster;
 
 class ShowSite extends Component
 {
@@ -48,6 +49,7 @@ class ShowSite extends Component
 
     public function muxPlan()
     {
+        $this->authorize('viewSiteProperties',$this->site);
         $site_code = $this->site->site_code;
         $muxPlans = MuxPlan::where('ne', 'like', "%$site_code%")->get();
         if (count($muxPlans) > 0) {

@@ -3,9 +3,12 @@
 namespace App\Models\Site;
 
 use App\Models\Site\Site;
+use App\Policies\SiteDataPolicy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 
+#[UsePolicy(SiteDataPolicy::class)]
 class SiteData extends Model
 {
 

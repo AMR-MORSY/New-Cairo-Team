@@ -58,16 +58,19 @@ class Login extends Component
         $zone = $teamAndZone['zone'];
 
         // Share team and zone data with all views
-        view()->share('currentTeam', $team);
-        view()->share('currentZone', $zone);
-        view()->share('userTeamAndZone', $teamAndZone);
+        // view()->share('currentTeam', $team);
+        // view()->share('currentZone', $zone);
+        // view()->share('userTeamAndZone', $teamAndZone);
 
         if ($team) {
             session(['team_id' => $team->id]);
+          
+           
 
             return;
         }
         session(['team_id' => null]);
+      
 
 
 

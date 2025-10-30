@@ -45,5 +45,13 @@ class TeamsAndZonesSeeder extends Seeder
             'description' => 'GLOBAL Modifications Team',
 
         ]);
+
+         //////////create GLOBAL Test Team Team
+          Team::create([
+            'name' => 'Test Team',
+            'code' => 'Test',
+            'description' => 'GLOBAL Test Team',
+
+        ]);
     }
 }

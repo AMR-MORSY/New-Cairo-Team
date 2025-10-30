@@ -9,6 +9,7 @@ use App\Models\Team;
 use App\Models\Zone;
 use Illuminate\Support\Str;
 use App\Models\Site\Modification;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
@@ -17,7 +18,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     use HasRoles;
     /** @use HasFactory<\Database\Factories\UserFactory> */
@@ -73,9 +74,15 @@ class User extends Authenticatable
         return ['team' => null, 'zone' => null];
     }
 
-    public function isModificationAdmin():bool
+    // Check if user is Modification admin 
+    public function isModificationAdmin(): bool
     {
-        return $this->hasRole('modification_admin') || $this->email=='morsy.mamr@gmail.com';
+        return $this->hasRole('modification_admin') || $this->email == 'morsy.mamr@gmail.com';
+    }
+    // Check if user is site admin
+    public function isSiteAdmin(): bool
+    {
+        return $this->hasRole('site_admin') || $this->email == 'morsy.mamr@gmail.com';
     }
 
     // Check if user is team manager
@@ -89,7 +96,7 @@ class User extends Authenticatable
     {
 
         $zoneCode = Zones::getCodeByValue($zone->code);
-       
+
         return $this->hasRole($zoneCode . '_zone_manager');
     }
 
