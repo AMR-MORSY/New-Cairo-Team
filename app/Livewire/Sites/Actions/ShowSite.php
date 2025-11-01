@@ -24,9 +24,12 @@ class ShowSite extends Component
 
     public $indirectCascades;
 
+    public  $previousUrl;
+
     public function mount(SiteInterface $siteRepositry, Site $site)
     {
 
+         $this->previousUrl = url()->previous();
 
         $this->siteRepository = $siteRepositry;
 
@@ -45,6 +48,12 @@ class ShowSite extends Component
         $this->indirectCascades = $this->siteRepository->indirectCascades($directCascades);
         $this->indirectCascades = collect($this->indirectCascades);
         //  dd([$this->newDirectCascades,$this->indirectCascades]);
+    }
+
+      public function goBack()
+    {
+        
+        return redirect()->to($this->previousUrl);
     }
 
     public function muxPlan()

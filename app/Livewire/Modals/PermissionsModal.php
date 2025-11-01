@@ -10,16 +10,19 @@ use Spatie\Permission\Models\Permission;
 
 class PermissionsModal extends ModalComponent
 {
-    public int $role_id;
+   
 
     public $permissions;
 
     public $role;
-    public function mount()
+    public function mount($role_name)
     {
-         $this->role = Role::find($this->role_id);
+         
+         $this->role = Role::where('name',$role_name)->first();
+     
 
-        $this->permissions = $this->role->permissions;
+        $this->permissions =Role::where('name',$role_name)->first()->permissions;
+      
     }
 
      #[On('deleteRolePermission')]

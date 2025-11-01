@@ -7,16 +7,17 @@ use Masmerise\Toaster\Toaster;
 
 class PowerDataLinks extends Component
 {
-     public $site;
+    public $site;
     public $powerData;
 
     public function delete()
     {
+        $this->authorize('update', $this->site);
         $this->powerData->delete();
 
         Toaster::info('Deleted Successfully.');
 
-        return redirect()->route('site.show',['site'=>$this->site->site_code]);
+        return redirect()->route('site.show', ['site' => $this->site->site_code]);
     }
     public function render()
     {

@@ -42,6 +42,7 @@ class Roles extends Component
     public function mount()
     {
         $roles = Role::all();
+      
         $this->roles=$roles->map(function($role){
 
              $role->team=Team::find($role->team_id);

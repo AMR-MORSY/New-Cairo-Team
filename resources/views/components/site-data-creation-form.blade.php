@@ -221,7 +221,7 @@
                         <flux:field>
                         
 
-                            <flux:textarea label="Pending *" wire:model="address" rows="4"
+                            <flux:textarea label="Address *" wire:model="form.address" rows="4"
                                 :placeholder="$readonly ? null : 'Address...'" :readonly="$readonly"
                                 class="w-full" />
 

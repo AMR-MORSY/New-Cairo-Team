@@ -2,11 +2,11 @@
 
 namespace App\Policies;
 
-use App\Models\Site\Battery;
+use App\Models\Site\SiteNote;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
-class BatteryPolicy
+class SiteNotePolicy
 {
     /**
      * Determine whether the user can view any models.
@@ -19,10 +19,9 @@ class BatteryPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Battery $battery):bool
+    public function view(User $user, SiteNote $siteNote): bool
     {
         return false;
-
     }
 
     /**
@@ -36,7 +35,7 @@ class BatteryPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Battery $battery): Response
+    public function update(User $user, SiteNote $siteNote): Response
     {
         if ($user->isSiteAdmin()) {
             return Response::allow();
@@ -47,7 +46,7 @@ class BatteryPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Battery $battery): bool
+    public function delete(User $user, SiteNote $siteNote): bool
     {
         return false;
     }
@@ -55,7 +54,7 @@ class BatteryPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, Battery $battery): bool
+    public function restore(User $user, SiteNote $siteNote): bool
     {
         return false;
     }
@@ -63,7 +62,7 @@ class BatteryPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, Battery $battery): bool
+    public function forceDelete(User $user, SiteNote $siteNote): bool
     {
         return false;
     }

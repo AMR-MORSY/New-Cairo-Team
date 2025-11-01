@@ -41,26 +41,8 @@ class SearchingForSite extends Component
         }
         $validated = $validator->validated();
         $search = $validated['search'];
-        $sites = Site::where('site_code', 'like', "%$search%")->orWhere('site_name', 'like', "%$search%")->get();
-
-      
-
-        if (count($sites) > 0) {
-        
-            $props = [
-                'title' => "Sites",
-                'data' => $sites,
-                'target'=>$this->target
-
-            ];
-
-            // $this->dispatch('openDynamicModal', 'tables.site.searched-sites-table', $props);
-            $this->dispatch('openModal', component:'modals.search-result-sites',  arguments: ['props' => $props]);
-        }
-        else{
-              Toaster::info('No data found');
-
-        }
+        return redirect()->route('site.searched.sites',$search);
+     
 
 
 

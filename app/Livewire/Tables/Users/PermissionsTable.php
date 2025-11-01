@@ -13,33 +13,19 @@ use PowerComponents\LivewirePowerGrid\Column;
 use PowerComponents\LivewirePowerGrid\PowerGridFields;
 use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 
 final class PermissionsTable extends PowerGridComponent
 {
     public string $tableName = 'permissions-table-ir7lon-table';
 
-    public Collection $data;
+    public Collection |null $data;
 
     public string $dataType;
 
     public function actions($row): array
     {
-        if ($this->dataType == "roles") {
-            return [
-                Button::add('edit-stock')
-
-                    ->icon('default-eye')
-                    ->tooltip('View Permissions')
-                    ->class('cursor-pointer')
-                    ->openModal('modals.permissions-modal', ['role_id' => $row->id]),
-                Button::add('edit-stock')
-                    ->icon('default-trash')
-                    ->class('cursor-pointer text-red-500')
-                    ->tooltip('delete Role')
-                    ->confirm('Are you sure you want to delete the role')
-                    ->dispatch('deleteRole', ['role_id' => $row->id])
-            ];
-        } elseif ($this->dataType == 'permissions') {
+        if ($this->dataType == 'permissions') {
             return [
                 Button::add('edit-stock')
                     ->icon('default-trash')
@@ -55,7 +41,7 @@ final class PermissionsTable extends PowerGridComponent
                     ->class('cursor-pointer text-red-500')
                     ->tooltip('delete permission')
                     ->confirm('Are you sure you want to delete the permission')
-                    ->dispatch('deleteRolePermission', ['permission_id' => $row->id])
+                    ->dispatch('deleteRolePermission', ['permission_name' => $row->name])
             ];
         }
 
@@ -64,19 +50,15 @@ final class PermissionsTable extends PowerGridComponent
 
     public function datasource(): Collection
     {
-        if ($this->dataType == "roles") {
-            $this->data = $this->data->map(function ($role) {
+       
 
-                $role->team = Team::find($role->team_id);
-                return $role;
-            });
-             return $this->data;
+        if ($this->data) {
+            return $this->data;
         }
-        // dd($this->data);
-
-        return $this->data;
+        return collect();
     }
 
+    
     public function setUp(): array
     {
 
@@ -85,6 +67,7 @@ final class PermissionsTable extends PowerGridComponent
             PowerGrid::header()
                 ->showSearchInput(),
             PowerGrid::footer()
+                ->showPerPage()
 
                 ->showRecordCount(),
         ];
@@ -96,8 +79,8 @@ final class PermissionsTable extends PowerGridComponent
             return PowerGrid::fields()
                 ->add('id')
                 ->add('name')
-                ->add('guard_name')
-                ->add('team', fn($model) => $model->team ? $model->team->code:'Global');
+                ->add('guard_name');
+           
         }
         return PowerGrid::fields()
             ->add('id')
@@ -118,8 +101,7 @@ final class PermissionsTable extends PowerGridComponent
 
                 Column::make('Guard_Name', 'guard_name')
                     ->sortable(),
-                Column::make('Team', 'team')
-                    ->sortable(),
+            
 
                 Column::action('Action')
 
@@ -151,14 +133,5 @@ final class PermissionsTable extends PowerGridComponent
         $permission = Permission::find($permission_id);
         $permission->delete();
         return redirect()->route('permission.index');
-    }
-
-    #[On('deleteRole')]
-
-    public function deleteRole($role_id)
-    {
-        $role = Role::find($role_id);
-        $role->delete();
-        return redirect()->route('role.index');
     }
 }

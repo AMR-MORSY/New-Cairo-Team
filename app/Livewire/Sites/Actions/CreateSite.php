@@ -20,9 +20,12 @@ class CreateSite extends Component
 
     public $zones, $teams;
 
+    public  $previousUrl;
+
     public function mount()
     {
 
+        $this->previousUrl = url()->previous();
         $this->zones = Zone::all();
         $this->teams = Team::all();
     }
@@ -59,6 +62,12 @@ class CreateSite extends Component
         $this->form->reset();
 
         return redirect()->route('site.show', ['site' => $site->site_code]);
+    }
+
+     public function goBack()
+    {
+        
+        return redirect()->to($this->previousUrl);
     }
     public function render()
     {

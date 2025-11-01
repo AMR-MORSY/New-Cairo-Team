@@ -11,7 +11,7 @@ class SearchResultSites extends ModalComponent
     public $props;
     public function mount($props)
     {
-        
+      
         $this->props=$props;
 
     }

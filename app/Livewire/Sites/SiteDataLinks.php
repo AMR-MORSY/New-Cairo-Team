@@ -12,6 +12,7 @@ class SiteDataLinks extends Component
 
     public function delete()
     {
+        $this->authorize('update',$this->site);
         $this->siteData->delete();
 
         Toaster::info('Deleted Successfully.');

@@ -11,7 +11,8 @@
                     <x-site-navlinks-group :site="$site" />
                 </x-slot:links> --}}
 
-                <livewire:tables.users.permissions-table :data="$roles" dataType="roles" />
+                {{-- <livewire:tables.users.permissions-table :data="$roles" dataType="roles" /> --}}
+                <livewire:tables.users.roles-table  :data="$roles"/>
 
 
             </x-viewLayouts.main-view-layout>

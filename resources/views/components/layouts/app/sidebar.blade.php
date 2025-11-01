@@ -40,16 +40,16 @@
 
 
             <flux:navlist.group expandable :heading="__('Sites')" class="lg:grid">
-               
-                    <flux:navlist.item :href="route('site.create')" :current="request()->routeIs('site.create')"
-                        wire:navigate>
-                        <div class=" flex items-center gap-1 ">
-                            <flux:icon.plus-circle />
-                            <p>{{ __('New Site') }} </p>
-                        </div>
 
-                    </flux:navlist.item>
-             
+                <flux:navlist.item :href="route('site.create')" :current="request()->routeIs('site.create')"
+                    wire:navigate>
+                    <div class=" flex items-center gap-1 ">
+                        <flux:icon.plus-circle />
+                        <p>{{ __('New Site') }} </p>
+                    </div>
+
+                </flux:navlist.item>
+
 
 
 
@@ -61,7 +61,7 @@
                 </flux:navlist.item>
 
 
-            
+
 
 
             </flux:navlist.group>
@@ -206,7 +206,8 @@
     @wireUiScripts
 
 
-    @livewire('wire-elements-modal')
+    {{-- @livewire('wire-elements-modal') --}}
+    @livewire('modal-manager')
     @fluxScripts
 
 

@@ -24,16 +24,18 @@ use App\Livewire\Sites\Actions\UpdateSiteNote;
 use App\Livewire\Sites\Actions\CreatePowerData;
 use App\Livewire\Sites\Actions\UpdatePowerData;
 use App\Livewire\Sites\Actions\CairoEastTPSites;
+use App\Livewire\Sites\Actions\ShowSearchedSites;
 use App\Livewire\Sites\Actions\UpdateSiteCascades;
 
 Route::middleware(['auth', 'verified','team.member'])->prefix('site')->group(function () {
 
   Route::post('/search', SearchingForSite::class)->name('site.search');
+  Route::get ('sites/{search}',ShowSearchedSites::class)->name('site.searched.sites');
   Route::get('show/{site:site_code}', ShowSite::class)->can('view','site')->name('site.show');
   Route::get('show/notes/{site:site_code}', ShowSiteNotes::class)->can('viewSiteProperties','site')->name('site.notes');
   Route::get('create/note/{site:site_code}', CreateSiteNote::class)->can('update','site')->name('site.note.create');
-  Route::get('update/note/{siteNote}', UpdateSiteNote::class)->name('site.note.update');
-  Route::get('update/{site:site_code}', UpdateSite::class)->name('site.update');
+  Route::get('update/note/{siteNote}', UpdateSiteNote::class)->can('update','siteNote')->name('site.note.update');
+  Route::get('update/{site:site_code}', UpdateSite::class)->can('update','site')->name('site.update');
   Route::get('create', CreateSite::class)->can('create',Site::class)->name('site.create');
   Route::get('update/cascades/{site:site_code}', UpdateSiteCascades::class)->can('update','site')->name('site.cascades.update');
 

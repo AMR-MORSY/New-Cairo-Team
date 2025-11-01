@@ -23,5 +23,8 @@
          <flux:navlist.item :href="route('site.notes',$site->site_code)" wire:navigate>
              {{ __('Notes') }}
          </flux:navlist.item>
+         <flux:navlist.item wire:click="goBack" class=" cursor-pointer">
+             {{ __('BACK') }}
+         </flux:navlist.item>
      </flux:navlist>
  </flux:navlist.group>

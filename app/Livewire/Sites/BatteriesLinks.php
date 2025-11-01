@@ -12,11 +12,12 @@ class BatteriesLinks extends Component
 
     public function delete()
     {
+        $this->authorize('update', $this->site);
         $this->battery->delete();
 
         Toaster::info('Deleted Successfully.');
 
-        return redirect()->route('site.batteries',['site'=>$this->site->site_code]);
+        return redirect()->route('site.batteries', ['site' => $this->site->site_code]);
     }
     public function render()
     {

@@ -29,7 +29,7 @@ final class CascadesTable extends PowerGridComponent
                     Button::add('edit-stock')
                         ->icon('default-trash')
                         ->class('cursor-pointer text-red-500')
-                        ->confirm('Are you sure you want to delete this PO?')
+                        ->confirm('Are you sure you want to delete this site?')
                         ->tooltip('Delete')
                         ->dispatch('removeCascade', ['site_code' => $row->code]),
                 ];

@@ -27,6 +27,7 @@ class ShowSiteNotes extends Component
     {
 
 
+        $this->authorize('update', $this->site);
         $this->dialog()->confirm([
             'title' => 'Are you Sure?',
             'description' => 'Delete this modification?',
@@ -44,8 +45,8 @@ class ShowSiteNotes extends Component
         if ($notice->site_code != $this->site->site_code) {
             abort(403);
         }
-         $notice->delete();
-         return redirect()->route('site.notes',['site'=>$this->site->site_code]);
+        $notice->delete();
+        return redirect()->route('site.notes', ['site' => $this->site->site_code]);
     }
 
     public function render()

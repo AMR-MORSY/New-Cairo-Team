@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Models\Site\Site;
 use Livewire\Attributes\On;
 use App\Contracts\SiteInterface;
+use App\Models\Site\Cascade;
 use Toaster;
 
 class UpdateSiteCascades extends Component
@@ -30,12 +31,18 @@ class UpdateSiteCascades extends Component
 
     public function addSiteToCascades($site_code)
     {
+      
         if ($site_code == $this->site->site_code) {
             $this->dispatch('closeModal');
             Toaster::error('Can not cascade on itself');
-        } elseif ($this->site->cascades()->where('cascade_code', $site_code)->exists()) {
+            return;
+        } elseif (Cascade::where('cascade_code', $site_code)->exists()) {
+          
+            $nodal_code=Cascade::where('cascade_code', $site_code)->first()->nodal_code;
+            $site=Site::where('site_code',$nodal_code)->first();
             $this->dispatch('closeModal');
-            Toaster::error('Already cascaded');
+            Toaster::error("Already cascaded on $site->site_code-$site->site_name")->duration(7000);
+            return;
         } else {
 
             $this->site->cascades()->create([
