@@ -259,9 +259,9 @@
 
                             </flux:field>
                             <flux:field>
-                                <flux:label>Area *</flux:label>
+                                <flux:label>Team *</flux:label>
 
-                                <flux:input wire:model="form.area_id" :readonly="$readonly"
+                                <flux:input wire:model="form.team_id" :readonly="$readonly"
                                     :placeholder="$readonly ? null : 'Enter reporting Date'" class="w-full" />
 
 

@@ -14,42 +14,46 @@ use Spatie\Permission\Models\Permission;
 
 class Roles extends Component
 {
-    public  $roles ;
+    public  $roles;
 
     public Collection $teams;
+    public  $previousUrl;
 
 
     public Collection $permissions;
 
-  
-      #[Validate]
-    public int|null $team_id=null;
-  
+
+    #[Validate]
+    public int|null $team_id = null;
+
     public string $newRole;
 
     public array $newPermissions;
 
 
-     protected function rules()
+    protected function rules()
     {
         return [
-            "team_id"=>'nullable|exists:teams,id',/////////////////when the team id is null, this means that the role is global and could be assigned to any user inside any team. All users must be belong to teams to have roles
-            'newRole' => ['required',"min:3","max:40", Rule::unique('roles', 'name')->where(function ($query)  { return $query->where('team_id', $this->team_id);})],
+            "team_id" => 'nullable|exists:teams,id', /////////////////when the team id is null, this means that the role is global and could be assigned to any user inside any team. All users must be belong to teams to have roles
+            'newRole' => ['required', "min:3", "max:40", Rule::unique('roles', 'name')->where(function ($query) {
+                return $query->where('team_id', $this->team_id);
+            })],
             'newPermissions' => 'required|exists:permissions,name',
         ];
     }
 
     public function mount()
     {
+        $this->previousUrl = url()->previous();
         $roles = Role::all();
-      
-        $this->roles=$roles->map(function($role){
 
-             $role->team=Team::find($role->team_id);
-             return $role;
+        $this->roles = $roles->map(function ($role) {
+
+            $role->team = Team::find($role->team_id);
+            return $role;
         });
 
-   
+
 
         $this->teams = Team::all();
 
@@ -60,16 +64,21 @@ class Roles extends Component
     {
         $this->validate();
 
-       $role=Role::create([
-        "name"=>$this->newRole,
-        "team_id"=>$this->team_id
-       ]);
-       if($role)
-       {
-        $role->givePermissionTo($this->newPermissions);
-       }
+        $role = Role::create([
+            "name" => $this->newRole,
+            "team_id" => $this->team_id
+        ]);
+        if ($role) {
+            $role->givePermissionTo($this->newPermissions);
+        }
 
-       return redirect()->route('role.index');
+        return redirect()->route('role.index');
+    }
+
+    public function goBack()
+    {
+
+        return redirect()->to($this->previousUrl);
     }
     public function render()
     {

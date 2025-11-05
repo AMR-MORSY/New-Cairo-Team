@@ -11,17 +11,22 @@ class ShowUsers extends Component
 
     public Collection $users;
 
-
+    public  $previousUrl;
     public function mount()
     {
-        $this->users=User::with(['teams'])->get();
+        $this->previousUrl = url()->previous();
+        $this->users = User::with(['teams'])->get();
 
         //  dd($this->users);
     }
 
+    public function goBack()
+    {
 
+        return redirect()->to($this->previousUrl);
+    }
     public function render()
     {
-        return view('livewire.users.actions.show-users',['users'=>$this->users]);
+        return view('livewire.users.actions.show-users', ['users' => $this->users]);
     }
 }

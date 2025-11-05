@@ -34,8 +34,10 @@ class ShowSingleUser extends Component
     public int|null $team_id = null;
 
     public $zones;
+    public  $previousUrl;
     public function mount(User $user)
     {
+        $this->previousUrl = url()->previous();
         $this->teams = Team::all();
 
         $this->teamAndZone = $user->getTeamAndZone();
@@ -122,7 +124,7 @@ class ShowSingleUser extends Component
     {
 
 
-    //   dd($this->newRoles);
+        //   dd($this->newRoles);
 
         setPermissionsTeamId($this->team_id);
         // dd($this->newRoles);
@@ -155,6 +157,11 @@ class ShowSingleUser extends Component
         ]);
     }
 
+    public function goBack()
+    {
+
+        return redirect()->to($this->previousUrl);
+    }
     public function render()
     {
         return view('livewire.users.actions.show-single-user', ["teamAndZone" => $this->teamAndZone, "user" => $this->user, 'teamRoles' => $this->teamRoles, 'teams' => $this->teams, 'zones' => $this->zones, "rolesAndPermissions" => $this->rolesAndPermissions]);

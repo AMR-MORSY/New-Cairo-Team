@@ -18,6 +18,8 @@ class SearchingForSite extends Component
 
     public $target;
 
+    public $updateSite;
+
 
     public function show()
     {
@@ -41,15 +43,7 @@ class SearchingForSite extends Component
         }
         $validated = $validator->validated();
         $search = $validated['search'];
-        return redirect()->route('site.searched.sites',$search);
-     
-
-
-
-
-        $this->search='';
-     
-
-
+        $this->search = '';
+        return redirect()->route('site.searched.sites',['target'=>$this->target,'search'=>$search,'updateSite'=>$this->updateSite]);
     }
 }

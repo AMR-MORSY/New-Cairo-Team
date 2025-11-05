@@ -21,19 +21,21 @@ final class SearchedSitesTable extends PowerGridComponent
     #[Locked]
     public  $props;
 
+    
+
     public int $perPage = 0;
 
-   
+
 
     public function actions($row): array
     {
-        if ($this->props['target']=='site.cascades.update') {
+        if ($this->props['target'] == 'site.cascades.update') {
             return [
                 Button::add('edit-stock')
                     ->icon('default-archive-box-arrow-down')
                     ->tooltip('Add')
                     ->class('cursor-pointer')
-                    ->dispatch('addSiteToCascades', ['site_code' => $row->site_code]),
+                    ->dispatch('addSiteToCascades', ['site_code' => $row->site_code,'update_site_code'=>$this->props['updateSite']]),
             ];
         } else {
             return [
@@ -58,40 +60,7 @@ final class SearchedSitesTable extends PowerGridComponent
         // Return empty query
         return Site::query()->whereRaw('1 = 0');
     }
-    // public function datasource(): Collection
-    // {
-
-
-
-    // First try props
-    // if ($this->props && isset($this->props['data'])) {
-    //     return collect($this->props['data']);
-    // }
-
-    // // Fallback to session
-    // if (session()->has('last_searched_sites')) {
-    //     return collect(session('last_searched_sites'));
-    // }
-    // return collect();
-    //    if($this->props && isset($this->props['data'])) {
-    //     $collection = collect($this->props['data']);
-
-    //     \Log::info('Datasource being returned', [
-    //         'count' => $collection->count(),
-    //         'perPage_property' => $this->perPage ?? 'not set',
-    //         'page_property' => $this->page ?? 'not set',
-    //         'totalCurrentPage_property' => $this->totalCurrentPage ?? 'not set',
-    //     ]);
-
-    //     return $collection;
-    // }
-
-    // if(session()->has('last_searched_sites')) {
-    //     return collect(session('last_searched_sites'));
-    // }
-
-    // return collect();
-    // }
+  
 
 
     public function setUp(): array
@@ -105,6 +74,7 @@ final class SearchedSitesTable extends PowerGridComponent
                 ->showPerPage()
                 ->pageName('searchedSitesPage')
                 ->showRecordCount(),
+            PowerGrid::responsive()->fixedColumns('Code', 'Name'),
 
         ];
     }

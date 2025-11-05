@@ -19,6 +19,8 @@ final class NodalSitesTable extends PowerGridComponent
 
     public $nodalSites;
 
+    public $perPage='nodalSites';
+
 
     public function datasource(): Collection
     {
@@ -33,10 +35,13 @@ final class NodalSitesTable extends PowerGridComponent
     }
 
     #[On('nodal_sites')]
-    public function nodal_sites($sites)
+    public function nodal_sites($sites,$perPage)
     {
         // dd($nodalSites);
         $this->nodalSites = collect($sites);
+        $this->perPage=$perPage;
+
+      
     }
 
 
@@ -48,7 +53,7 @@ final class NodalSitesTable extends PowerGridComponent
             PowerGrid::header()
                 ->showSearchInput(),
             PowerGrid::footer()
-                ->showPerPage()
+                ->pageName("nodalPage")
                 ->showRecordCount(),
             PowerGrid::responsive()->fixedColumns('site_code', 'site_name'),
             PowerGrid::exportable(fileName: 'nodal sites')

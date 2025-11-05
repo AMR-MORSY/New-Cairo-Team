@@ -10,8 +10,12 @@ class RolePermissions extends Component
 {
     public $permissions;
     public $role;
+
+     public  $previousUrl;
+
     public function mount(Role $role)
     {
+         $this->previousUrl = url()->previous();
         $this->permissions=$role->permissions;
         $this->role=$role;
      
@@ -25,6 +29,12 @@ class RolePermissions extends Component
        $this->role->revokePermissionTo($permission_name);
        return redirect()->route('role.permissions',$this->role->id);
 
+    }
+
+      public function goBack()
+    {
+        
+        return redirect()->to($this->previousUrl);
     }
     public function render()
     {

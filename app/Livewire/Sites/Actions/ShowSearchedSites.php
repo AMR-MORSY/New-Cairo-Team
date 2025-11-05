@@ -4,6 +4,9 @@ namespace App\Livewire\Sites\Actions;
 
 use Livewire\Component;
 use App\Models\Site\Site;
+use Livewire\Attributes\On;
+use App\Models\Site\Cascade;
+use Masmerise\Toaster\Toaster;
 
 class ShowSearchedSites extends Component
 {
@@ -14,7 +17,7 @@ class ShowSearchedSites extends Component
 
     public  $previousUrl;
 
-    public function mount($search)
+    public function mount($target,$search,$updateSite=null)
     {
          $this->previousUrl = url()->previous();
 
@@ -23,29 +26,46 @@ class ShowSearchedSites extends Component
         $this->props = [
             'title' => "Sites",
             'data' => $this->sites,
-            'target' => "showSites"
+            'target' => $target,
+            'updateSite'=>$updateSite
 
         ];
 
 
 
-        // if (count($sites) > 0) {
+    }
 
-        //     $props = [
-        //         'title' => "Sites",
-        //         'data' => $sites,
-        //         'target'=>$this->target
+     #[On('addSiteToCascades')]
 
-        //     ];
+    public function addSiteToCascades($site_code,$update_site_code)
+    {
+        
+        if ($site_code == $update_site_code) {
+           
+            Toaster::error('Can not cascade on itself');
+            return;
+        } elseif (Cascade::where('cascade_code', $site_code)->exists()) {
 
-        //     // $this->dispatch('openDynamicModal', 'tables.site.searched-sites-table', $props);
-        //     $this->dispatch('openModal', component:'modals.search-result-sites',  arguments: ['props' => $props]);
-        // }
-        // else{
-        //       Toaster::info('No data found');
+            $nodal_code = Cascade::where('cascade_code', $site_code)->first()->nodal_code;
+            $site = Site::where('site_code', $nodal_code)->first();
+            
+            Toaster::error("Already cascaded on $site->site_code-$site->site_name")->duration(7000);
+            return;
+        } else {
 
-        // }
+            $updateSite=Site::where('site_code',$update_site_code)->first();
 
+            $updateSite->cascades()->create([
+                'cascade_code' => $site_code,
+                'nodal_code' =>$update_site_code,
+                'cascade_name' => Site::where('site_code', $site_code)->first()->site_name
+
+
+            ]);
+            $cascadeSite= Site::where('site_code',$site_code)->first();
+            Toaster::success("$cascadeSite->site_name.has been added successfully to $updateSite->site_name.cascades ")->duration(7000);
+            return redirect()->route('site.cascades.update', ['site' =>$update_site_code]);
+        }
     }
 
     public function goBack()
