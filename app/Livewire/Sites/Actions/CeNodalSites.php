@@ -14,13 +14,13 @@ class CeNodalSites extends Component
     public function mount(CairoEastSitesRepository $cairo_east_sites_repository)
     {
        $this->authorize('viewCESites',Site::class);
-        $sites = Site::with('cascades', 'batteries')->whereHas('cascades', function ($query) {
-            $query->where('zone_id', 2);
-        })->get();
+        // $sites = Site::with('cascades', 'batteries')->whereHas('cascades', function ($query) {
+        //     $query->where('zone_id', 2);
+        // })->get();
 
 
 
-        $this->sites = $cairo_east_sites_repository::dispatchSites($sites);
+        // $this->sites = $cairo_east_sites_repository::dispatchSites($sites);
        
     }
  

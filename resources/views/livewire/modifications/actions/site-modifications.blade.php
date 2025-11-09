@@ -7,7 +7,7 @@
 
 
         @if (count($modifications) > 0)
-            <div class=" mt-7">
+            <div class=" max-w-xl xl:max-w-3xl  2xl:max-w-6xl mt-7">
                 <livewire:tables.modification.site-modifications-table :modifications="$modifications" :site="$site" />
             </div>
         @else

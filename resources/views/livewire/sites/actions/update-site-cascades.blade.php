@@ -1,7 +1,7 @@
  <x-viewLayouts.main-view-layout :heading="__('Site Cascades')" :subheading="__('You will find very important information about '.$site->site_code .'-'. $site->site_name.' cascades')">
      <x-slot:links>
          <flux:navlist.group expandable heading="Quick Links" class=" lg:grid mt-10">
-             <flux:navlist.item wire:click="goBack" class=" cursor-pointer" wire:navigate>
+             <flux:navlist.item :href="route('site.show',$site->site_code)" class=" cursor-pointer" wire:navigate>
                  {{ __('BACK') }}
              </flux:navlist.item>
          </flux:navlist.group>

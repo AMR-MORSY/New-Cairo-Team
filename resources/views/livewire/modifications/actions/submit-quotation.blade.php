@@ -40,7 +40,10 @@
               </form>
 
               @if ($selectedItems)
-                  <livewire:tables.modification.quotation-selected-price-list-items-table :selectedItems="$selectedItems" />
+              <div class="max-w-xl xl:max-w-3xl  2xl:max-w-6xl">
+                 <livewire:tables.modification.quotation-selected-price-list-items-table :selectedItems="$selectedItems" />
+              </div>
+                 
               @endif
 
 

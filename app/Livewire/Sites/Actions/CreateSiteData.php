@@ -5,14 +5,15 @@ namespace App\Livewire\Sites\Actions;
 use Livewire\Component;
 use App\Models\Site\Site;
 use App\Models\Site\SiteData;
+use Livewire\WithFileUploads;
 use Masmerise\Toaster\Toaster;
+use Livewire\Attributes\Validate;
 use App\Livewire\Forms\SiteDataForm;
+use App\Models\site\SiteImage;
 
 class CreateSiteData extends Component
 {
     public SiteDataForm $form;
-
-
 
 
 
@@ -24,10 +25,14 @@ class CreateSiteData extends Component
         $this->form->setSiteCode($site->site_code);
         $this->site = $site;
     }
+
+
+
+
     public function newSiteData()
     {
         $validated = $this->validate();
-        
+
         // dd($validated);
 
         $battery = SiteData::create($validated);

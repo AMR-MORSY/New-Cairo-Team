@@ -13,6 +13,7 @@ use App\Models\Zone;
 use App\Enums\Status;
 use App\Enums\SiteTypies;
 use App\Enums\SiteSharing;
+use Spatie\Image\Enums\Fit;
 use App\Models\Site\Cascade;
 use App\Policies\SitePolicy;
 use App\Enums\SiteCategories;
@@ -20,19 +21,26 @@ use App\Enums\SiteSeverities;
 use App\Models\Site\SiteData;
 use App\Models\Site\SiteNote;
 use App\Models\Site\PowerData;
+use App\Models\site\SiteImage;
+use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Modification\Modification;
+use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Attributes\UsePolicy;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 #[UsePolicy(SitePolicy::class)]
-class Site extends Model
+class Site extends Model implements HasMedia
 {
+    use InteractsWithMedia;
 
-    protected $appends = ['nodal_name', 'nodal_code','zone_name','team_name'];
+
+
+    protected $appends = ['nodal_name', 'nodal_code', 'zone_name', 'team_name'];
     protected $table = 'sites';
 
     protected $hidden = ["created_at", 'updated_at'];
@@ -106,7 +114,7 @@ class Site extends Model
         return $this->belongsTo(Team::class);
     }
 
-    
+
     protected function zoneName(): Attribute
     {
         return  Attribute::make(
@@ -128,7 +136,7 @@ class Site extends Model
 
     public function modifications(): HasMany
     {
-        return $this->hasMany(Modification::class, 'site_code','site_code');
+        return $this->hasMany(Modification::class, 'site_code', 'site_code');
     }
 
 
@@ -137,23 +145,44 @@ class Site extends Model
         return $this->hasMany(Cascade::class, 'nodal_code', 'site_code'); //// because we do not follow the name convention and replaced site_id reference with nodal_code as the reference is the site code not the id, so we have to mention both different foreign and reference   
     }
 
-    public function batteries():HasMany
+    public function batteries(): HasMany
     {
-        return $this->hasMany(Battery::class,'site_code','site_code');
+        return $this->hasMany(Battery::class, 'site_code', 'site_code');
     }
 
 
-    public function power_data():HasOne
+    public function power_data(): HasOne
     {
-        return $this->hasOne(PowerData::class,'site_code','site_code');
+        return $this->hasOne(PowerData::class, 'site_code', 'site_code');
     }
-     public function site_data():HasOne
+    public function site_data(): HasOne
     {
-        return $this->hasOne(SiteData::class,'site_code','site_code');
+        return $this->hasOne(SiteData::class, 'site_code', 'site_code');
     }
 
-    public function notices():HasMany
+    public function notices(): HasMany
     {
-        return $this->hasMany(SiteNote::class,'site_code','site_code');
+        return $this->hasMany(SiteNote::class, 'site_code', 'site_code');
+    }
+
+    public function images(): HasMany
+    {
+        return $this->hasMany(SiteImage::class, 'site_code', 'site_code');
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('site-images')
+            ->useDisk('s3')
+            ->storeConversionsOnDisk('s3');
+    }
+
+    public function registerMediaConversions(?Media $media = null): void
+    {
+        $this->addMediaConversion('carousel') // You can name this anything
+            ->width(368)
+            ->height(232)
+            ->sharpen(10)
+            ->nonQueued();
     }
 }

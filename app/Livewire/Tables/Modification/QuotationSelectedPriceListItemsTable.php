@@ -124,9 +124,5 @@ final class QuotationSelectedPriceListItemsTable extends PowerGridComponent/////
     }
 
   
-    // public function removeItem($id)
-    // {
-    //     // Dispatch to parent to remove the item
-    //     $this->dispatch('removeSelectedItem', id: $id);
-    // }
+    
 }

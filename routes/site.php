@@ -9,7 +9,9 @@ use App\Livewire\Sites\Actions\ShowSite;
 use App\Livewire\Sites\Actions\SiteData;
 use App\Livewire\Sites\SearchingForSite;
 use App\Livewire\Sites\Actions\CeTPSites;
+use App\Livewire\Sites\Actions\CeVipSites;
 use App\Livewire\Sites\Actions\CreateSite;
+use App\Livewire\Sites\Actions\SiteImages;
 use App\Livewire\Sites\Actions\SiteNodals;
 use App\Livewire\Sites\Actions\UpdateSite;
 use App\Livewire\Sites\Actions\ShowBattery;
@@ -19,6 +21,7 @@ use App\Livewire\Sites\Actions\ShowSiteNotes;
 use App\Livewire\Sites\Actions\SiteBatteries;
 use App\Livewire\Sites\Actions\SitePowerData;
 use App\Livewire\Sites\Actions\UpdateBattery;
+use App\Livewire\Sites\Actions\CeGSquareSites;
 use App\Livewire\Sites\Actions\CreateSiteData;
 use App\Livewire\Sites\Actions\CreateSiteNote;
 use App\Livewire\Sites\Actions\UpdateSiteData;
@@ -26,38 +29,89 @@ use App\Livewire\Sites\Actions\UpdateSiteNote;
 use App\Livewire\Sites\Actions\CreatePowerData;
 use App\Livewire\Sites\Actions\UpdatePowerData;
 use App\Livewire\Sites\Actions\CairoEastTPSites;
-use App\Livewire\Sites\Actions\CeGSquareSites;
-use App\Livewire\Sites\Actions\CeVipSites;
+use App\Livewire\Sites\Actions\UpdateSiteImages;
+use App\Livewire\Sites\Actions\UploadSiteImages;
 use App\Livewire\Sites\Actions\ShowSearchedSites;
 use App\Livewire\Sites\Actions\UpdateSiteCascades;
 
 Route::middleware(['auth', 'verified', 'team.member'])->prefix('site')->group(function () {
 
-  Route::post('/search', SearchingForSite::class)->name('site.search');
-  Route::get('sites/{target}/{search}/{updateSite?}', ShowSearchedSites::class)->name('site.searched.sites');
-  Route::get('show/{site:site_code}', ShowSite::class)->can('view', 'site')->name('site.show');
-  Route::get('show/notes/{site:site_code}', ShowSiteNotes::class)->can('viewSiteProperties', 'site')->name('site.notes');
-  Route::get('create/note/{site:site_code}', CreateSiteNote::class)->can('update', 'site')->name('site.note.create');
-  Route::get('update/note/{siteNote}', UpdateSiteNote::class)->can('update', 'siteNote')->name('site.note.update');
-  Route::get('update/{site:site_code}', UpdateSite::class)->can('update', 'site')->name('site.update');
-  Route::get('create', CreateSite::class)->can('create', Site::class)->name('site.create');
-  Route::get('update/cascades/{site:site_code}', UpdateSiteCascades::class)->can('update', 'site')->name('site.cascades.update');
+    Route::post('/search', SearchingForSite::class)->name('site.search');
+    Route::get('sites/{target}/{search}/{updateSite?}', ShowSearchedSites::class)->name('site.searched.sites');
+    Route::get('show/{site:site_code}', ShowSite::class)->can('view', 'site')->name('site.show');
+    Route::get('show/notes/{site:site_code}', ShowSiteNotes::class)->can('viewSiteProperties', 'site')->name('site.notes');
+    Route::get('create/note/{site:site_code}', CreateSiteNote::class)->can('update', 'site')->name('site.note.create');
+    Route::get('update/note/{siteNote}', UpdateSiteNote::class)->can('update', 'siteNote')->name('site.note.update');
+    Route::get('update/{site:site_code}', UpdateSite::class)->can('update', 'site')->name('site.update');
+    Route::get('create', CreateSite::class)->can('create', Site::class)->name('site.create');
+    Route::get('update/cascades/{site:site_code}', UpdateSiteCascades::class)->can('update', 'site')->name('site.cascades.update');
 
-  Route::get('batteries/{site:site_code}', SiteBatteries::class)->can('viewSiteProperties', 'site')->name('site.batteries');
-  Route::get('create/battery/{site:site_code}', CreateBattery::class)->can('update', 'site')->name('battery.create');
-  Route::get('show/battery/{battery}', ShowBattery::class)->can('view', 'battery')->name('battery.show');
-  Route::get('update/battery/{battery}', UpdateBattery::class)->can('update', 'battery')->name('battery.update');
+    Route::get('batteries/{site:site_code}', SiteBatteries::class)->can('viewSiteProperties', 'site')->name('site.batteries');
+    Route::get('create/battery/{site:site_code}', CreateBattery::class)->can('update', 'site')->name('battery.create');
+    Route::get('show/battery/{battery}', ShowBattery::class)->can('view', 'battery')->name('battery.show');
+    Route::get('update/battery/{battery}', UpdateBattery::class)->can('update', 'battery')->name('battery.update');
 
-  Route::get('powerData/{site:site_code}', SitePowerData::class)->can('viewSiteProperties', 'site')->name('site.powerData');
-  Route::get('create/powerData/{site:site_code}', CreatePowerData::class)->can('update', 'site')->name('powerData.create');
-  Route::get('update/powerData/{powerData}', UpdatePowerData::class)->can('update', 'powerData')->name('powerData.update');
+    Route::get('powerData/{site:site_code}', SitePowerData::class)->can('viewSiteProperties', 'site')->name('site.powerData');
+    Route::get('create/powerData/{site:site_code}', CreatePowerData::class)->can('update', 'site')->name('powerData.create');
+    Route::get('update/powerData/{powerData}', UpdatePowerData::class)->can('update', 'powerData')->name('powerData.update');
 
-  Route::get('siteData/{site:site_code}', SiteData::class)->can('viewSiteProperties', 'site')->name('site.siteData');
-  Route::get('create/siteData/{site:site_code}', CreateSiteData::class)->can('update', 'site')->name('siteData.create');
-  Route::get('update/siteData/{siteData}', UpdateSiteData::class)->can('update', 'siteData')->name('siteData.update');
-  Route::get('cairoEast/sites', CeSites::class)->name('site.CE.sites');
-  Route::get('cairoEast/sites/nodal', CeNodalSites::class)->name('site.CE.sites.nodal');
-  Route::get('cairoEast/sites/TP', CeTPSites::class)->name('site.CE.sites.TP');
-  Route::get('cairoEast/sites/golden', CeGSquareSites::class)->name('site.CE.sites.golden');
-  Route::get('cairoEast/sites/vip', CeVipSites::class)->name('site.CE.sites.vip');
+    Route::get('show/images/{site:site_code}', SiteImages::class)->can('viewSiteProperties', 'site')->name('site.images');
+
+    Route::get('upload/images/{site:site_code}', UploadSiteImages::class)->can('update', 'site')->name('site.images.upload');
+    Route::get('update/images/{site:site_code}', UpdateSiteImages::class)->can('update', 'site')->name('site.images.update');
+    Route::get('siteData/{site:site_code}', SiteData::class)->can('viewSiteProperties', 'site')->name('site.siteData');
+    Route::get('create/siteData/{site:site_code}', CreateSiteData::class)->can('update', 'site')->name('siteData.create');
+    Route::get('update/siteData/{siteData}', UpdateSiteData::class)->can('update', 'siteData')->name('siteData.update');
+    Route::get('cairoEast/sites', CeSites::class)->name('site.CE.sites');
+    Route::get('cairoEast/sites/nodal', CeNodalSites::class)->name('site.CE.sites.nodal');
+    Route::get('cairoEast/sites/TP', CeTPSites::class)->name('site.CE.sites.TP');
+    Route::get('cairoEast/sites/golden', CeGSquareSites::class)->name('site.CE.sites.golden');
+    Route::get('cairoEast/sites/vip', CeVipSites::class)->name('site.CE.sites.vip');
+});
+
+Route::get('/test-s3', function () {
+    try {
+        $s3 = new \Aws\S3\S3Client([
+            'version' => 'latest',
+            'region' => config('filesystems.disks.s3.region'),
+            'credentials' => [
+                'key' => config('filesystems.disks.s3.key'),
+                'secret' => config('filesystems.disks.s3.secret'),
+            ],
+        ]);
+
+        $testKey = 'test-no-acl-' . time() . '.txt';
+
+        // Upload WITHOUT ACL
+        $result = $s3->putObject([
+            'Bucket' => config('filesystems.disks.s3.bucket'),
+            'Key' => $testKey,
+            'Body' => 'Test without ACL',
+            // NO ACL parameter!
+        ]);
+
+        // Verify it exists
+        $exists = $s3->doesObjectExist(
+            config('filesystems.disks.s3.bucket'),
+            $testKey
+        );
+
+        // Clean up
+        $s3->deleteObject([
+            'Bucket' => config('filesystems.disks.s3.bucket'),
+            'Key' => $testKey,
+        ]);
+
+        return response()->json([
+            'status' => 'SUCCESS',
+            'message' => 'Upload worked without ACL!',
+            'exists' => $exists,
+            'etag' => $result['ETag'],
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'FAILED',
+            'error' => $e->getMessage(),
+        ]);
+    }
 });

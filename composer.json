@@ -14,11 +14,13 @@
         "illuminate/support": "^7.0|^8.0|^9.0|^10.0|^11.0|^12.0",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
+        "league/flysystem-aws-s3-v3": "3.0",
         "livewire/flux": "^2.1.1",
         "livewire/volt": "^1.7.0",
         "masmerise/livewire-toaster": "^2.8",
         "openspout/openspout": "v4.24.0",
         "power-components/livewire-powergrid": "^6.5",
+        "spatie/laravel-medialibrary": "^11.17",
         "spatie/laravel-permission": "^6.21",
         "wire-elements/modal": "^3.0",
         "wireui/wireui": "^2.4"

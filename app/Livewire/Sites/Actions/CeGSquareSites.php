@@ -13,10 +13,10 @@ class CeGSquareSites extends Component
     {
           $this->authorize('viewCESites',Site::class);
 
-        $sites = Site::with('cascades', 'batteries')->where('zone_id', 2)->where(function ($query) {
-            $query->where('category', 'G.SQR')->orWhere('category', 'VIP + G.SQR')->orWhere('category', 'NDL + G.SQR')->orWhere('category', 'VIP + NDL + G.SQR');
-        })->get();
-        $this->sites = $cairo_east_sites_repository::dispatchSites($sites);
+        // $sites = Site::with('cascades', 'batteries')->where('zone_id', 2)->where(function ($query) {
+        //     $query->where('category', 'G.SQR')->orWhere('category', 'VIP + G.SQR')->orWhere('category', 'NDL + G.SQR')->orWhere('category', 'VIP + NDL + G.SQR');
+        // })->get();
+        // $this->sites = $cairo_east_sites_repository::dispatchSites($sites);
     }
     public function render()
     {
