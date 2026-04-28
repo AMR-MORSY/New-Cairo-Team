@@ -18,6 +18,8 @@ class SiteData extends Component
     {
         $this->site = $site;
         $this->siteData = $this->site->site_data;
+
+      
         if ($this->siteData) {
             $this->form->setSiteData($this->siteData);
             $this->form->adjustBooleanValues();

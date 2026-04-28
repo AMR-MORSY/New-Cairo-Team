@@ -40,6 +40,15 @@
                 </flux:button>
             </x-slot>
         </flux:callout>
+          <flux:callout icon="exclamation-triangle" variant="secondary" inline class=" mt-5">
+            <flux:callout.heading>Cairo East Batteries data</flux:callout.heading>
+            <flux:callout.text>click the button to view CE batteries data.</flux:callout.text>
+            <x-slot name="actions">
+
+                <flux:button :href="route('site.CE.sites.batteries')" class=" cursor-pointer" wire:navigate>CE BATTERIES
+                </flux:button>
+            </x-slot>
+        </flux:callout>
 
     </x-viewLayouts.main-view-layout>
 </div>

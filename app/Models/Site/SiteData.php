@@ -35,6 +35,7 @@ class SiteData extends Model
         "network_type",
         "last_pm_date",
         "permission_type",
+        "need_access_permission"
     ];
 
 

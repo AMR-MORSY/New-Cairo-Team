@@ -69,7 +69,7 @@ class Site extends Model implements HasMedia
     }
 
 
-    protected function getNodalNameAndCode($query)
+    public function getNodalNameAndCode($query)
     {
         $nodal = Cascade::where('cascade_code', $this->site_code)->first();
         if ($nodal) {
@@ -182,7 +182,6 @@ class Site extends Model implements HasMedia
         $this->addMediaConversion('carousel') // You can name this anything
             ->width(368)
             ->height(232)
-            ->sharpen(10)
             ->nonQueued();
     }
 }

@@ -58,7 +58,7 @@ class BatteryForm extends Form
             "battery_amp_hr" =>  ['nullable', 'max:50'],
             "no_strings" =>  ["required", 'integer', 'max:100'],
             "batteries_status" =>  ['nullable', 'max:50'],
-            "installation_date" => ["requiredIf:theft_case,null","date"],
+            "installation_date" => ["required_without:theft_case", "date"],
             "theft_case" => ["nullable", "date"],
 
         ];

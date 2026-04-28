@@ -27,7 +27,7 @@ class CreateSite extends Component
 
         $this->previousUrl = url()->previous();
         $this->zones = Zone::all();
-        $this->teams = Team::all();
+        $this->teams = Team::all()->take(3); /////////////////HGLI,AGLI,NGLI only
     }
 
     public function create()

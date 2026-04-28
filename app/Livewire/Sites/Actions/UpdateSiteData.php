@@ -25,10 +25,12 @@ class UpdateSiteData extends Component
     {
         $validated = $this->form->validate();
 
+     
+
         $battery = $this->siteData->update($validated);
 
         Toaster::success('Updated Successfully');
-        return redirect()->route('site.powerData', ['site' => $this->site->site_code]);
+        return redirect()->route('site.siteData', ['site' => $this->site->site_code]);
 
     }
     public function render()

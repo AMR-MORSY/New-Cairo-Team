@@ -8,4 +8,5 @@ enum Host: string
     case VF = 'VF';
     case ET = "ET";
     case WE = "WE";
+    case NOTSHARED='';
 }

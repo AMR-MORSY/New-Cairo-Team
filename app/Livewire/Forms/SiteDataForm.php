@@ -41,7 +41,7 @@ class SiteDataForm extends Form
         $this->equip_room = $siteData->equip_room;
         $this->address = $siteData->address;
         $this->x_coordinate = $siteData->x_coordinate;
-        $this->y_coordinate = $siteData->x_coordinate;
+        $this->y_coordinate = $siteData->y_coordinate;
         $this->ntra_cluster = $siteData->ntra_cluster;
         $this->care_ceo = $siteData->care_ceo;
         $this->axis = $siteData->axis;
@@ -111,8 +111,8 @@ class SiteDataForm extends Form
             "serve_compound" =>   ['nullable', 'in:0,1'],
             "universities" => ['nullable', 'in:0,1'],
             "hot_spot" => ['nullable', 'in:0,1'],
-            "x_coordinate" => ['nullable', 'max:55', 'regex:/^[0-9.]+$/'],
-            "y_coordinate" => ['nullable', 'max:55', 'regex:/^[0-9.]+$/'],
+            "x_coordinate" => ['nullable', 'max:15', 'string'],
+            "y_coordinate" => ['nullable', 'max:15', 'string'],
             "address" => ['nullable', 'max:255', 'string'],
             "network_type" => ['nullable', 'max:55', 'regex:/^[a-zA-Z0-9 \/]+$/'],
             "last_pm_date" => ['nullable', 'date'],

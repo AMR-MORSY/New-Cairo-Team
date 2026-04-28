@@ -29,6 +29,7 @@ use App\Livewire\Sites\Actions\UpdateSiteNote;
 use App\Livewire\Sites\Actions\CreatePowerData;
 use App\Livewire\Sites\Actions\UpdatePowerData;
 use App\Livewire\Sites\Actions\CairoEastTPSites;
+use App\Livewire\Sites\Actions\CeBatteries;
 use App\Livewire\Sites\Actions\UpdateSiteImages;
 use App\Livewire\Sites\Actions\UploadSiteImages;
 use App\Livewire\Sites\Actions\ShowSearchedSites;
@@ -67,51 +68,5 @@ Route::middleware(['auth', 'verified', 'team.member'])->prefix('site')->group(fu
     Route::get('cairoEast/sites/TP', CeTPSites::class)->name('site.CE.sites.TP');
     Route::get('cairoEast/sites/golden', CeGSquareSites::class)->name('site.CE.sites.golden');
     Route::get('cairoEast/sites/vip', CeVipSites::class)->name('site.CE.sites.vip');
-});
-
-Route::get('/test-s3', function () {
-    try {
-        $s3 = new \Aws\S3\S3Client([
-            'version' => 'latest',
-            'region' => config('filesystems.disks.s3.region'),
-            'credentials' => [
-                'key' => config('filesystems.disks.s3.key'),
-                'secret' => config('filesystems.disks.s3.secret'),
-            ],
-        ]);
-
-        $testKey = 'test-no-acl-' . time() . '.txt';
-
-        // Upload WITHOUT ACL
-        $result = $s3->putObject([
-            'Bucket' => config('filesystems.disks.s3.bucket'),
-            'Key' => $testKey,
-            'Body' => 'Test without ACL',
-            // NO ACL parameter!
-        ]);
-
-        // Verify it exists
-        $exists = $s3->doesObjectExist(
-            config('filesystems.disks.s3.bucket'),
-            $testKey
-        );
-
-        // Clean up
-        $s3->deleteObject([
-            'Bucket' => config('filesystems.disks.s3.bucket'),
-            'Key' => $testKey,
-        ]);
-
-        return response()->json([
-            'status' => 'SUCCESS',
-            'message' => 'Upload worked without ACL!',
-            'exists' => $exists,
-            'etag' => $result['ETag'],
-        ]);
-    } catch (\Exception $e) {
-        return response()->json([
-            'status' => 'FAILED',
-            'error' => $e->getMessage(),
-        ]);
-    }
+      Route::get('cairoEast/sites/batteries', CeBatteries::class)->name('site.CE.sites.batteries');
 });

@@ -8,7 +8,7 @@
      </x-slot:links>
 
      <div class="max-w-xl xl:max-w-3xl  2xl:max-w-7xl">
-         <livewire:tables.site.cascades-table :cascades=$cascades cascadesType='direct' />
+         <livewire:tables.site.cascades-table :site="$site" cascadesType='updateCascades' />
 
 
          <flux:callout icon="exclamation-triangle" variant="secondary" inline class=" mt-5">

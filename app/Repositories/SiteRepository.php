@@ -8,34 +8,10 @@ use App\Models\Site\Cascade;
 use App\Contracts\SiteInterface;
 use Illuminate\Database\Eloquent\Collection;
 
-class SiteRepository implements SiteInterface
+class SiteRepository
 {
 
-    public function all()
-    {
-        $sites = Site::all();
-
-        return $sites;
-    }
-
-
-    public function directCascades(Collection $directCascades): array
-    {
-
-        $newDirectCascades = [];
-        foreach ($directCascades as $cascade) {
-            $site = [];
-            $site['details'] = Site::where('site_code', $cascade->cascade_code)->first();
-            $nodal_cascades = Cascade::where('nodal_code', $cascade['cascade_code'])->get();
-            $site['count'] = $nodal_cascades->count();
-            array_push($newDirectCascades, $site);
-        }
-
-
-
-        return $newDirectCascades;
-    }
-    public function indirectCascades(object $directCascades): array
+    public function indirectCascades($directCascades): array
     {
         $inDirectCascades = [];
 
@@ -49,8 +25,10 @@ class SiteRepository implements SiteInterface
             if (count($nodal_cascades) > 0) {
                 foreach ($nodal_cascades as $cascade) {
                     $site = Site::where('site_code', $cascade['cascade_code'])->first();
-                    array_push($inDirectCascades, $site);
-                    $directCascadesContainer->append($cascade);
+                    if ($site) {
+                        array_push($inDirectCascades, $site);
+                        $directCascadesContainer->append($cascade);
+                    }
                 }
             }
 
@@ -59,5 +37,42 @@ class SiteRepository implements SiteInterface
         }
         return $inDirectCascades;
     }
-    public function create() {}
+
+
+    private function adjustCascadedNodalsArray($cascaded_nodals)
+    {
+          $cascaded_nodals = array_map(function ($nodal) {
+            $site_name = Site::where('site_code', $nodal)->first()->site_name;
+            $nodal = "<>{$nodal}_{$site_name}";
+
+            return $nodal;
+        }, $cascaded_nodals);
+
+        return $cascaded_nodals;
+
+    }
+
+    public function nodals($nodal_code)
+    {
+        $cascaded_nodals[] = $nodal_code;
+        $nodals[] = $nodal_code;
+
+        $nodalsContainer = new ArrayIterator($nodals);
+
+        $i = 0;
+        while (count($nodalsContainer) > 0) {
+            $nodal_cascade = Cascade::where('cascade_code', $nodalsContainer[$i])->first();
+            if ($nodal_cascade) {
+                $cascaded_nodals[] = $nodal_cascade->nodal_code;
+                $nodalsContainer->append($nodal_cascade->nodal_code);
+            }
+            $nodalsContainer->offsetUnset($i);
+            $i++;
+        }
+
+        $cascaded_nodals=$this->adjustCascadedNodalsArray($cascaded_nodals);
+
+      
+        return $cascaded_nodals;
+    }
 }

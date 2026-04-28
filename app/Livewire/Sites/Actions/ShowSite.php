@@ -9,6 +9,7 @@ use App\Models\Site\Site;
 use App\Models\Site\MuxPlan;
 use App\Contracts\SiteInterface;
 use App\Livewire\Forms\SiteForm;
+use App\Repositories\SiteRepository;
 
 class ShowSite extends Component
 {
@@ -18,6 +19,8 @@ class ShowSite extends Component
 
     public  $site;
 
+    public $route;
+
     public $newDirectCascades;
 
     public $muxPlans;
@@ -26,12 +29,12 @@ class ShowSite extends Component
 
     public  $previousUrl;
 
-    public function mount(SiteInterface $siteRepositry, Site $site)
+    public function mount(SiteRepository $siteRepository, Site $site)
     {
 
-         $this->previousUrl = url()->previous();
+        $this->previousUrl = url()->previous();
 
-        $this->siteRepository = $siteRepositry;
+        $this->siteRepository = $siteRepository;
 
         $this->form->setSite($site); ////this function binds the $site model with the form which contains the site model attributes which could be accessed inside the view 'livewire.sites.actions.show-site' by using the object form
 
@@ -39,43 +42,54 @@ class ShowSite extends Component
         $this->form->team_id = $site->team->code; ////////like zone_id
 
         $this->site = $site;
-        $directCascades = $site->cascades;
 
-        $this->newDirectCascades = $this->siteRepository->directCascades($directCascades);
-
+        $this->route = $this->getSiteRoute();
 
 
-        $this->indirectCascades = $this->siteRepository->indirectCascades($directCascades);
+
+
+        $this->indirectCascades = $this->siteRepository->indirectCascades($site->cascades);
         $this->indirectCascades = collect($this->indirectCascades);
-        //  dd([$this->newDirectCascades,$this->indirectCascades]);
+        
     }
 
-      public function goBack()
+    private function getSiteRoute()
     {
-        
+        $nodalCode = $this->site->getNodalNameAndCode('code');
+        $nodals = [];
+
+        if ($nodalCode) {
+            $nodals = $this->siteRepository->nodals($nodalCode);
+            $stringNodals = implode('', $nodals);
+            $route = "{$this->site->site_code}_{$this->site->site_name}{$stringNodals}";
+           
+            return $route;
+        }
+        return null;
+    }
+    public function goBack()
+    {
+
         return redirect()->to($this->previousUrl);
     }
 
     public function muxPlan()
     {
-        $this->authorize('viewSiteProperties',$this->site);
+        $this->authorize('viewSiteProperties', $this->site);
         $site_code = $this->site->site_code;
         $muxPlans = MuxPlan::where('ne', 'like', "%$site_code%")->get();
         if (count($muxPlans) > 0) {
 
             $this->muxPlans = $muxPlans;
             $this->dispatch('mux_plans', mux_plans: $muxPlans);
-        } elseif (!count($muxPlans) > 0) {
+        } else {
             $muxPlans = MuxPlan::where('fe', 'like', "%$site_code%")->get();
             if (count($muxPlans) > 0) {
                 $this->muxPlans = $muxPlans;
                 $this->dispatch('mux_plans', mux_plans: $muxPlans);
-            }
-            else{
+            } else {
                 Toaster::error('No Mux Plans available');
             }
-        } else {
-             Toaster::error('No Mux Plans available');
         }
     }
 

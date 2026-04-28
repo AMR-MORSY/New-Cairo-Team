@@ -12,14 +12,14 @@ use Toaster;
 class UpdateSiteCascades extends Component
 {
     public  $site;
-    public $cascades;
+  
     
-    public function mount(SiteInterface $siteRepository, Site $site)
+    public function mount( Site $site)
     {
         
         $this->site = $site;
 
-        $this->cascades = $siteRepository->directCascades($site->cascades);
+       
     }
 
     #[On('removeCascade')]

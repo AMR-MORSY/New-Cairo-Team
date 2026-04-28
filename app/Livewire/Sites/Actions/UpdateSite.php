@@ -22,12 +22,13 @@ class UpdateSite extends Component
     public $zones, $teams;
 
 
-
+    public  $previousUrl;
     public function mount(Site $site)
     {
+        $this->previousUrl = url()->previous();
         $this->site = $site;
         $this->zones = Zone::all();
-        $this->teams = Team::all()->take(3);/////////////////HGLI,AGLI,NGLI only
+        $this->teams = Team::all()->take(3); /////////////////HGLI,AGLI,NGLI only
 
         $this->form->setSite($site);
     }
@@ -36,14 +37,19 @@ class UpdateSite extends Component
     {
 
         $this->form->isUpdate = true;
-      
+
         $validated = $this->validate();
         $this->site->update($validated);
 
         Toaster::success('Updated Successfully');
-      
 
-        return redirect()->route('site.show',['site'=>$this->site->site_code]);
+
+        return redirect()->route('site.show', ['site' => $this->site->site_code]);
+    }
+    public function goBack()
+    {
+
+        return redirect()->to($this->previousUrl);
     }
     public function render()
     {

@@ -1,4 +1,4 @@
-{{-- <section class="w-full"> --}}
+
     <x-viewLayouts.main-view-layout :heading="__('Batteries Details')" :subheading="__('You will find very important information about the batteries in site ').$site->site_code.'-'.$site->site_name">
 
 
@@ -8,7 +8,7 @@
         @if (count($batteries) > 0)
         <div class="max-w-xl xl:max-w-3xl  2xl:max-w-7xl">
 
-            <livewire:tables.site.batteries-table :batteries="$batteries" />
+            <livewire:tables.site.batteries-table :site="$site" />
         </div>
             
         @else
@@ -22,4 +22,4 @@
             </flux:callout>
         @endif
     </x-viewLayouts.main-view-layout>
-{{-- </section> --}}
+

@@ -16,6 +16,8 @@ class SiteBatteries extends Component
         $this->site = $site;
         $this->batteries = $this->site->batteries;
 
+      
+
        
     }
     public function render()

@@ -183,7 +183,7 @@
                         <flux:field>
                             <flux:label>Need Permission *</flux:label>
                             @if ($target == 'Update' || $target == 'New')
-                                <flux:select wire:model="form.need_access_permission" type="text"
+                                <flux:select wire:model="form.need_access_permission" 
                                     placeholder="Need Permission?" class="w-full">
 
                                     <flux:select.option :value="0">No
@@ -210,12 +210,12 @@
                         <flux:field>
                             <flux:label>Last PM Date *</flux:label>
                             @if ($target == 'Update' || $target == 'New')
-                                <flux:input type="date" wire:model="form.last_pm_data"
+                                <flux:input type="date" wire:model="form.last_pm_date"
                                     placeholder="Enter on last PM Date" class="w-full" />
                             @else
-                                <flux:input wire:model="form.last_pm_data" :readonly="$readonly" class="w-full" />
+                                <flux:input wire:model="form.last_pm_date" :readonly="$readonly" class="w-full" />
                             @endif
-                            <flux:error name="form.last_pm_data" />
+                            <flux:error name="form.last_pm_date" />
                         </flux:field>
 
                         <flux:field>

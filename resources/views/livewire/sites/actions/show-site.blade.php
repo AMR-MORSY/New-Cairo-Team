@@ -29,16 +29,24 @@
     <div class="tab-content border-2  border-gray-200 bg-base-100 p-10">
 
         <section class="w-full">
-            <x-viewLayouts.main-view-layout :heading="__('Site Details')" :subheading="__('You will find very important information about the site here. ')">
+            <x-viewLayouts.main-view-layout :heading="__('Direct Cascade')" :subheading="__('You will find very important information about the site here. ')">
                 <x-slot:links>
                     <x-site-navlinks-group :site="$site" />
                 </x-slot:links>
-                @if ($newDirectCascades)
-                    <div class=" w-full ">
-                        {{-- <livewire:components.cascades-table :cascades=$newDirectCascades cascadesType='direct' /> --}}
-                        <livewire:tables.site.cascades-table :cascades=$newDirectCascades cascadesType='direct' />
-                    </div>
+
+                @if ($route)
+                    <flux:callout icon="exclamation-triangle" variant="secondary" inline class=" mt-5">
+                        <flux:callout.heading>Route</flux:callout.heading>
+                        <flux:callout.text>{{$route}}</flux:callout.text>
+                      
+                    </flux:callout>
                 @endif
+
+                <div class=" w-full ">
+
+                    <livewire:tables.site.cascades-table :site="$site" cascadesType='direct' />
+                </div>
+
                 <flux:callout icon="exclamation-triangle" variant="secondary" inline class=" mt-5">
                     <flux:callout.heading>{{ $site->site_code }}-{{ $site->site_name }}</flux:callout.heading>
                     <flux:callout.text>click the button to go to cascades update page.</flux:callout.text>
@@ -59,11 +67,11 @@
             </x-viewLayouts.main-view-layout>
     </div>
 
-    @if ($newDirectCascades)
-        <span class="indicator-item badge">@php
-            echo count($newDirectCascades);
-        @endphp</span>
-    @endif
+    {{-- @if ($newDirectCascades) --}}
+    <span class="indicator-item badge">@php
+        echo $site->cascades()->count();
+    @endphp</span>
+    {{-- @endif --}}
 
     {{-- //////////////////////////indirect cascades view///////////////////////////////  --}}
 
@@ -72,16 +80,16 @@
 
     <div class="tab-content border-2  border-gray-200 bg-base-100 p-10">
         <section class="w-full">
-            <x-viewLayouts.main-view-layout :heading="__('Site Details')" :subheading="__('You will find very important information about the site here. ')">
+            <x-viewLayouts.main-view-layout :heading="__('Indirect Cascade')" :subheading="__('You will find very important information about the site here. ')">
                 <x-slot:links>
                     <x-site-navlinks-group :site="$site" />
                 </x-slot:links>
-                @if ($indirectCascades)
-                    <div class=" w-full ">
-                        {{-- <livewire:site-indirect-cascades-table :data=$indirectCascades /> --}}
-                        <livewire:tables.site.cascades-table :cascades=$indirectCascades cascadesType='indirect' />
-                    </div>
-                @endif
+                {{-- @if ($indirectCascades) --}}
+                <div class=" w-full ">
+                    {{-- <livewire:site-indirect-cascades-table :data=$indirectCascades /> --}}
+                    <livewire:tables.site.cascades-table :site="$site" cascadesType='indirect' />
+                </div>
+                {{-- @endif --}}
             </x-viewLayouts.main-view-layout>
     </div>
 
