@@ -32,3 +32,9 @@ backup.sql
 *.sql.gz
 *.zip
 *.tar.gz
+
+.env*
+!.env.example
+*.backup-*
+*.sql
+*.sql.gz
