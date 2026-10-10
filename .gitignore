@@ -11,7 +11,7 @@
 /storage/pail
 /vendor
 .env
-backup.sql
+*.sql
 .env.backup
 .env.production
 .phpactor.json
