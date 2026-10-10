@@ -1,7 +1,7 @@
 /.phpunit.cache
 /node_modules
 /public/build
-/public/backup.sql
+
 /public/css/filament
 /public/fonts/filament
 /public/hot
@@ -11,6 +11,7 @@
 /storage/pail
 /vendor
 .env
+backup.sql
 .env.backup
 .env.production
 .phpactor.json
