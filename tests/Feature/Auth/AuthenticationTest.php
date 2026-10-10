@@ -2,10 +2,11 @@
 
 use App\Livewire\Auth\Login;
 use App\Models\User;
+use Illuminate\Support\Facades\Route;
 use Livewire\Livewire;
 
-test('login screen can be rendered', function () {
-    $response = $this->get('/login');
+test('the sign-in screen is the home page', function () {
+    $response = $this->get('/');
 
     $response->assertStatus(200);
 });
@@ -46,4 +47,15 @@ test('users can logout', function () {
     $response->assertRedirect('/');
 
     $this->assertGuest();
+});
+test('the home page is guest-only', function () {
+    $this->actingAs(User::factory()->create());
+
+    $this->get('/')->assertRedirect(route('dashboard', absolute: false));
+});
+
+test('the login route no longer exists', function () {
+    expect(Route::has('login'))->toBeFalse();
+
+    $this->get('/login')->assertNotFound();
 });

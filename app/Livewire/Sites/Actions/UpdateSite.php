@@ -3,19 +3,16 @@
 namespace App\Livewire\Sites\Actions;
 
 use Toaster;
-use App\Models\Area;
-use App\Models\Team;
-use App\Models\Zone;
+use App\Enums\Teams;
+use App\Enums\Zones;
 use Livewire\Component;
 use App\Models\Site\Site;
 use Masmerise\Toaster\Toast;
 use App\Livewire\Forms\SiteForm;
-use WireUi\Traits\WireUiActions;
 
 
 class UpdateSite extends Component
 {
-    use WireUiActions;
     public SiteForm $form;
     public $site;
 
@@ -25,10 +22,11 @@ class UpdateSite extends Component
     public  $previousUrl;
     public function mount(Site $site)
     {
+        $this->authorize('update', $site);
         $this->previousUrl = url()->previous();
         $this->site = $site;
-        $this->zones = Zone::all();
-        $this->teams = Team::all()->take(3); /////////////////HGLI,AGLI,NGLI only
+        $this->zones = Zones::cases();
+        $this->teams = Teams::cases();
 
         $this->form->setSite($site);
     }

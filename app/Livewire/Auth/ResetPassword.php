@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
-use Illuminate\Validation\Rules;
+use Illuminate\Validation\Rules\Password as PasswordRule;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
@@ -42,7 +42,7 @@ class ResetPassword extends Component
         $this->validate([
             'token' => ['required'],
             'email' => ['required', 'string', 'email'],
-            'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
+             'password' => ['required', 'confirmed', PasswordRule::min(8)->letters()->numbers()->mixedCase()->symbols()],
         ]);
 
         // Here we will attempt to reset the user's password. If it is successful we
@@ -63,14 +63,20 @@ class ResetPassword extends Component
         // If the password was successfully reset, we will redirect the user back to
         // the application's home authenticated view. If there is an error we can
         // redirect them back to where they came from with their error message.
+        /*
+         * Form level, not on the email field: every failure here is about the
+         * link, not about something the person typed. The email arrives in the
+         * query string of the invitation, so an error rendered under that input
+         * points at the one field they cannot usefully correct.
+         */
         if ($status != Password::PasswordReset) {
-            $this->addError('email', __($status));
+            $this->addError('resetLink', __($status));
 
             return;
         }
 
         Session::flash('status', __($status));
 
-        $this->redirectRoute('login', navigate: true);
+        $this->redirectRoute('home', navigate: true);
     }
 }

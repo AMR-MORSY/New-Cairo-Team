@@ -7,9 +7,7 @@ use App\Enums\Host;
 use App\Enums\Areas;
 use App\Enums\Guest;
 use App\Enums\Zones;
-use App\Models\Area;
-use App\Models\Team;
-use App\Models\Zone;
+use App\Enums\Teams;
 use App\Enums\Status;
 use App\Enums\SiteTypies;
 use App\Enums\SiteSharing;
@@ -24,6 +22,7 @@ use App\Models\Site\PowerData;
 use App\Models\site\SiteImage;
 use Spatie\MediaLibrary\HasMedia;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Modification\Modification;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -36,7 +35,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 #[UsePolicy(SitePolicy::class)]
 class Site extends Model implements HasMedia
 {
-    use InteractsWithMedia;
+    use HasFactory, InteractsWithMedia;
 
 
 
@@ -46,6 +45,14 @@ class Site extends Model implements HasMedia
     protected $hidden = ["created_at", 'updated_at'];
 
     protected $guarded = [];
+
+    protected function casts(): array
+    {
+        return [
+            'team' => Teams::class,
+            'zone' => Zones::class,
+        ];
+    }
 
 
 
@@ -104,32 +111,34 @@ class Site extends Model implements HasMedia
     }
 
 
-    public function zone(): BelongsTo
-    {
-        return $this->belongsTo(Zone::class);
-    }
-
-    public function team(): BelongsTo
-    {
-        return $this->belongsTo(Team::class);
-    }
-
-
     protected function zoneName(): Attribute
     {
         return  Attribute::make(
             get: function () {
-                return $this->zone->code;
+                return $this->zone?->label();
             }
         );
     }
+
     protected function teamName(): Attribute
     {
         return  Attribute::make(
             get: function () {
-                return $this->team->code;
+                return $this->team?->label();
             }
         );
+    }
+
+    /** Sites in a given zone. */
+    public function scopeInZone($query, Zones $zone)
+    {
+        return $query->where('zone', $zone->value);
+    }
+
+    /** Sites belonging to a given team. */
+    public function scopeInTeam($query, Teams $team)
+    {
+        return $query->where('team', $team->value);
     }
 
 

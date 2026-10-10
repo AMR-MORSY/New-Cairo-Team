@@ -54,7 +54,6 @@
     </script>
 
     @livewireScripts
-    @fluxScripts
 </body>
 
 </html>

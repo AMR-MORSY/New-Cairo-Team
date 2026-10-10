@@ -15,6 +15,7 @@ class UpdatePowerData extends Component
     public $site;
     public function mount(PowerData $powerData)
     {
+         $this->authorize('update', $powerData->site);
         $this->powerData = $powerData;
         $this->site=$powerData->site;
         $this->form->setPowerData($powerData);

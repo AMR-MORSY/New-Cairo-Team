@@ -14,7 +14,7 @@ use App\Models\Modification\Requester;
 use App\Livewire\Forms\ModificationForm;
 use App\Models\Modification\Modification;
 use App\Models\Modification\Subcontractor;
-use App\Models\Modification\ModificationStatus;
+use App\Enums\ModificationStatus;
 
 class ModificationDetails extends Component
 {
@@ -25,7 +25,8 @@ class ModificationDetails extends Component
 
     public Collection $subcontractors;
     public Collection $requesters;
-    public Collection $modificationStatus;
+    /** @var array<int, array{id: string, name: string}> from ModificationStatus::options() */
+    public array $modificationStatus = [];
     public Collection $projects;
     public Collection $actions;
 
@@ -37,15 +38,15 @@ class ModificationDetails extends Component
         Project $project,
         Subcontractor $subcontractor,
         Requester $requester,
-        ModificationStatus $modification_status,
         Action $action,
         Modification $modification,
 
     ) {
         // $this->chart=$chart->build();
+        $this->authorize('viewModificationDetails', $modification);
         $this->subcontractors = $subcontractor->all();
         $this->requesters = $requester->all();
-        $this->modificationStatus = $modification_status->all();
+        $this->modificationStatus = ModificationStatus::options();
         $this->projects = $project->all();
         $this->actions = $action->all();
         $this->modification = $modification->load('reservation');
@@ -55,10 +56,7 @@ class ModificationDetails extends Component
         /////////////////////////////////////////////////////because the form will present the data in input type text as readonly all id attributes should present the name not id number before the modification details goes to form
         $modification->subcontractor_id = $modification->subcontractor->name;
         $modification->requester_id = $modification->requester->name;
-        $modification->modification_status_id = $modification->modification_status->name;
-        $modification->project_id = $modification->project->name;
-        $modification->zone_id = $modification->zone->code;
-        $modification->team_id = $modification->team->code;
+        $modification->project_id = $modification->project?->name;
         $modification->action_owner = $modification->actionOwner->name;
         $modification->action_id = $modification->actions->pluck('name')->implode(', ');
 
@@ -68,8 +66,12 @@ class ModificationDetails extends Component
             $modification->reported = "Yes";
         }
 
-
+       
         $this->form->setModificationDetails($modification);
+
+        // readable labels for the read-only form
+        $this->form->zone = $modification->zone?->label();
+        $this->form->team = $modification->team?->label();
 
     
     }

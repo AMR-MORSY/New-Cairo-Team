@@ -10,7 +10,7 @@ class ViewPurchaseOrderInprogressModifications extends Component
 {
    
     public  $purchase_order_id;
-    public  $modification_status_id=2;
+    public $status = 'In Progress';
     public function mount(PurchaseOrder $purchaseOrder)
     {
         

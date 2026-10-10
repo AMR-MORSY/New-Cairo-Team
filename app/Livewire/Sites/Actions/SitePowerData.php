@@ -16,6 +16,7 @@ class SitePowerData extends Component
 
     public function mount(Site $site)
     {
+         $this->authorize('viewSiteProperties', $site);
         $this->site = $site;
         $this->powerData = $this->site->power_data;
         if ($this->powerData) {

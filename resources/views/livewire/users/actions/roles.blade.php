@@ -1,10 +1,10 @@
    <x-viewLayouts.main-view-layout :heading="__('Roles')" :subheading="__('You will find very important information about the roles here. ')">
        <x-slot:links>
-           <flux:navlist.group expandable heading="Quick Links" class=" lg:grid mt-10">
-               <flux:navlist.item wire:click="goBack" class=" cursor-pointer" wire:navigate>
+           <x-ui.navlist.group expandable heading="Quick Links" class=" lg:grid mt-10">
+               <x-ui.navlist.item wire:click="goBack" class=" cursor-pointer" wire:navigate>
                    {{ __('BACK') }}
-               </flux:navlist.item>
-           </flux:navlist.group>
+               </x-ui.navlist.item>
+           </x-ui.navlist.group>
        </x-slot:links>
 
        <div class="tabs tabs-border">
@@ -36,37 +36,20 @@
 
 
                    <form class="p-6 space-y-8" wire:submit="createRole">
-                       <flux:field>
-                           <flux:label>Role *</flux:label>
-                           <flux:input wire:model="newRole" placeholder="Role" class="w-full" />
-                           <flux:error name="newRole" />
-                       </flux:field>
-                       <flux:field>
-                           <flux:label>Permission *</flux:label>
-                           <x-select wire:model="newPermissions"
+                       <x-ui.field>
+                           <x-ui.label>Role *</x-ui.label>
+                           <x-ui.input wire:model="newRole" placeholder="Role" class="w-full" />
+                           <x-ui.error name="newRole" />
+                       </x-ui.field>
+                       <x-ui.field>
+                           <x-ui.label>Permission *</x-ui.label>
+                           <x-select-named-options wire:model="newPermissions"
                                placeholder="More than one permission could be assigned to the created Role" multiselect
                                :options="$permissions" option-label="name" option-value="name" />
-                       </flux:field>
-                       <flux:field>
-                           <flux:label>Team *</flux:label>
-                           <flux:select wire:model="team_id" class="w-full">
-                               <flux:select.option :value="null" selected>Role could be assigned to area or
-                                   considered generic</flux:select.option>
-                               @foreach ($teams as $team)
-                                   <flux:select.option :value="$team->id">{{ $team->code }}</flux:select.option>
-                               @endforeach
+                       </x-ui.field>
 
-
-                           </flux:select>
-                           <flux:error name="team_id" />
-                       </flux:field>
-
-                       {{-- <x-select wire:model="team_id"
-                        placeholder="Role could be assigned to multiple areas or considered generic" multiselect
-                        :options="$areas" option-label="code" option-value="id" /> --}}
-
-                       <flux:button variant="primary" color="zinc" type="submit" class=" cursor-pointer">
-                           Create</flux:button>
+                       <x-ui.button variant="primary" color="zinc" type="submit" class=" cursor-pointer">
+                           Create</x-ui.button>
                    </form>
 
 

@@ -1,45 +1,25 @@
-<div class="flex flex-col gap-6">
-    <x-auth-header :title="__('Reset password')" :description="__('Please enter your new password below')" />
+<div>
+    <x-auth-header :title="__('Reset password')" :description="__('Please enter your new password below.')" />
 
-    <!-- Session Status -->
-    <x-auth-session-status class="text-center" :status="session('status')" />
+    <x-auth-session-status :status="session('status')" />
 
-    <form method="POST" wire:submit="resetPassword" class="flex flex-col gap-6">
-        <!-- Email Address -->
-        <flux:input
-            wire:model="email"
-            :label="__('Email')"
-            type="email"
-            required
-            autocomplete="email"
-        />
+    {{-- a dead or used link: nothing on the form can fix it, so it is said once, up here --}}
+    @error('resetLink')
+        <x-ui.callout variant="danger" icon="exclamation-triangle" class="mb-6">{{ $message }}</x-ui.callout>
+    @enderror
 
-        <!-- Password -->
-        <flux:input
-            wire:model="password"
-            :label="__('Password')"
-            type="password"
-            required
-            autocomplete="new-password"
-            :placeholder="__('Password')"
-            viewable
-        />
+    <form method="POST" wire:submit="resetPassword" class="grid gap-5">
+        <x-ui.input wire:model="email" :label="__('Email')" type="email" required autocomplete="email" />
 
-        <!-- Confirm Password -->
-        <flux:input
-            wire:model="password_confirmation"
-            :label="__('Confirm password')"
-            type="password"
-            required
-            autocomplete="new-password"
-            :placeholder="__('Confirm password')"
-            viewable
-        />
+        <x-ui.input wire:model="password" :label="__('Password')" type="password" required
+            autocomplete="new-password" :placeholder="__('Password')" viewable />
 
-        <div class="flex items-center justify-end">
-            <flux:button type="submit" variant="primary" class="w-full">
-                {{ __('Reset password') }}
-            </flux:button>
-        </div>
+        <x-ui.input wire:model="password_confirmation" :label="__('Confirm password')" type="password" required
+            autocomplete="new-password" :placeholder="__('Confirm password')" viewable />
+
+        <x-ui.button type="submit" variant="primary" block class="mt-1">
+            <span wire:loading.remove wire:target="resetPassword">{{ __('Reset password') }}</span>
+            <span wire:loading wire:target="resetPassword" class="loading loading-spinner loading-sm"></span>
+        </x-ui.button>
     </form>
 </div>

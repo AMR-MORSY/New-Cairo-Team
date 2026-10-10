@@ -1,8 +1,8 @@
 @props(['enumOptions'])
-<flux:select {{ $attributes }}   class="w-full">
+<x-ui.select {{ $attributes }}   class="w-full">
     @foreach ($enumOptions as $option)
-        <flux:select.option :value="$option->value">{{ $option->value }}
-        </flux:select.option>
+        <x-ui.select.option :value="$option->value">{{ $option->value }}
+        </x-ui.select.option>
     @endforeach
 
-</flux:select>
+</x-ui.select>

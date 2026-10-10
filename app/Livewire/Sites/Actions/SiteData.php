@@ -16,6 +16,7 @@ class SiteData extends Component
 
     public function mount(Site $site)
     {
+         $this->authorize('viewSiteProperties', $site);
         $this->site = $site;
         $this->siteData = $this->site->site_data;
 

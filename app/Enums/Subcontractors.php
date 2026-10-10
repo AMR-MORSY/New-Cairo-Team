@@ -32,4 +32,5 @@ enum Subcontractors: string
     case TELE_TRUST = "Tele-Trust";
     case SAMA_TEL = "SAMA-TEL";
     case NEW_MATRIX = "NEW MATRIX";
+    case G2G = "G2G";
 }

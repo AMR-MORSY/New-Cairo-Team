@@ -2,108 +2,87 @@
 
 namespace Database\Seeders;
 
+use App\Enums\Teams;
+use App\Enums\UserRoles;
 use App\Enums\Zones;
-use App\Models\Area;
-use App\Models\Team;
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
-use Spatie\Permission\Models\Role;
-use Illuminate\Support\Facades\Hash;
-use Spatie\Permission\PermissionRegistrar;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Support\Str;
 
+/**
+ * Development users: one manager per team, one manager per zone, two site
+ * engineers per zone, plus a super admin.
+ *
+ * Scope is two columns, so the role is the same for everyone doing the same
+ * job. The old version looked up a per-zone role inside a loop that had
+ * already finished, which silently gave 8 of 12 zone managers the wrong
+ * zone's role - that class of bug is not expressible any more.
+ *
+ * Run RolesAndPermissionsSeeder first.
+ */
 class UsersSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
+    private const PASSWORD = '@Mobinil@2020';
+
     public function run(): void
     {
+        $this->make('Super Admin', 'super_admin@company.com', UserRoles::SUPER_ADMIN);
+        $this->make('Site Admin', 'site_admin@company.com', UserRoles::SITE_ADMIN);
+        $this->make('Modification Admin', 'modification_admin@company.com', UserRoles::MODIFICATION_ADMIN);
 
-        $teams = Team::with('zones')->get();
+        foreach (Teams::cases() as $team) {
+            $this->make(
+                $team->value . ' Team Manager',
+                strtolower($team->value) . '_team_manager@company.com',
+                UserRoles::TEAM_MANAGER,
+                $team
+            );
 
-        foreach ($teams as $team) {
-            $teamManagerRole = Role::where('name', $team->code . '_team_manager')
-                ->where('team_id', $team->id)
-                ->firstOrFail();
+            foreach (Zones::forTeam($team) as $zone) {
+                $slug = Str::slug($zone->label(), '_');
 
-            if ($team->zones->count() > 0) {
-                foreach ($team->zones as $zone) {
-                    $zoneCode = Zones::getCodeByValue($zone->code);
-                    $zoneManagerRole = Role::where('name', $zoneCode . '_zone_manager')
-                        ->where('team_id', $team->id)
-                        ->firstOrFail();
-                }
-            }
+                $this->make(
+                    $zone->label() . ' Zone Manager',
+                    strtolower($team->value . '_' . $slug . '_zone_manager@company.com'),
+                    UserRoles::ZONE_MANAGER,
+                    $team,
+                    $zone
+                );
 
-            $siteEngineerRole = Role::where('name', $team->code . '_site_engineer')
-                ->where('team_id', $team->id)
-                ->firstOrFail();
-            // Create Team Manager
-            $teamManager = User::create([
-                'name' => $team->code . ' Team Manager',
-                'email' => strtolower($team->code) . '_team_manager@company.com',
-                'password' => bcrypt("@Mobinil@2020"),
-            ]);
-
-            $team->users()->attach($teamManager->id, [
-                'zone_id' => null,
-                'status' => 'active'
-            ]);
-
-            // Assign team manager role
-
-            DB::table('model_has_roles')->insert([
-                'role_id' => $teamManagerRole->id,
-                'model_type' => User::class,
-                'model_id' => $teamManager->id,
-                'team_id' => $team->id // ← THIS IS THE KEY
-            ]);
-
-            // Create Zone Managers and site Engineers for each zone
-            foreach ($team->zones as $zone) {
-                // Zone Manager
-                $zoneManager = User::create([
-                    'name' => $zone->name . ' Zone Manager',
-                    'email' => strtolower($team->code . '_' . str_replace(" ", "_", $zone->code) . '_zone_manager@company.com'),
-                    'password' => bcrypt("@Mobinil@2020"),
-                ]);
-                $team->users()->attach($zoneManager->id, [
-                    'zone_id' => $zone->id,
-                    'status' => 'active'
-                ]);
-
-                DB::table('model_has_roles')->insert([
-                    'role_id' => $zoneManagerRole->id,
-                    'model_type' => User::class,
-                    'model_id' => $zoneManager->id,
-                    'team_id' => $team->id
-                ]);
-
-
-                // site Engineers (2 per zone)
                 for ($i = 1; $i <= 2; $i++) {
-                    $engineer = User::create([
-                        'name' => $zone->name . ' Site Engineer ' . $i,
-                        'email' => strtolower($team->code . '_' . str_replace(" ", "_", $zone->code) . '_engineer_' . $i . '@company.com'),
-                        'password' => bcrypt("@Mobinil@2020"),
-                    ]);
-
-                    $team->users()->attach($engineer->id, [
-                        'zone_id' => $zone->id,
-                        'status' => 'active'
-                    ]);
-
-
-                    DB::table('model_has_roles')->insert([
-                        'role_id' => $siteEngineerRole->id,
-                        'model_type' => User::class,
-                        'model_id' => $engineer->id,
-                        'team_id' => $team->id
-                    ]);
+                    $this->make(
+                        $zone->label() . ' Site Engineer ' . $i,
+                        strtolower($team->value . '_' . $slug . '_engineer_' . $i . '@company.com'),
+                        UserRoles::SITE_ENGINEER,
+                        $team,
+                        $zone
+                    );
                 }
             }
         }
+
+        $this->command?->info('Seeded ' . User::count() . ' users.');
+    }
+
+    private function make(
+        string $name,
+        string $email,
+        UserRoles $role,
+        ?Teams $team = null,
+        ?Zones $zone = null
+    ): User {
+        $user = User::firstOrCreate(
+            ['email' => $email],
+            [
+                'name' => $name,
+                'password' => bcrypt(self::PASSWORD),
+                'team' => $team,
+                'zone' => $zone,
+            ]
+        );
+
+        $user->syncRoles([$role->value]);
+
+        return $user;
     }
 }

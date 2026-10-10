@@ -1,17 +1,17 @@
 <section class="w-full">
-    <x-viewLayouts.main-view-layout :heading="__('Update Modification')" :subheading="__('You will find very important information about the modification action here. ')">
+    <x-viewLayouts.main-view-layout :heading="$site->site_code.'-'.$site->site_name" :subheading="__('You can update the modification action here. ')">
 
 
         <x-slot:links>
-            <livewire:modifications.modification-links :site="$site" :modification="$modification" />
+            <livewire:modifications.modification-links :site="$site" :modification="$modification" page="update" />
         </x-slot:links>
         @if (session('quotation_error'))
-            <flux:callout icon="exclamation-triangle" variant="secondary" inline>
-                <flux:callout.heading>Update issue detected</flux:callout.heading>
-                <flux:callout.text>You must submit a quotation first to be able to make this modification status either
-                    waiting D6 or Done.</flux:callout.text>
+            <x-ui.callout icon="exclamation-triangle" variant="secondary" inline>
+                <x-ui.callout.heading>Update issue detected</x-ui.callout.heading>
+                <x-ui.callout.text>You must submit a quotation first to be able to make this modification status either
+                    waiting D6 or Done.</x-ui.callout.text>
 
-            </flux:callout>
+            </x-ui.callout>
         @endif
 
 

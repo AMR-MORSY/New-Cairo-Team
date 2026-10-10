@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Tables\Site;
 
+use App\Enums\Zones;
+
 use App\Models\Site\Site;
 use Livewire\Attributes\On;
 use Illuminate\Support\Carbon;
@@ -63,17 +65,17 @@ final class NodalSitesTable extends PowerGridComponent
             return Site::query()
                 ->with(['cascades', 'batteries', 'site_data', 'power_data'])
                 ->whereHas('cascades', function ($query) {
-                    $query->where('zone_id', 2);
+                    $query->where('zone', Zones::CAIRO_EAST->value);
                 })
                 ->selectRaw('sites.*');
         } elseif ($this->target == 'vip') {
-            return Site::query()->with(['cascades', 'batteries', 'site_data', 'power_data'])->where('zone_id', 2)->where(function ($query) {
+            return Site::query()->with(['cascades', 'batteries', 'site_data', 'power_data'])->where('zone', Zones::CAIRO_EAST->value)->where(function ($query) {
                 $query->where('category', 'VIP')->orWhere('category', 'VIP + NDL')->orWhere('category', 'VIP + NDL + G.SQR');
             })->selectRaw('sites.*');
         } elseif ($this->target == 'TP') {
-            return Site::query()->with(['cascades', 'batteries', 'site_data', 'power_data'])->where('zone_id', 2)->where('site_name', 'like', '%3P%')->selectRaw('sites.*');
+            return Site::query()->with(['cascades', 'batteries', 'site_data', 'power_data'])->where('zone', Zones::CAIRO_EAST->value)->where('site_name', 'like', '%3P%')->selectRaw('sites.*');
         } elseif ($this->target == 'GSquare') {
-            return Site::query()->with(['cascades', 'batteries', 'site_data', 'power_data'])->where('zone_id', 2)->where(function ($query) {
+            return Site::query()->with(['cascades', 'batteries', 'site_data', 'power_data'])->where('zone', Zones::CAIRO_EAST->value)->where(function ($query) {
                 $query->where('category', 'G.SQR')->orWhere('category', 'VIP + G.SQR')->orWhere('category', 'NDL + G.SQR')->orWhere('category', 'VIP + NDL + G.SQR');
             })->selectRaw('sites.*');
         }
@@ -87,17 +89,17 @@ final class NodalSitesTable extends PowerGridComponent
             return Site::query()
                 ->with(['cascades', 'batteries', 'site_data', 'power_data'])
                 ->whereHas('cascades', function ($query) {
-                    $query->where('zone_id', 2);
+                    $query->where('zone', Zones::CAIRO_EAST->value);
                 })
                 ->selectRaw('sites.*');
         } elseif ($this->target == 'vip') {
-            return Site::query()->with(['cascades', 'batteries', 'site_data', 'power_data'])->where('zone_id', 2)->where(function ($query) {
+            return Site::query()->with(['cascades', 'batteries', 'site_data', 'power_data'])->where('zone', Zones::CAIRO_EAST->value)->where(function ($query) {
                 $query->where('category', 'VIP')->orWhere('category', 'VIP + NDL')->orWhere('category', 'VIP + NDL + G.SQR');
             })->selectRaw('sites.*');
         } elseif ($this->target == 'TP') {
-            return Site::query()->with(['cascades', 'batteries', 'site_data', 'power_data'])->where('zone_id', 2)->where('site_name', 'like', '%3P%')->selectRaw('sites.*');
+            return Site::query()->with(['cascades', 'batteries', 'site_data', 'power_data'])->where('zone', Zones::CAIRO_EAST->value)->where('site_name', 'like', '%3P%')->selectRaw('sites.*');
         } elseif ($this->target == 'GSquare') {
-            return Site::query()->with(['cascades', 'batteries', 'site_data', 'power_data'])->where('zone_id', 2)->where(function ($query) {
+            return Site::query()->with(['cascades', 'batteries', 'site_data', 'power_data'])->where('zone', Zones::CAIRO_EAST->value)->where(function ($query) {
                 $query->where('category', 'G.SQR')->orWhere('category', 'VIP + G.SQR')->orWhere('category', 'NDL + G.SQR')->orWhere('category', 'VIP + NDL + G.SQR');
             })->selectRaw('sites.*');
         }

@@ -1,43 +1,43 @@
- <flux:navlist.group expandable heading="Quick Links" class=" lg:grid mt-20">
+ <x-ui.navlist.group expandable heading="Quick Links" class=" lg:grid mt-20">
 
 
-     <flux:navlist>
+     <x-ui.navlist>
          @if (request()->routeIs('battery.show'))
-             <flux:navlist.item :href="route('battery.update',$battery->id)" wire:navigate>
+             <x-ui.navlist.item :href="route('battery.update',$battery->id)" wire:navigate>
                  {{ __('Update') }}
-             </flux:navlist.item>
+             </x-ui.navlist.item>
 
-             <flux:navlist.item wire:click="delete" class=" cursor-pointer">
+             <x-ui.navlist.item wire:click="delete" class=" cursor-pointer">
                  {{ __('Delete') }}
-             </flux:navlist.item>
-              <flux:navlist.item :href="route('site.batteries',$site->site_code)" wire:navigate>
+             </x-ui.navlist.item>
+              <x-ui.navlist.item :href="route('site.batteries',$site->site_code)" wire:navigate>
                  {{ __('Back') }}
-             </flux:navlist.item>
+             </x-ui.navlist.item>
          @elseif (request()->routeIs('battery.update'))
-          <flux:navlist.item :href="route('battery.show',$battery->id)" wire:navigate>
+          <x-ui.navlist.item :href="route('battery.show',$battery->id)" wire:navigate>
                  {{ __('Back To Details') }}
-             </flux:navlist.item>
-             <flux:navlist.item wire:click="delete" class=" cursor-pointer">
+             </x-ui.navlist.item>
+             <x-ui.navlist.item wire:click="delete" class=" cursor-pointer">
                  {{ __('Delete') }}
-             </flux:navlist.item>
+             </x-ui.navlist.item>
          @elseif (request()->routeIs('site.batteries'))
-             <flux:navlist.item :href="route('battery.create',$site->site_code)" wire:navigate>
+             <x-ui.navlist.item :href="route('battery.create',$site->site_code)" wire:navigate>
                  {{ __('New Record') }}
-             </flux:navlist.item>
-             <flux:navlist.item :href="route('site.show',$site->site_code)" wire:navigate>
+             </x-ui.navlist.item>
+             <x-ui.navlist.item :href="route('site.show',$site->site_code)" wire:navigate>
                  {{ __('Back') }}
-             </flux:navlist.item>
+             </x-ui.navlist.item>
          @elseif (request()->routeIs('battery.create'))
-              <flux:navlist.item :href="route('site.show',$site->site_code)" wire:navigate>
+              <x-ui.navlist.item :href="route('site.show',$site->site_code)" wire:navigate>
                  {{ __('Back') }}
-             </flux:navlist.item>
+             </x-ui.navlist.item>
          @endif
 
 
 
 
 
-     </flux:navlist>
+     </x-ui.navlist>
 
 
- </flux:navlist.group>
+ </x-ui.navlist.group>

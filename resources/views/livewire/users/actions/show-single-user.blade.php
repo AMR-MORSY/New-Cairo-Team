@@ -1,10 +1,10 @@
   <x-viewLayouts.main-view-layout :heading="__('New Role')" :subheading="__('Assign Role to a user. ')">
       <x-slot:links>
-          <flux:navlist.group expandable heading="Quick Links" class=" lg:grid mt-10">
-              <flux:navlist.item wire:click="goBack" class=" cursor-pointer" wire:navigate>
+          <x-ui.navlist.group expandable heading="Quick Links" class=" lg:grid mt-10">
+              <x-ui.navlist.item wire:click="goBack" class=" cursor-pointer" wire:navigate>
                   {{ __('BACK') }}
-              </flux:navlist.item>
-          </flux:navlist.group>
+              </x-ui.navlist.item>
+          </x-ui.navlist.group>
       </x-slot:links>
 
       <div class="overflow-hidden rounded-lg border border-gray-200 shadow-sm dark:border-gray-700">
@@ -94,7 +94,7 @@
                           <!--Team Column-->
                           <td class="px-6 py-4">
                               <div class="flex flex-wrap gap-2">
-                                  @if ($teamAndZone['team'])
+                                  @if ($user->team)
                                       <div class="flex items-center">
                                           <div class="flex-shrink-0 h-8 w-8">
                                               <div
@@ -106,13 +106,14 @@
                                                         d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z">
                                                     </path>
                                                 </svg> --}}
-                                                  <flux:icon.trash wire:click="deleteTeam"
-                                                      class=" cursor-pointer text-red-700" />
+                                                  <x-ui.modal.trigger name="remove-user-team">
+                                                      <x-icons.trash class=" cursor-pointer text-red-700" />
+                                                  </x-ui.modal.trigger>
                                               </div>
                                           </div>
                                           <div class="ml-4">
                                               <div class="text-sm font-medium text-gray-900 dark:text-gray-100">
-                                                  {{ $teamAndZone['team']['code'] }}
+                                                  {{ $user->team->value }}
                                               </div>
                                           </div>
                                       </div>
@@ -123,7 +124,7 @@
                           <!--Zone Column-->
                           <td class="px-6 py-4">
                               <div class="flex flex-wrap gap-2">
-                                  @if ($teamAndZone['zone'])
+                                  @if ($user->zone)
                                       <div class="flex items-center">
                                           <div class="flex-shrink-0 h-8 w-8">
                                               <div
@@ -139,7 +140,7 @@
                                           </div>
                                           <div class="ml-4">
                                               <div class="text-sm font-medium text-gray-900 dark:text-gray-100">
-                                                  {{ $teamAndZone['zone']['code'] }}
+                                                  {{ $user->zone->value }}
                                               </div>
                                           </div>
                                       </div>
@@ -177,14 +178,14 @@
 
 
                   <form class="p-6 space-y-8" wire:submit="updateRole">
-                      <flux:field>
-                          <flux:label>Role *</flux:label>
-                          <x-select wire:model="newRoles" placeholder="More than one role could be assigned to the user"
+                      <x-ui.field>
+                          <x-ui.label>Role *</x-ui.label>
+                          <x-select-named-options wire:model="newRoles" placeholder="More than one role could be assigned to the user"
                               multiselect :options="$teamRoles" option-label="name" option-value="name" />
-                      </flux:field>
+                      </x-ui.field>
 
-                      <flux:button variant="primary" color="zinc" type="submit" class=" cursor-pointer">
-                          Update</flux:button>
+                      <x-ui.button variant="primary" color="zinc" type="submit" class=" cursor-pointer">
+                          Update</x-ui.button>
 
                   </form>
 
@@ -203,18 +204,18 @@
 
 
                   <form class="p-6 space-y-8" wire:submit="updateZoneAndTeam">
-                      <flux:label>Zone *</flux:label>
-                      <x-select wire:model="newZone" placeholder="Select the corresponding zone" :options="$zones"
-                          option-label="code" option-value="id" />
+                      <x-ui.label>Zone *</x-ui.label>
+                      <x-select-named-options wire:model="newZone" placeholder="Select the corresponding zone" :options="$zones"
+                          option-label="label" option-value="value" />
 
-                      <flux:label>Team *</flux:label>
-                      <x-select wire:model.live="newTeam"
+                      <x-ui.label>Team *</x-ui.label>
+                      <x-select-named-options wire:model.live="newTeam"
                           placeholder="Select the team and the corresponding zones will be showed " :options="$teams"
-                          option-label="code" option-value="id" />
+                          option-label="label" option-value="value" />
 
 
-                      <flux:button variant="primary" color="zinc" type="submit" class=" cursor-pointer">
-                          Update</flux:button>
+                      <x-ui.button variant="primary" color="zinc" type="submit" class=" cursor-pointer">
+                          Update</x-ui.button>
 
                   </form>
 
@@ -227,5 +228,21 @@
 
 
       </div>
+
+      <x-ui.modal name="remove-user-team">
+          <x-ui.heading size="lg">{{ __('Remove this team?') }}</x-ui.heading>
+          <x-ui.text class="mt-2">
+              {{ __("This clears the user's team and zone. Their roles are left alone.") }}
+          </x-ui.text>
+
+          <div class="modal-action">
+              <x-ui.modal.close>
+                  <x-ui.button variant="ghost">{{ __('Cancel') }}</x-ui.button>
+              </x-ui.modal.close>
+              <x-ui.button variant="danger" wire:click="delete" loading="delete">
+                  {{ __('Yes, remove it') }}
+              </x-ui.button>
+          </div>
+      </x-ui.modal>
 
   </x-viewLayouts.main-view-layout>

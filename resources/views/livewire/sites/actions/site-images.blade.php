@@ -33,15 +33,15 @@
 
                 </div>
             @else
-                <flux:callout icon="exclamation-triangle" variant="secondary" inline class=" mt-5">
-                    <flux:callout.heading>{{ $site->site_code }}-{{ $site->site_name }}</flux:callout.heading>
-                    <flux:callout.text>There are no images to show.click the button to go to upload page.
-                    </flux:callout.text>
+                <x-ui.callout icon="exclamation-triangle" variant="secondary" inline class=" mt-5">
+                    <x-ui.callout.heading>{{ $site->site_code }}-{{ $site->site_name }}</x-ui.callout.heading>
+                    <x-ui.callout.text>There are no images to show.click the button to go to upload page.
+                    </x-ui.callout.text>
                     <x-slot name="actions">
-                        <flux:button :href="route('site.images.upload',$site->site_code)" wire:navigate>UPLOAD
-                        </flux:button>
+                        <x-ui.button :href="route('site.images.upload',$site->site_code)" wire:navigate>UPLOAD
+                        </x-ui.button>
                     </x-slot>
-                </flux:callout>
+                </x-ui.callout>
             @endif
         </div>
     </div>

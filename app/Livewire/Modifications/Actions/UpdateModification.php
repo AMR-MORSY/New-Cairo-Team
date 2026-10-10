@@ -14,7 +14,7 @@ use App\Livewire\Forms\ModificationForm;
 use App\Models\Modification\Modification;
 use App\Models\Modification\OverPoInvoice;
 use App\Models\Modification\Subcontractor;
-use App\Models\Modification\ModificationStatus;
+use App\Enums\ModificationStatus;
 
 class UpdateModification extends Component
 {
@@ -25,7 +25,8 @@ class UpdateModification extends Component
 
     public Collection $subcontractors;
     public Collection $requesters;
-    public Collection $modificationStatus;
+    /** @var array<int, array{id: string, name: string}> from ModificationStatus::options() */
+    public array $modificationStatus = [];
     public Collection $projects;
     public Collection $actions;
 
@@ -35,15 +36,19 @@ class UpdateModification extends Component
         Project $project,
         Subcontractor $subcontractor,
         Requester $requester,
-        ModificationStatus $modification_status,
         Action $action,
         Modification $modification
     ) {
-        $this->subcontractors = $subcontractor->all();
-        $this->requesters = $requester->all();
-        $this->modificationStatus = $modification_status->all();
-        $this->projects = $project->all();
-        $this->actions = $action->all();
+        /*
+         * Active entries plus whichever this modification already uses, so a
+         * retired subcontractor does not vanish from the form and silently
+         * change what gets saved.
+         */
+        $this->subcontractors = $subcontractor->activeOr($modification->subcontractor_id)->get();
+        $this->requesters = $requester->activeOr($modification->requester_id)->get();
+        $this->modificationStatus = ModificationStatus::options();
+        $this->projects = $project->activeOr($modification->project_id)->get();
+        $this->actions = $action->active()->get();
 
         $this->modification = $modification;
 
@@ -110,10 +115,10 @@ class UpdateModification extends Component
     {
         $this->validate();
 
-        $inActiveQuotation = $this->modification->quotation()->where('is_active', 0)->first(); //////////check if there is an inactive quotation for this modification 
-        $activeQuotation = $this->modification->quotation()->where('is_active', 1)->first(); //////////check if there is an active quotation for this modification 
+        // $inActiveQuotation = $this->modification->quotation()->where('is_active', 0)->first(); //////////check if there is an inactive quotation for this modification 
+        // $activeQuotation = $this->modification->quotation()->where('is_active', 1)->first(); //////////check if there is an active quotation for this modification 
 
-        if ($this->form->modification_status_id == 1 || $this->form->modification_status_id == 3) { /////////////////done or waiting D6
+        // if (ModificationStatus::tryFrom($this->form->status)?->isQuoted()) { /////////////////done or waiting D6
 
             /////////////////this part concerned with the new modification system
             // if ($inActiveQuotation) {
@@ -165,18 +170,18 @@ class UpdateModification extends Component
             //     return redirect()->back()->with('quotation_error', 'You have to submit Quotation');
             // }
 
-            if ($inActiveQuotation) {
+            // if ($inActiveQuotation) {
 
-                $this->modification->quotation->update(['is_active' => 1]);
-                $this->updateModificationAndRedirect();
-            } elseif ($activeQuotation) { ////////////////////update modification's data only
-                $this->updateModificationAndRedirect();
-            } else {
-                return redirect()->back()->with('quotation_error', 'You have to submit Quotation');
-            }
-        } elseif ($this->form->modification_status_id == 2) /////////////in progress
-        {
-            //////////////this part concerned with modification's new system
+        //         $this->modification->quotation->update(['is_active' => 1]);
+        //         $this->updateModificationAndRedirect();
+        //     } elseif ($activeQuotation) { ////////////////////update modification's data only
+        //         $this->updateModificationAndRedirect();
+        //     } else {
+        //         return redirect()->back()->with('quotation_error', 'You have to submit Quotation');
+        //     }
+        // } elseif (ModificationStatus::tryFrom($this->form->status)?->isInProgress()) /////////////in progress
+        // {
+        //     //////////////this part concerned with modification's new system
 
             // $invoice = $this->modification->reservation->invoice;
             // $overPo = $this->modification->reservation->overPo;
@@ -204,8 +209,9 @@ class UpdateModification extends Component
             // }
 
 
+        //   $this->updateModificationAndRedirect();
+        // }
           $this->updateModificationAndRedirect();
-        }
     }
     public function render()
     {

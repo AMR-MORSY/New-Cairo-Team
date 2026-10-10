@@ -19,13 +19,13 @@
 
                 <p class=" mt-6">Total Cost: {{ $quotation->quotationCost() }}</p>
             @else
-                <flux:callout icon="exclamation-triangle" variant="secondary" inline class=" mt-5">
-                    <flux:callout.heading>No quotation found</flux:callout.heading>
-                    <flux:callout.text>click the button to go to quotation creation page.</flux:callout.text>
+                <x-ui.callout icon="exclamation-triangle" variant="secondary" inline class=" mt-5">
+                    <x-ui.callout.heading>No quotation found</x-ui.callout.heading>
+                    <x-ui.callout.text>click the button to go to quotation creation page.</x-ui.callout.text>
                     <x-slot name="actions">
-                        <flux:button :href="route('quotation.create',['modification'=>$modification->id])" wire:navigate>Quotation Creation</flux:button>
+                        <x-ui.button :href="route('quotation.create',['modification'=>$modification->id])" wire:navigate>Quotation Creation</x-ui.button>
                     </x-slot>
-                </flux:callout>
+                </x-ui.callout>
                 {{-- <livewire:modifications.actions.submit-quotation :modification="$modification" /> --}}
             @endif
 

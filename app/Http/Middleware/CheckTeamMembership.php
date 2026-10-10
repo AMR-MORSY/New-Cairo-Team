@@ -2,56 +2,46 @@
 
 namespace App\Http\Middleware;
 
+use App\Enums\UserRoles;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
-use Toaster;
 
+/**
+ * Blocks users who belong to no operational team and hold no global role.
+ *
+ * There is no request-scoped team state any more: scope lives on the user row
+ * (users.team / users.zone), so this behaves identically on a full page load
+ * and on a Livewire update, which the old session-based version did not.
+ */
 class CheckTeamMembership
 {
-    /**
-     * Handle an incoming request.
-     *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     */
     public function handle(Request $request, Closure $next): Response
     {
         $user = Auth::user();
 
-        if (!$user) {
-            return redirect()->route('login');
-        }
-        // Check if user belongs to any team
-
-        if ($user->teams()->count() === 0 && !$user->email='morsy.mamr@gmail.com') {
-      
-              abort(403, 'You are not assigned to any team. Please contact your administrator.');
-            
+        if (! $user) {
+            return redirect()->route('home');
         }
 
-       
+        /*
+         * users.team is cast to the Teams enum, so this is an enum or null.
+         *
+         * The team requirement is waived for the roles that hold no team by
+         * design. Super admins are named explicitly: the Gate::before in
+         * AppServiceProvider covers abilities and policies, and an abort()
+         * here is neither, so it never runs for this check.
+         */
+        $teamNotRequired = $user->isSuperAdmin() || $user->hasAnyRole([
+            UserRoles::MODIFICATION_ADMIN->value,
+            UserRoles::SITE_ADMIN->value,
+        ]);
 
-        setPermissionsTeamId(session('team_id')); /////////when the user logged in, team_id stored in the session 
-
-        
-
-       $user->unsetRelation('roles')->unsetRelation('permissions');
-
-     
-       
-        // Get user's team and zone info
-        // $teamAndZone = $user->getAreaAndZone();
-    
-        // $area = $teamAndZone['area'];
-        // $zone = $teamAndZone['zone'];
-
-        // // Share team and zone data with all views
-        // view()->share('currentTeam', $area);
-        // view()->share('currentZone', $zone);
-        // view()->share('userTeamAndZone', $teamAndZone);
+        if ($user->team === null && ! $teamNotRequired) {
+            abort(403, 'You are not assigned to any team. Please contact your administrator.');
+        }
 
         return $next($request);
-       
     }
 }

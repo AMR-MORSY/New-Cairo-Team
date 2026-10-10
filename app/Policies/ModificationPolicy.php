@@ -4,86 +4,98 @@ namespace App\Policies;
 
 use App\Models\Modification\Modification;
 use App\Models\Modification\Quotation;
+use App\Models\Site\Site;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
+/**
+ * Scope comes from users.team / users.zone compared against the modification's
+ * own team / zone. modification_admin reaches every team.
+ */
 class ModificationPolicy
 {
     /**
-     * Determine whether the user can view any models.
+     * Searching is limited to the user's own team; modification admins see all.
      */
     public function modificationSearch(User $user): Response
     {
-        // $userTeamId = getPermissionsTeamId(); ///////as middleware check team already applied on the route before
-        $userTeamId = $user->teams()->first()->id;
-        if ($user->isModificationAdmin()) { //////////the user with modification admin can view any modification in any area 
+        if ($user->isModificationAdmin() || $user->team !== null) {
             return Response::allow();
         }
-       
-        elseif (in_array($userTeamId,[1,2,3],true) ) {//////////////////////users in HGLI,AGLI, and NGLI teams can search area's modifications
-            return Response::allow();
-        }
+
         return Response::deny('You do not have the right permission to search modifications.');
     }
 
-    /**
-     * Determine whether the user can view the model.
+     /**
+     * Any team member can view modification details of his team.
      */
     public function viewModificationDetails(User $user, Modification $modification): Response
     {
-        // $userTeamId = getPermissionsTeamId();
-          $userTeamId = $user->teams()->first()->id;
-        if ($user->isModificationAdmin()) { //////////the user with modification admin can view any modification in any area 
+        if ($user->isModificationAdmin() || $user->team === $modification->team) {
             return Response::allow();
-        }
-        if ($userTeamId) { ////////////////////here the user is assigned to an area and will check to view the modification of that area 
-            return   $userTeamId == $modification->area->id ? Response::allow() : Response::deny('The modification is not in your area to see its details.');
         }
 
         return Response::deny('The modification is not in your area to see its details.');
     }
 
-    /**
-     * Determine whether the user can create models.
-     */
-    public function create(User $user): bool
+    public function create(User $user, Site $site): response
     {
-        return false;
+         if ($this->mayCreate($user, $site)) {
+            return Response::allow();
+        }
+
+        return Response::deny('You can not create modification in this area.');
     }
 
     /**
-     * Determine whether the user can update the model.
+     * The action owner, the zone manager for its zone, the team manager for
+     * its team, or a modification admin.
      */
-    public function updateModification(User $user, Modification $modification): Response   ///// action_owner or zone manager or team manager or modification admin users can update the modification created in their zone/area 
+    public function updateModification(User $user, Modification $modification): Response
     {
+        if ($this->mayUpdate($user, $modification)) {
+            return Response::allow();
+        }
 
-        return $user->id == $modification->action_owner || $user->isTeamManager($modification->area) || $user->isZoneManager($modification->zone)  ? Response::allow() : Response::deny('You can not update modification in this area.');
+        return Response::deny('You can not update modification in this area.');
     }
 
-    public function updateQuotation(User $user, Quotation $quotation) ///// action_owner or zone manager or team manager or modification admin users can update the modification created in their zone/area 
+    public function updateQuotation(User $user, Quotation $quotation): Response
     {
-        return $user->id == $quotation->modification->action_owner || $user->isTeamManager($quotation->modification->area) || $user->isZoneManager($quotation->modification->zone)  ? Response::allow() : Response::deny('You can not update modification in this area.');
+        $modification = $quotation->modification;
+
+        if ($modification && $this->mayUpdate($user, $modification)) {
+            return Response::allow();
+        }
+
+        return Response::deny('You can not update modification in this area.');
     }
 
-    /**
-     * Determine whether the user can delete the model.
-     */
+    private function mayCreate(User $user, Site $site): bool
+    {
+        return $user->isModificationAdmin()
+            ||  $user->isSiteEngineer($site->team)
+             || $user->isZoneManager($site->zone)
+            || $user->isTeamManager($site->team);
+    }
+    private function mayUpdate(User $user, Modification $modification): bool
+    {
+        return $user->isModificationAdmin()
+            || $user->id === $modification->action_owner
+            || $user->isZoneManager($modification->zone)
+            || $user->isTeamManager($modification->team);
+    }
+
     public function delete(User $user, Modification $modification): bool
     {
         return false;
     }
 
-    /**
-     * Determine whether the user can restore the model.
-     */
     public function restore(User $user, Modification $modification): bool
     {
         return false;
     }
 
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
     public function forceDelete(User $user, Modification $modification): bool
     {
         return false;

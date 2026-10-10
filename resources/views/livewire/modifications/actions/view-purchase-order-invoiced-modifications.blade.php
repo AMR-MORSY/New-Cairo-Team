@@ -1,3 +1,3 @@
 <div>
-    <livewire:modifications.components.view-purchase-order-modifications :PO="$PO" :modification_status_id="$modification_status_id"/>
+    <livewire:modifications.components.view-purchase-order-modifications :PO="$PO" :status="$status"/>
 </div>

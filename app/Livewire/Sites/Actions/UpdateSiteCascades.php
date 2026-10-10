@@ -16,7 +16,7 @@ class UpdateSiteCascades extends Component
     
     public function mount( Site $site)
     {
-        
+         $this->authorize('update', $site);
         $this->site = $site;
 
        

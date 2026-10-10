@@ -19,10 +19,10 @@ return new class extends Migration
             $table->foreignId('requester_id')->constrained()->onDelete('cascade');
             $table->text('description')->nullable();
             $table->text('pending')->nullable();
-            $table->foreignId('modification_status_id')->constrained('modification_status')->onDelete('cascade');
-            $table->foreignId('zone_id')->constrained()->onDelete('cascade');
+            $table->string('status', 20)->index();
+            $table->string('zone', 20)->index();
             $table->foreignId('action_owner')->constrained('users')->cascadeOnDelete();
-            $table->foreignId('project_id')->constrained()->onDelete('cascade');
+            $table->foreignId('project_id')->nullable()->constrained()->nullOnDelete();
             $table->date('request_date');
             $table->date('d6_date')->nullable();
             $table->date('cw_date')->nullable();
@@ -34,7 +34,7 @@ return new class extends Migration
             $table->softDeletes();
             $table->string('month', 20)->nullable();
             $table->integer('year')->nullable();
-            $table->foreignId('team_id')->constrained()->onDelete('cascade');
+            $table->string('team', 20)->index();
             $table->timestamps();
         });
     }

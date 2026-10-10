@@ -3,14 +3,12 @@
     "name": "laravel/livewire-starter-kit",
     "type": "project",
     "description": "The official Laravel starter kit for Livewire.",
-    "keywords": [
-        "laravel",
-        "framework"
-    ],
+    "keywords": ["laravel", "framework"],
     "license": "MIT",
     "require": {
         "php": "^7.2|^7.3|^7.4|^8.0|^8.2|^8.3",
         "arielmejiadev/larapex-charts": "^2.1",
+        "filament/filament": "^4.0",
         "illuminate/support": "^7.0|^8.0|^9.0|^10.0|^11.0|^12.0",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
@@ -23,8 +21,7 @@
         "power-components/livewire-powergrid": "^6.5",
         "spatie/laravel-medialibrary": "^11.17",
         "spatie/laravel-permission": "^6.21",
-        "wire-elements/modal": "^3.0",
-        "wireui/wireui": "^2.4"
+        "wire-elements/modal": "^3.0"
     },
     "require-dev": {
         "barryvdh/laravel-ide-helper": "^3.6",
@@ -36,7 +33,6 @@
         "nunomaduro/collision": "^8.6",
         "pestphp/pest": "^3.8",
         "pestphp/pest-plugin-laravel": "^3.2"
-       
     },
     "autoload": {
         "psr-4": {
@@ -53,10 +49,12 @@
     "scripts": {
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
-            "@php artisan package:discover --ansi"
+            "@php artisan package:discover --ansi",
+            "@php artisan filament:upgrade"
         ],
         "post-update-cmd": [
-            "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
+            "@php artisan vendor:publish --tag=laravel-assets --ansi --force",
+            "@php artisan livewire:publish --assets --ansi"
         ],
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""

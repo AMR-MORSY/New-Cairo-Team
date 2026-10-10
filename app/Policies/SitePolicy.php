@@ -2,138 +2,133 @@
 
 namespace App\Policies;
 
-use App\Models\User;
+use App\Enums\Zones;
 use App\Models\Site\Site;
-
+use App\Models\User;
 use Illuminate\Auth\Access\Response;
-use Illuminate\Database\Eloquent\Attributes\UsePolicy;
 
-
-
-
+/**
+ * Scope comes from users.team / users.zone compared against the site's own
+ * team / zone. Super admins bypass this entirely through the Gate::before
+ * in AppServiceProvider, which runs before any policy.
+ *
+ * This policy speaks only about sites. Batteries, power data, site data,
+ * notes and images have no policy of their own and carry no #[UsePolicy]:
+ * every page that touches one authorizes against its site instead
+ * ($battery->site), which is what the Livewire components already did.
+ */
 class SitePolicy
 {
     /**
-     * Determine whether the user can view any models.
+     * Any member of an operational team can see basic site information.
+     *
+     * site_admin and modification_admin hold no team by design, so the team
+     * column alone would refuse them. They are named here rather than tested
+     * through a general "global role" helper. Super admins never reach this
+     * method - the Gate::before in AppServiceProvider answers first.
      */
-    public function view(User $user,Site $site): Response
+    public function view(User $user, Site $site): Response
     {
-        $userTeamId = $user->teams()->first()->id;
-        if (!in_array($userTeamId, [1, 2, 3, 4], true)) { //////////HGLI,NGLI,AGLI, and Modification teams can view site 
-
-
-         
-            return Response::deny("You do not have the right permission to view site's information.");
+        if ($user->isSiteAdmin() || $user->isModificationAdmin() || $user->team !== null) {
+            return Response::allow();
         }
-        return Response::allow();
+
+        return Response::deny("You do not have the right permission to view site's information.");
     }
 
-    public function viewSiteProperties(User $user,Site $site):Response
+    /**
+     * Detailed properties are limited to the user's own zone, except for
+     * site_admin, whose remit is sites in every zone. The is*() helpers
+     * below compare the user's own zone / team column and admit no one else.
+     */
+    public function viewSiteProperties(User $user, Site $site): Response
     {
-        $siteZone=$site->zone;
-        $teamAndZone=$user->getTeamAndZone();
-
-        if($teamAndZone['zone']==null)
-        {
-               return Response::deny("You do not have the right permission to view site's properties.");
-
-
-        }
-        elseif($teamAndZone['zone']!=$siteZone)
-        {
-              return Response::deny("You do not have the right permission to view site's properties.");
-
-        }
-        else{
-             return Response::allow();
-
+        if (
+            $user->isSiteAdmin()
+            || $user->isMaintenanceEngineer($site->zone)
+            || $user->isZoneManager($site->zone)
+            || $user->isTeamManager($site->team)
+        ) {
+            return Response::allow();
         }
 
-
+        return Response::deny("You do not have the right permission to view site's properties.");
     }
+
     public function create(User $user): Response
     {
         if ($user->isSiteAdmin()) {
             return Response::allow();
         }
+
         return Response::deny('You do not have the right permission.');
     }
 
-    public function viewCESites(User $user)
+    /**
+     * The Ce* pages are specific to Cairo East, so the zone stays fixed here.
+     * The role no longer carries it - it comes from the user's zone column.
+     */
+    public function viewCESites(User $user): Response
     {
-
-
-        if ($user->hasRole('CE_maintenance_engineer')) {
+        if ($user->isMaintenanceEngineer(Zones::CAIRO_EAST)) {
             return Response::allow();
         }
+
         return Response::deny('You do not have the right permission to view CE sites activities.');
     }
+
     /**
-     * Determine whether the user can view the model.
+     * Modifications on a site are visible to that site's team.
      */
     public function viewSiteModifications(User $user, Site $site): Response
     {
-
-        // $userTeamId = getPermissionsTeamId();   /////////depending on the middleware team.member that get the team_id from the session and assign it to the user, but if route did not change, middleware will not work
-         $userTeamId= $user->teams()->first()->id;
-        if ($userTeamId) {
-            return   $userTeamId == $site->team->id ? Response::allow() : Response::deny('The site is not in your area to view its modifications.'); /////team members only can view site modifications
-        } elseif ($user->isModificationAdmin()) {
+        if ($user->isModificationAdmin() || $user->inTeam($site->team)) {
             return Response::allow();
         }
+
         return Response::deny('The site is not in your area to view its modifications.');
     }
 
     /**
-     * Determine whether the user can create models.
+     * Zone managers act within their zone; site engineers and team managers
+     * across their whole team.
      */
-    public function createSiteModifications(User $user, Site $site): Response /////////any team member like site engineer/zone manager can create or view any modification on any site in the area
+    public function createSiteModifications(User $user, Site $site): Response
     {
-
-        if ($user->isZoneManager($site->zone)) ////////////////zone manager can create modifications in his zone
-        {
-            return Response::allow();
-        } elseif ($user->isSiteEngineer($site->team)) ////////////////site Engineer can create modifications in his area
-        {
+        if (
+            $user->isModificationAdmin()
+            || $user->isZoneManager($site->zone)
+            || $user->isSiteEngineer($site->team)
+            || $user->isTeamManager($site->team)
+        ) {
             return Response::allow();
         }
-
 
         return Response::deny('The site is not in your area to modify it.');
     }
 
-    /**
-     * Determine whether the user can update the model.
-     */
     public function update(User $user, Site $site): Response
     {
         if ($user->isSiteAdmin()) {
             return Response::allow();
         }
+
         return Response::deny('You do not have the right permission.');
     }
 
-    /**
-     * Determine whether the user can delete the model.
-     */
     public function delete(User $user, Site $site): bool
     {
         return false;
     }
 
-    /**
-     * Determine whether the user can restore the model.
-     */
     public function restore(User $user, Site $site): bool
     {
         return false;
     }
 
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
     public function forceDelete(User $user, Site $site): bool
     {
         return false;
     }
+
 }

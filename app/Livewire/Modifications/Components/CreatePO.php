@@ -20,7 +20,7 @@ class CreatePO extends Component
 
     public function mount()
     {
-        $this->subcontractors = Subcontractor::all();
+        $this->subcontractors = Subcontractor::active()->get();
     }
 
 

@@ -15,7 +15,7 @@ class ShowUsers extends Component
     public function mount()
     {
         $this->previousUrl = url()->previous();
-        $this->users = User::with(['teams'])->get();
+        $this->users = User::all();   // team is a column now, not a relation
 
         //  dd($this->users);
     }

@@ -1,21 +1,19 @@
-<div class="mt-4 flex flex-col gap-6">
-    <flux:text class="text-center">
-        {{ __('Please verify your email address by clicking on the link we just emailed to you.') }}
-    </flux:text>
+<div>
+    <x-auth-header :title="__('Verify your email')"
+        :description="__('Please verify your email address by clicking the link we just sent you.')" />
 
-    @if (session('status') == 'verification-link-sent')
-        <flux:text class="text-center font-medium !dark:text-green-400 !text-green-600">
-            {{ __('A new verification link has been sent to the email address you provided during registration.') }}
-        </flux:text>
+    @if (session('status') === 'verification-link-sent')
+        <x-ui.callout variant="success" class="mb-6">
+            {{ __('A new verification link has been sent to your email address.') }}
+        </x-ui.callout>
     @endif
 
-    <div class="flex flex-col items-center justify-between space-y-3">
-        <flux:button wire:click="sendVerification" variant="primary" class="w-full">
-            {{ __('Resend verification email') }}
-        </flux:button>
+    <div class="grid gap-4">
+        <x-ui.button wire:click="sendVerification" variant="primary" block>
+            <span wire:loading.remove wire:target="sendVerification">{{ __('Resend verification email') }}</span>
+            <span wire:loading wire:target="sendVerification" class="loading loading-spinner loading-sm"></span>
+        </x-ui.button>
 
-        <flux:link class="text-sm cursor-pointer" wire:click="logout">
-            {{ __('Log out') }}
-        </flux:link>
+        <x-ui.link wire:click="logout" class="cursor-pointer text-center text-sm">{{ __('Log out') }}</x-ui.link>
     </div>
 </div>

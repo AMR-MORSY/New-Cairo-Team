@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Modification\Requester;
 use App\Models\Modification\Modification;
 use App\Models\Modification\Subcontractor;
-use App\Models\Modification\ModificationStatus;
+use App\Enums\ModificationStatus;
 
 #[Title('Modification Search')]
 class ModificationSearch extends Component
@@ -24,7 +24,7 @@ class ModificationSearch extends Component
     public  $category = '';
     public  $option = '';
 
-    public $team_id;
+    public $team;
 
     public $date_from = '';
     public $date_to = '';
@@ -32,7 +32,7 @@ class ModificationSearch extends Component
     public $dates = [];
     public Collection $modifications;
 
-    public $work_order;
+    public $work_order='';
 
     public function mount()
     {
@@ -47,7 +47,7 @@ class ModificationSearch extends Component
         ];
 
 
-        $this->team_id = getPermissionsTeamId();
+        $this->team = Auth::user()?->team?->value;
 
         $this->dates = [
 
@@ -57,11 +57,20 @@ class ModificationSearch extends Component
         ];
     }
 
+    private function clearSearchFields()
+    {
+        $this->category = '';
+        $this->option = '';
+        $this->date_from = '';
+        $this->date_to = '';
+        $this->selected_date = '';
+        $this->work_order='';
+    }
     private function getCategoryOptions($value)
     {
 
         if ($value == 'status') {
-            $this->options = ModificationStatus::all();
+            $this->options = ModificationStatus::options();
             return;
         } elseif ($value == 'requester') {
             $this->options = Requester::all();
@@ -82,49 +91,49 @@ class ModificationSearch extends Component
         // dd($value);
     }
 
-    private function getModificationsByCategory($category, $option, $team_id = null)
+    private function getModificationsByCategory($category, $option, $team = null)
     {
         $modifications = collect();
 
         if ($category == 'status') {
 
-            if ($team_id) {
-                $modifications = Modification::where('modification_status_id', $option)->where('team_id', $team_id)->get();
+            if ($team) {
+                $modifications = Modification::where('status', $option)->where('team', $team)->get();
             } else {
-                $modifications = Modification::where('modification_status_id', $option)->get();
+                $modifications = Modification::where('status', $option)->get();
             }
         } elseif ($category == 'requester') {
 
-            if ($team_id) {
-                $modifications = Modification::where('requester_id', $option)->where('team_id', $team_id)->get();
+            if ($team) {
+                $modifications = Modification::where('requester_id', $option)->where('team', $team)->get();
             } else {
                 $modifications = Modification::where('requester_id', $option)->get();
             }
         } elseif ($category == 'subcontractor') {
 
-            if ($team_id) {
-                $modifications = Modification::where('subcontractor_id', $option)->where('team_id', $team_id)->get();
+            if ($team) {
+                $modifications = Modification::where('subcontractor_id', $option)->where('team', $team)->get();
             } else {
                 $modifications = Modification::where('subcontractor_id', $option)->get();
             }
         } elseif ($category == 'project') {
 
-            if ($team_id) {
-                $modifications = Modification::where('project_id', $option)->where('team_id', $team_id)->get();
+            if ($team) {
+                $modifications = Modification::where('project_id', $option)->where('team', $team)->get();
             } else {
                 $modifications = Modification::where('project_id', $option)->get();
             }
         } elseif ($category == 'action') {
 
-            if ($team_id) {
-                $modifications = Modification::where('action_id', $option)->where('team_id', $team_id)->get();
+            if ($team) {
+                $modifications = Modification::where('action_id', $option)->where('team', $team)->get();
             } else {
                 $modifications = Modification::where('action_id', $option)->get();
             }
         } elseif ($category == 'reported') {
 
-            if ($team_id) {
-                $modifications = Modification::where('reported', $option)->where('team_id', $team_id)->get();
+            if ($team) {
+                $modifications = Modification::where('reported', $option)->where('team', $team)->get();
             } else {
                 $modifications = Modification::where('reported', $option)->get();
             }
@@ -147,19 +156,17 @@ class ModificationSearch extends Component
 
         $user = Auth::user();
 
-        setPermissionsTeamId($this->team_id);
-
 
 
         $this->modifications = collect();
         if ($user->isModificationAdmin()) {
 
             $this->modifications = $this->getModificationsByCategory($validated['category'], $validated['option']);
-        } elseif ($this->team_id) {
-            $this->modifications = $this->getModificationsByCategory($validated['category'], $validated['option'], $this->team_id);
+        } elseif ($this->team) {
+            $this->modifications = $this->getModificationsByCategory($validated['category'], $validated['option'], $this->team);
         }
 
-        // dd($this->modifications);
+      $this->clearSearchFields();
 
         $this->dispatch('modificationsFound', modifications: $this->modifications);
     }
@@ -177,7 +184,6 @@ class ModificationSearch extends Component
 
 
         $user = Auth::user();
-        setPermissionsTeamId($this->team_id);
         $this->modifications = collect();
         if ($user->isModificationAdmin()) {
 
@@ -186,18 +192,18 @@ class ModificationSearch extends Component
             } else {
                 $this->modifications = Modification::where($validated['selected_date'], '>=', $validated['date_from'])->where($validated['selected_date'], '<=', $validated['date_to'])->get();
             }
-        } elseif ($this->team_id) {
+        } elseif ($this->team) {
             if ($validated['date_to'] == '') {
-                $this->modifications = Modification::where('team_id', $this->team_id)->where($validated['selected_date'], '>=', $validated['date_from'])->get();
+                $this->modifications = Modification::where('team', $this->team)->where($validated['selected_date'], '>=', $validated['date_from'])->get();
             } else {
-                $this->modifications = Modification::where('team_id', $this->team_id)->where($validated['selected_date'], '>=', $validated['date_from'])->where($validated['selected_date'], '<=', $validated['date_to'])->get();
+                $this->modifications = Modification::where('team', $this->team)->where($validated['selected_date'], '>=', $validated['date_from'])->where($validated['selected_date'], '<=', $validated['date_to'])->get();
             }
         }
 
        
 
 
-        // dd($this->modifications);
+       $this->clearSearchFields();
 
         $this->dispatch('modificationsFound', modifications: $this->modifications);
     }
@@ -210,15 +216,14 @@ class ModificationSearch extends Component
         ]);
 
          $user = Auth::user();
-        setPermissionsTeamId($this->team_id);
         $this->modifications = collect();
         if ($user->isModificationAdmin()) {
             $this->modifications = Modification::where('wo_code', $validated['work_order'])->get();
 
         }
-        elseif ($this->team_id) {
-            $modification_team=Modification::where('wo_code', $validated['work_order'])->first()->team_id;
-            if($modification_team==$this->team_id)
+        elseif ($this->team) {
+            $modification_team=Modification::where('wo_code', $validated['work_order'])->first()->team?->value;
+            if($modification_team==$this->team)
             {
                 $this->modifications = Modification::where('wo_code', $validated['work_order'])->get();
             }
@@ -227,6 +232,7 @@ class ModificationSearch extends Component
             }
           
         }
+        $this->clearSearchFields();
            $this->dispatch('modificationsFound', modifications: $this->modifications);
 
 

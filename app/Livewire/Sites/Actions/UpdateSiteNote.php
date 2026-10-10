@@ -20,6 +20,7 @@ class UpdateSiteNote extends Component
 
     public function mount(SiteNote $siteNote)
     {
+         $this->authorize('update', $siteNote->site);
         $this->siteNote=$siteNote;
 
         $this->site=$siteNote->site;

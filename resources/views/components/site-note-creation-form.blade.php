@@ -9,71 +9,71 @@
                 <div class="space-y-6">
                     <div class="border-b border-gray-200 pb-2">
 
-                        {{-- <flux:heading size="lg"> {{ $target }} Battery Record</flux:heading> --}}
-                        <flux:heading size="lg"> {{ $site->site_code }} - {{ $site->site_name }} </flux:heading>
+                        {{-- <x-ui.heading size="lg"> {{ $target }} Battery Record</x-ui.heading> --}}
+                        <x-ui.heading size="lg"> {{ $site->site_code }} - {{ $site->site_name }} </x-ui.heading>
 
 
                     </div>
 
                     <div class="grid grid-cols-1 xl:grid-cols-2  2xl:grid-cols-3 gap-6">
-                        <flux:field>
-                            <flux:label>Title *</flux:label>
-                            <flux:input wire:model="form.title" :readonly="$readonly"
+                        <x-ui.field>
+                            <x-ui.label>Title *</x-ui.label>
+                            <x-ui.input wire:model="form.title" :readonly="$readonly"
                                 :placeholder="$readonly ? null : 'Enter power source'" class="w-full" />
-                            <flux:error name="form.title" />
-                        </flux:field>
+                            <x-ui.error name="form.title" />
+                        </x-ui.field>
 
 
 
-                        <flux:field>
-                            <flux:label>Notice Type *</flux:label>
+                        <x-ui.field>
+                            <x-ui.label>Notice Type *</x-ui.label>
                             {{-- @if ($target == 'Update' || $target == 'New') --}}
 
 
                             <x-select-enums wire:model="form.notice_type" :enumOptions="('App\Enums\SiteNoticeTypes')::cases()" class="w-full"
                                 placeholder="Enter the Status" />
                             {{-- @else --}}
-                            {{-- <flux:input wire:model="form.notice_type"
+                            {{-- <x-ui.input wire:model="form.notice_type"
                                     :placeholder="$readonly ? null : 'Enter Site Status'" :readonly="$readonly"
                                     class="w-full" /> --}}
                             {{-- @endif --}}
-                            <flux:error name="form.notice_type" />
-                        </flux:field>
+                            <x-ui.error name="form.notice_type" />
+                        </x-ui.field>
 
-                        <flux:field>
-                            <flux:label>Solved*</flux:label>
+                        <x-ui.field>
+                            <x-ui.label>Solved*</x-ui.label>
                             {{-- @if ($target == 'Update' || $target == 'New') --}}
-                            <flux:select wire:model="form.is_solved" type="text" placeholder="Is Solved?"
+                            <x-ui.select wire:model="form.is_solved" type="text" placeholder="Is Solved?"
                                 class="w-full">
 
-                                <flux:select.option :value="0">No
-                                </flux:select.option>
-                                <flux:select.option :value="1">Yes
-                                </flux:select.option>
+                                <x-ui.select.option :value="0">No
+                                </x-ui.select.option>
+                                <x-ui.select.option :value="1">Yes
+                                </x-ui.select.option>
 
 
-                            </flux:select>
+                            </x-ui.select>
                             {{-- @else --}}
-                            {{-- <flux:input wire:model="form.is_solved" :readonly="$readonly" class="w-full" /> --}}
+                            {{-- <x-ui.input wire:model="form.is_solved" :readonly="$readonly" class="w-full" /> --}}
                             {{-- @endif --}}
 
-                            <flux:error name="form.is_solved" />
-                        </flux:field>
+                            <x-ui.error name="form.is_solved" />
+                        </x-ui.field>
 
 
-                        <flux:field>
+                        <x-ui.field>
 
                             {{-- @if ($target == 'Update' || $target == 'New') --}}
-                            <flux:textarea label="Description *" placeholder="Action descriptions..." rows="4"
+                            <x-ui.textarea label="Description *" placeholder="Action descriptions..." rows="4"
                                 wire:model="form.description" class="w-full" />
                             {{-- @else --}}
-                            {{-- <flux:textarea label="Description *" wire:model="description" rows="4"
+                            {{-- <x-ui.textarea label="Description *" wire:model="description" rows="4"
                                 :placeholder="$readonly ? null : 'Action descriptions...'" :readonly="$readonly"
                                 class="w-full" /> --}}
                             {{-- @endif --}}
 
                           
-                        </flux:field>
+                        </x-ui.field>
 
 
 
@@ -87,12 +87,12 @@
 
                 </div>
                 @if ($target == 'Update')
-                    <flux:button variant="primary" color="zinc" wire:click='updateSiteNotice' class=" cursor-pointer">
-                        Update</flux:button>
+                    <x-ui.button variant="primary" color="zinc" wire:click='updateSiteNotice' class=" cursor-pointer">
+                        Update</x-ui.button>
                 @endif
                 @if ($target == 'New')
-                    <flux:button variant="primary" color="zinc" wire:click='newSiteNotice' class=" cursor-pointer">
-                        Create</flux:button>
+                    <x-ui.button variant="primary" color="zinc" wire:click='newSiteNotice' class=" cursor-pointer">
+                        Create</x-ui.button>
                 @endif
 
             </form>

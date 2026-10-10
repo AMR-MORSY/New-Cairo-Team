@@ -2,14 +2,13 @@
 
 namespace App\Livewire\Sites\Actions;
 
-use App\Models\Area;
-use App\Models\Zone;
+use App\Enums\Teams;
+use App\Enums\Zones;
 use Livewire\Component;
 use App\Models\Site\Site;
 use Masmerise\Toaster\Toast;
 use Masmerise\Toaster\Toaster;
 use App\Livewire\Forms\SiteForm;
-use App\Models\Team;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
@@ -25,9 +24,10 @@ class CreateSite extends Component
     public function mount()
     {
 
+        $this->authorize('create', Site::class);
         $this->previousUrl = url()->previous();
-        $this->zones = Zone::all();
-        $this->teams = Team::all()->take(3); /////////////////HGLI,AGLI,NGLI only
+        $this->zones = Zones::cases();
+        $this->teams = Teams::cases();
     }
 
     public function create()
@@ -46,8 +46,8 @@ class CreateSite extends Component
             "type" => $this->form->type,
             "sharing" => $this->form->sharing,
             "host" => $this->form->host,
-            "team_id" => $this->form->team_id,
-            "zone_id" => $this->form->zone_id,
+            "team" => $this->form->team,
+            "zone" => $this->form->zone,
             "gest" => $this->form->gest,
             "cells_2G" => $this->form->cells_2G,
             "cells_3G" => $this->form->cells_3G,
@@ -64,9 +64,9 @@ class CreateSite extends Component
         return redirect()->route('site.show', ['site' => $site->site_code]);
     }
 
-     public function goBack()
+    public function goBack()
     {
-        
+
         return redirect()->to($this->previousUrl);
     }
     public function render()

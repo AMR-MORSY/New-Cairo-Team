@@ -18,7 +18,7 @@ use App\Models\Modification\Modification;
 use App\Models\Modification\PurchaseOrder;
 use App\Models\Modification\Subcontractor;
 use Illuminate\Database\Eloquent\Collection;
-use App\Models\Modification\ModificationStatus;
+use App\Enums\ModificationStatus;
 use App\Models\Modification\ModificationReservation;
 
 class CreateModification extends Component
@@ -27,28 +27,30 @@ class CreateModification extends Component
 
     public Collection $subcontractors;
     public Collection $requesters;
-    public Collection $modificationStatus;
+    /** @var array<int, array{id: string, name: string}> from ModificationStatus::options() */
+    public array $modificationStatus = [];
     public Collection $projects;
     public Collection $actions;
 
+    public Site $site;
 
     public function mount(
         Project $project,
         Subcontractor $subcontractor,
         Requester $requester,
-        ModificationStatus $modification_status,
         Action $action,
         Site $site
     ) {
-        $this->subcontractors = $subcontractor->all();
-        $this->requesters = $requester->all();
-        $this->modificationStatus = $modification_status->all();
-        $this->projects = $project->all();
-        $this->actions = $action->all();
+        $this->subcontractors = $subcontractor->active()->get();
+        $this->requesters = $requester->active()->get();
+        $this->modificationStatus = ModificationStatus::options();
+        $this->projects = $project->active()->get();
+        $this->actions = $action->active()->get();
+        $this->authorize('create', [Modification::class, $site]);
+        $this->site = $site;
 
 
         $this->form->setModificationDefaultAttributes($site);
-
     }
 
 
@@ -58,13 +60,12 @@ class CreateModification extends Component
     public function create()
     {
 
-
         $this->validate();
 
-        if ($this->form->modification_status_id == 1 or $this->form->modification_status_id == 3) {/////////////////status done or waiting D6
-            Toaster::error('Modification status is considered done or waiting D6 after quotation submission')->duration('7000');
-            return;
-        }
+        // if (ModificationStatus::tryFrom($this->form->status)?->isQuoted()) { /////////////////status done or waiting D6
+        //     Toaster::error('Modification status is considered done or waiting D6 after quotation submission')->duration('7000');
+        //     return;
+        // }   /////// i will pass the checking of the quotation existence this time 
         $this->form->inprogressFormSubmission();
     }
     public function render()

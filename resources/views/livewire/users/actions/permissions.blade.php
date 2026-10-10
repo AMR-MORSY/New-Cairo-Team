@@ -1,10 +1,10 @@
  <x-viewLayouts.main-view-layout :heading="__('Permissions')" :subheading="__('You will find very important information about the permissions here. ')">
      <x-slot:links>
-         <flux:navlist.group expandable heading="Quick Links" class=" lg:grid mt-10">
-             <flux:navlist.item wire:click="goBack" class=" cursor-pointer" wire:navigate>
+         <x-ui.navlist.group expandable heading="Quick Links" class=" lg:grid mt-10">
+             <x-ui.navlist.item wire:click="goBack" class=" cursor-pointer" wire:navigate>
                  {{ __('BACK') }}
-             </flux:navlist.item>
-         </flux:navlist.group>
+             </x-ui.navlist.item>
+         </x-ui.navlist.group>
      </x-slot:links>
 
      <div class="tabs tabs-border">
@@ -39,14 +39,14 @@
              <section class="w-full">
 
                  <form class="p-6 space-y-8" wire:submit="createPermission">
-                     <flux:field>
-                         <flux:label>Permission *</flux:label>
-                         <flux:input wire:model="permit" placeholder="Permission" class="w-full" />
-                         <flux:error name="permit" />
-                     </flux:field>
+                     <x-ui.field>
+                         <x-ui.label>Permission *</x-ui.label>
+                         <x-ui.input wire:model="permit" placeholder="Permission" class="w-full" />
+                         <x-ui.error name="permit" />
+                     </x-ui.field>
 
-                     <flux:button variant="primary" color="zinc" type="submit" class=" cursor-pointer">
-                         Create</flux:button>
+                     <x-ui.button variant="primary" color="zinc" type="submit" class=" cursor-pointer">
+                         Create</x-ui.button>
                  </form>
 
 

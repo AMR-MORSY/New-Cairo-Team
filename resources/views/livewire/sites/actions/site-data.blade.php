@@ -12,14 +12,14 @@
             </x-slot:links>
             <x-site-data-creation-form :target="null" :readonly="true" :site="$site" />
         @else
-            <flux:callout icon="exclamation-triangle" variant="secondary" inline class=" mt-5">
-                <flux:callout.heading>No site Data Found for this site</flux:callout.heading>
-                <flux:callout.text>click the button to go to new record creation page.</flux:callout.text>
+            <x-ui.callout icon="exclamation-triangle" variant="secondary" inline class=" mt-5">
+                <x-ui.callout.heading>No site Data Found for this site</x-ui.callout.heading>
+                <x-ui.callout.text>click the button to go to new record creation page.</x-ui.callout.text>
                 <x-slot name="actions">
-                    <flux:button :href="route('siteData.create',$site->site_code)" wire:navigate>New Site data Record
-                    </flux:button>
+                    <x-ui.button :href="route('siteData.create',$site->site_code)" wire:navigate>New Site data Record
+                    </x-ui.button>
                 </x-slot>
-            </flux:callout>
+            </x-ui.callout>
         @endif
     </x-viewLayouts.main-view-layout>
 </section>

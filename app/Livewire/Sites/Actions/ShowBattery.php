@@ -16,6 +16,7 @@ class ShowBattery extends Component
 
     public function mount(Battery $battery)
     {
+          $this->authorize('viewSiteProperties', $battery->site);
         $this->site = $battery->site;
         $this->battery = $battery;
         $this->form->setBattery($battery);

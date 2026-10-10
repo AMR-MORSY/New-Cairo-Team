@@ -1,26 +1,20 @@
  <x-viewLayouts.main-view-layout :heading="__('Sites')" :subheading="__('You will find the results of the searching here.Sites with corresponding zones are shown below  ')">
 
 
-     <x-slot:links>
-         <flux:navlist.group expandable heading="Quick Links" class=" lg:grid mt-10">
-             <flux:navlist.item wire:click="goBack" class=" cursor-pointer">
-                 {{ __('BACK') }}
-             </flux:navlist.item>
-         </flux:navlist.group>
-     </x-slot:links>
+    
      @if (count($sites) > 0)
          <div class="max-w-xl xl:max-w-2xl  2xl:max-w-7xl">
              <livewire:tables.site.searched-sites-table :props="$props" :key="'search-' . now()" />
          </div>
      @else
-         <flux:callout icon="exclamation-triangle" variant="secondary" inline class=" mt-5">
-             <flux:callout.heading>No sites found</flux:callout.heading>
-             <flux:callout.text>click the button to go to new site creation page.</flux:callout.text>
+         <x-ui.callout icon="exclamation-triangle" variant="secondary" inline class=" mt-5">
+             <x-ui.callout.heading>No sites found</x-ui.callout.heading>
+             <x-ui.callout.text>click the button to go to new site creation page.</x-ui.callout.text>
              <x-slot name="actions">
-                 <flux:button :href="route('site.create')" wire:navigate>NEW SITE
-                 </flux:button>
+                 <x-ui.button :href="route('site.create')" wire:navigate>NEW SITE
+                 </x-ui.button>
 
              </x-slot>
-         </flux:callout>
+         </x-ui.callout>
      @endif
  </x-viewLayouts.main-view-layout>

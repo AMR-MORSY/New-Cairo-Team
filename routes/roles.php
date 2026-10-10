@@ -12,7 +12,7 @@ use App\Livewire\Users\Actions\Permissions;
 use App\Livewire\Users\Actions\ShowSingleUser;
 use App\Livewire\Users\Actions\RolePermissions;
 
-Route::middleware(['auth'])->prefix('roles')->group(function () {
+Route::middleware(['auth', 'can:handle_users_activities'])->prefix('roles')->group(function () {
 
 
     Route::get('index', Roles::class)->name('role.index');

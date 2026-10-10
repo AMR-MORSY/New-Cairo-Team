@@ -9,103 +9,103 @@
                 <div class="space-y-6">
                     <div class="border-b border-gray-200 pb-2">
 
-                        <flux:heading size="lg"> {{ $target }} PO</flux:heading>
+                        <x-ui.heading size="lg"> {{ $target }} PO</x-ui.heading>
 
 
                     </div>
 
                     <div class="grid grid-cols-1 xl:grid-cols-2  2xl:grid-cols-3 gap-6">
-                        <flux:field>
-                            <flux:label>Subcontractor *</flux:label>
+                        <x-ui.field>
+                            <x-ui.label>Subcontractor *</x-ui.label>
                             @if ($target == 'Update' || $target == 'New')
                                 {{-- <x-select-named-options wire:model="form.subcontractor_id" :options="$subcontractors"
                                     placeholder="Enter subcontractor" /> --}}
 
-                                <flux:select wire:model="form.subcontractor_id" placeholder="Enter subcontractor"
+                                <x-ui.select wire:model="form.subcontractor_id" placeholder="Enter subcontractor"
                                     class="w-full">
 
 
                                     @foreach ($subcontractors as $subcontractor)
-                                        <flux:select.option :value="$subcontractor->id">{{ $subcontractor->name }}
-                                        </flux:select.option>
+                                        <x-ui.select.option :value="$subcontractor->id">{{ $subcontractor->name }}
+                                        </x-ui.select.option>
                                     @endforeach
 
 
 
-                                </flux:select>
+                                </x-ui.select>
                             @else
-                                <flux:input wire:model="form.subcontractor_id" :readonly="$readonly"
+                                <x-ui.input wire:model="form.subcontractor_id" :readonly="$readonly"
                                     :placeholder="$readonly ? null : 'Enter Subcontractor'" class="w-full" />
                             @endif
 
-                            <flux:error name="form.subcontractor_id" />
+                            <x-ui.error name="form.subcontractor_id" />
 
 
-                        </flux:field>
+                        </x-ui.field>
 
 
 
-                        <flux:field>
-                            <flux:label>PO Type *</flux:label>
+                        <x-ui.field>
+                            <x-ui.label>PO Type *</x-ui.label>
                             @if ($target == 'Update' || $target == 'New')
                                 <x-select-enums wire:model="form.type" :enumOptions="('App\Enums\ModificationPOs')::cases()" class="w-full"
                                     placeholder="Enter PO type" />
                             @else
-                                <flux:input wire:model="form.type" :readonly="$readonly"
+                                <x-ui.input wire:model="form.type" :readonly="$readonly"
                                     :placeholder="$readonly ? null : 'Enter PO type'" class="w-full" />
                             @endif
 
-                            <flux:error name="form.type" />
+                            <x-ui.error name="form.type" />
 
-                        </flux:field>
-                        <flux:field>
-                            <flux:label>PO number *</flux:label>
+                        </x-ui.field>
+                        <x-ui.field>
+                            <x-ui.label>PO number *</x-ui.label>
                             @if ($target == 'Update' || $target == 'New')
-                                <flux:input wire:model="form.po_number" class="w-full" type="number" :min=0
+                                <x-ui.input wire:model="form.po_number" class="w-full" type="number" :min=0
                                     placeholder="Enter PO number" />
                             @else
-                                <flux:input wire:model="form.po_number" x-mask:dynamic="$money($input)"
+                                <x-ui.input wire:model="form.po_number" x-mask:dynamic="$money($input)"
                                     :placeholder="$readonly ? null : 'Enter PO number'" :readonly="$readonly"
                                     class="w-full" />
                             @endif
-                            <flux:error name="form.po_number" />
+                            <x-ui.error name="form.po_number" />
 
-                        </flux:field>
+                        </x-ui.field>
 
-                        <flux:field>
-                            <flux:label>Amount *</flux:label>
+                        <x-ui.field>
+                            <x-ui.label>Amount *</x-ui.label>
                             @if ($target == 'Update' || $target == 'New')
-                                <flux:input wire:model="form.amount" class="w-full" x-mask:dynamic="$money($input)"
+                                <x-ui.input wire:model="form.amount" class="w-full" x-mask:dynamic="$money($input)"
                                     placeholder="Enter PO amount" />
                             @else
-                                <flux:input wire:model="form.amount" x-mask:dynamic="$money($input)"
+                                <x-ui.input wire:model="form.amount" x-mask:dynamic="$money($input)"
                                     :placeholder="$readonly ? null : 'Enter PO amount'" :readonly="$readonly"
                                     class="w-full" />
                             @endif
-                            <flux:error name="form.amount" />
+                            <x-ui.error name="form.amount" />
 
-                        </flux:field>
+                        </x-ui.field>
 
-                        <flux:field>
-                            <flux:label>Status *</flux:label>
+                        <x-ui.field>
+                            <x-ui.label>Status *</x-ui.label>
                             @if ($target == 'Update' || $target == 'New')
-                                <flux:select wire:model="form.status" type="text" placeholder="Enter Status"
+                                <x-ui.select wire:model="form.status" type="text" placeholder="Enter Status"
                                     class="w-full">
 
-                                    <flux:select.option value="open">Open
-                                    </flux:select.option>
-                                    <flux:select.option value="closed">Closed
-                                    </flux:select.option>
+                                    <x-ui.select.option value="open">Open
+                                    </x-ui.select.option>
+                                    <x-ui.select.option value="closed">Closed
+                                    </x-ui.select.option>
 
-                                </flux:select>
+                                </x-ui.select>
                             @else
-                                <flux:input wire:model="form.status" :readonly="$readonly"
+                                <x-ui.input wire:model="form.status" :readonly="$readonly"
                                     :placeholder="$readonly ? null : 'Enter status'" class="w-full" />
                             @endif
 
-                            <flux:error name="form.status" />
+                            <x-ui.error name="form.status" />
 
-                        </flux:field>
+                        </x-ui.field>
 
 
                     </div>
@@ -114,12 +114,12 @@
 
                 </div>
                 @if ($target == 'Update')
-                    <flux:button variant="primary" color="zinc" wire:click='update' class=" cursor-pointer">
-                        Update</flux:button>
+                    <x-ui.button variant="primary" color="zinc" wire:click='update' class=" cursor-pointer">
+                        Update</x-ui.button>
                 @endif
                 @if ($target == 'New')
-                    <flux:button variant="primary" color="zinc" wire:click='create' class=" cursor-pointer">
-                        Create</flux:button>
+                    <x-ui.button variant="primary" color="zinc" wire:click='create' class=" cursor-pointer">
+                        Create</x-ui.button>
                 @endif
 
             </form>

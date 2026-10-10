@@ -19,6 +19,7 @@ class CreateBattery extends Component
     public $site;
     public function mount(Site $site)
     {
+        $this->authorize('create', Site::class);
         $this->categories = [
             'New',
             'Tested',
@@ -26,7 +27,7 @@ class CreateBattery extends Component
         ];
 
         $this->form->setSiteCode($site->site_code);
-        $this->site=$site;
+        $this->site = $site;
     }
     public function newBatteryRecord()
     {

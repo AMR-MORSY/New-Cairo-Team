@@ -4,10 +4,8 @@ namespace App\Models\Modification;
 
 use Carbon\Carbon;
 use App\Enums\Zones;
-use App\Models\Area;
-use App\Models\Team;
+use App\Enums\Teams;
 use App\Models\User;
-use App\Models\Zone;
 use App\Models\Site\Site;
 use App\Models\Modification\Action;
 use App\Models\Modification\Project;
@@ -17,7 +15,8 @@ use App\Models\Modification\Requester;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Modification\Subcontractor;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use App\Models\Modification\ModificationStatus;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Enums\ModificationStatus;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -31,19 +30,19 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 class Modification extends Model
 {
 
-    use SoftDeletes;
+    use HasFactory, SoftDeletes;
     protected $table = "modifications";
 
     protected $fillable = [
-        'team_id',
-        'zone_id',
+        'team',
+        'zone',
         'action_owner',
         'site_code',
         'subcontractor_id',
         'requester_id',
         'description',
         'pending',
-        'modification_status_id',
+        'status',
         'project_id',
         'request_date',
         'd6_date',
@@ -82,14 +81,25 @@ class Modification extends Model
     {
         return $this->belongsTo(Site::class, 'site_code','site_code');
     }
-    public function team(): BelongsTo
+    protected function casts(): array
     {
-        return $this->belongsTo(Team::class);
+        return [
+            'status' => ModificationStatus::class,
+            'team' => Teams::class,
+            'zone' => Zones::class,
+        ];
     }
 
-    public function zone(): BelongsTo
+    /** Modifications in a given zone. */
+    public function scopeInZone($query, Zones $zone)
     {
-        return $this->belongsTo(Zone::class);
+        return $query->where('zone', $zone->value);
+    }
+
+    /** Modifications belonging to a given team. */
+    public function scopeInTeam($query, Teams $team)
+    {
+        return $query->where('team', $team->value);
     }
 
     public function actionOwner(): BelongsTo
@@ -116,21 +126,16 @@ class Modification extends Model
         return $this->belongsTo(Requester::class);
     }
 
-    public function modification_status(): BelongsTo
-    {
-        return $this->belongsTo(ModificationStatus::class);
-    }
-
 
     protected function createWOCode()
     {
-        $lastModification = Modification::withTrashed()->where("zone_id", $this->zone_id)->get();
+        $lastModification = Modification::withTrashed()->where("zone", $this->zone)->get();
         $lastModificationId = 0;
         if (count($lastModification) > 0) {
             $lastModificationId = $lastModification->last()->id;
         }
 
-        $zone = Zones::getCodeByValue($this->zone->code);
+        $zone = $this->zone instanceof Zones ? $this->zone->value : $this->zone;
         $W_o_Code = $zone . "-00" . $lastModificationId + 1;
         $this->wo_code = $W_o_Code;
     }
@@ -255,6 +260,26 @@ class Modification extends Model
     //     );
     // }
     protected function estCost(): Attribute
+    {
+        return Attribute::make(
+            set: function ($value) {
+                if (is_string($value)) {
+                    // Convert comma to dot for decimal separator
+                    $value = str_replace(',', '', $value);
+                    return (float)$value;
+                }
+                return $value;
+            },
+            get: function ($value) {
+
+                return (float) $value;
+            }
+
+
+        );
+    }
+
+     protected function finalCost(): Attribute
     {
         return Attribute::make(
             set: function ($value) {

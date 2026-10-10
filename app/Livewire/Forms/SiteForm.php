@@ -4,7 +4,6 @@ namespace App\Livewire\Forms;
 
 use Livewire\Form;
 use App\Enums\Host;
-use App\Enums\Areas;
 use App\Enums\Guest;
 use App\Enums\Zones;
 use App\Enums\Status;
@@ -13,7 +12,7 @@ use App\Models\Site\Site;
 use App\Enums\SiteSharing;
 use App\Enums\SiteCategories;
 use App\Enums\SiteSeverities;
-use App\Models\Zone;
+use App\Enums\Teams;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Validate;
 use Illuminate\Validation\Rules\Enum;
@@ -35,8 +34,8 @@ class SiteForm extends Form
     public  $type = '';
     public  $sharing = 'No';
     public  $host = '';
-    public  $team_id = '';
-    public  $zone_id = '';
+    public  $team = '';
+    public  $zone = '';
     public  $gest = '';
     public  $cells_2G = 0;
     public  $cells_3G = 0;
@@ -64,8 +63,8 @@ class SiteForm extends Form
         $this->type = $site->type;
         $this->sharing = $site->sharing;
         $this->host = $site->host;
-        $this->team_id = $site->team_id;
-        $this->zone_id = $site->zone_id;
+        $this->team = $site->team?->value;
+        $this->zone = $site->zone?->value;
         $this->gest = $site->gest;
         $this->cells_2G = $site->cells_2G;
         $this->cells_3G = $site->cells_3G;
@@ -97,16 +96,11 @@ class SiteForm extends Form
                     $fail('The Sharing must be "yes" when Host/Guest has a value.');
                 }
             },],
-            "zone_id" => ['required','exists:zones,id',function($attribute, $value, $fail){
-                $zone=Zone::find($value);
-               
-                $team=$zone->team;
-                if($team->id!=$this->team_id)
-                {
+            "zone" => ['required', new Enum(Zones::class), function ($attribute, $value, $fail) {
+                $zone = Zones::tryFrom($value);
+                if ($zone && $zone->team()->value !== $this->team) {
                     $fail('The selected zone does not belong to this team.');
-
                 }
-
             }],
             "host" => ['required_if:sharing,Yes', new Enum(Host::class)],
             "gest" => ['required_if:sharing,Yes', 'different:host', new Enum(Guest::class)],
@@ -117,7 +111,7 @@ class SiteForm extends Form
             "cells_3G" => ["nullable", "regex:/^[1-9][0-9]?$|^100$|^0$/"],
             "cells_4G" => ["nullable", "regex:/^[1-9][0-9]?$|^100$|^0$/"],
             "status" => ["required", new Enum(Status::class)],
-            "team_id" => ['required','exists:teams,id']
+            "team" => ['required', new Enum(Teams::class)]
 
         ];
         if ($this->isUpdate) {

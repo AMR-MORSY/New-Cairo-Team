@@ -8,7 +8,7 @@ use App\Models\Modification\PurchaseOrder;
 class ViewPurchaseOrderInvoicedModifications extends Component
 {
     public object $PO;
-    public int $modification_status_id=1;
+    public string $status = 'Done';
     public function mount(PurchaseOrder $purchaseOrder)
     {
         $this->PO=$purchaseOrder;

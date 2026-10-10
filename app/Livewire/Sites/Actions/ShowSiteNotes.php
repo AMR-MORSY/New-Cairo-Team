@@ -7,39 +7,24 @@ use App\Models\Site\Site;
 use App\Models\Site\SiteNote;
 use Livewire\WithPagination;
 use Livewire\Attributes\Computed;
-use WireUi\Traits\WireUiActions;
 
 class ShowSiteNotes extends Component
 {
     use WithPagination;
-
-    use WireUiActions;
 
     public $site;
 
 
     public function mount(Site $site)
     {
+        $this->authorize('viewSiteProperties', $site);
         $this->site = $site;
     }
 
-    public function delete($notice_id)
-    {
-
-
-        $this->authorize('update', $this->site);
-        $this->dialog()->confirm([
-            'title' => 'Are you Sure?',
-            'description' => 'Delete this modification?',
-            'acceptLabel' => 'Yes, delete it',
-            'method' => 'deleteNote',
-            'params' => $notice_id,
-        ]);
-    }
-
-
     public function deleteNote($notice_id)
     {
+        $this->authorize('update', $this->site);
+
         $notice = SiteNote::findOrFail($notice_id);
 
         if ($notice->site_code != $this->site->site_code) {

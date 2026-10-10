@@ -1,217 +1,177 @@
+@props(['title' => null])
+
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
     @include('partials.head')
+
+    {{-- Filament Actions outside the /admin panel: the modal markup that
+         <x-filament-actions::modals /> renders needs these two. --}}
+    @filamentStyles
 </head>
 
-<body class="min-h-screen bg-white dark:bg-zinc-800">
-    <flux:sidebar sticky stashable class="border-e border-zinc-200 bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900">
-        <flux:sidebar.toggle class="lg:hidden" icon="x-mark" />
+<body class="min-h-svh bg-base-200 text-base-content antialiased" x-data="{ sidebar: false }">
 
-        <a href="{{ route('dashboard') }}" class="me-5 flex items-center space-x-2 rtl:space-x-reverse" wire:navigate>
-            <x-app-logo />
-        </a>
+    {{-- backdrop for the off-canvas sidebar --}}
+    <div x-show="sidebar" x-cloak x-transition.opacity x-on:click="sidebar = false"
+        class="fixed inset-0 z-40 bg-black/40 lg:hidden"></div>
 
-        <livewire:Sites.SearchingForSite target='searchForSite' :updateSite="null" />
+    <div class="flex min-h-svh">
 
-        <flux:navlist variant="outline">
-            <flux:navlist.group :heading="__('Platform')" class="grid">
-                <flux:navlist.item icon="home" :href="route('dashboard')" :current="request()->routeIs('dashboard')"
-                    wire:navigate>{{ __('Dashboard') }}</flux:navlist.item>
+        <aside x-bind:class="sidebar ? 'translate-x-0' : '-translate-x-full'"
+            x-on:keydown.escape.window="sidebar = false"
+            class="fixed inset-y-0 start-0 z-50 flex w-72 flex-col gap-4 overflow-y-auto border-e border-base-300 bg-base-100 p-4 transition-transform duration-200 lg:sticky lg:top-0 lg:h-svh lg:translate-x-0">
 
+            <div class="flex items-center justify-between">
+                <a href="{{ route('dashboard') }}" class="flex items-center gap-2" wire:navigate>
+                    <x-app-logo />
+                </a>
 
+                <button type="button" class="btn btn-ghost btn-square btn-sm lg:hidden"
+                    x-on:click="sidebar = false" aria-label="{{ __('Close menu') }}">
+                    <x-icons.x-mark class="size-5" />
+                </button>
+            </div>
 
+            <livewire:Sites.SearchingForSite target="searchForSite" :updateSite="null" />
 
-            </flux:navlist.group>
+            <x-ui.navlist>
+                <x-ui.navlist.group :heading="__('Platform')">
+                    <x-ui.navlist.item icon="home" :href="route('dashboard')"
+                        :current="request()->routeIs('dashboard')" wire:navigate>
+                        {{ __('Dashboard') }}
+                    </x-ui.navlist.item>
+                </x-ui.navlist.group>
 
-            @can('handle_users_activities')
-                <flux:navlist.group expandable icon="home" :heading="__('Users')" class="lg:grid">
+                {{-- same ability the users/roles/permissions routes are gated on,
+                     so the menu cannot show a page the user cannot open --}}
+                @can('handle_users_activities')
+                    <x-ui.navlist.group expandable icon="layout-grid" :heading="__('Users')"
+                        :expanded="request()->routeIs('users.*', 'permission.*', 'role.*')">
+                        <x-ui.navlist.item :href="route('users.index')"
+                            :current="request()->routeIs('users.index')" wire:navigate>
+                            {{ __('All') }}
+                        </x-ui.navlist.item>
+                        <x-ui.navlist.item :href="route('permission.index')"
+                            :current="request()->routeIs('permission.index')" wire:navigate>
+                            {{ __('Permissions') }}
+                        </x-ui.navlist.item>
+                        <x-ui.navlist.item :href="route('role.index')"
+                            :current="request()->routeIs('role.index')" wire:navigate>
+                            {{ __('Roles') }}
+                        </x-ui.navlist.item>
+                    </x-ui.navlist.group>
+                @endcan
 
-                    <flux:navlist.item :href="route('users.index')" :current="request()->routeIs('users.index')"
-                        wire:navigate>{{ __('All') }}</flux:navlist.item>
-                    <flux:navlist.item :href="route('permission.index')" :current="request()->routeIs('permission.index')"
-                        wire:navigate>{{ __('Permissions') }}</flux:navlist.item>
-                    <flux:navlist.item :href="route('role.index')" :current="request()->routeIs('role.index')"
-                        wire:navigate>{{ __('Roles') }}</flux:navlist.item>
-                </flux:navlist.group>
-            @endcan
+                <x-ui.navlist.group expandable :heading="__('Sites')"
+                    :expanded="request()->routeIs('site.*')">
+                    <x-ui.navlist.item icon="plus-circle" :href="route('site.create')"
+                        :current="request()->routeIs('site.create')" wire:navigate>
+                        {{ __('New Site') }}
+                    </x-ui.navlist.item>
+                    <x-ui.navlist.item icon="arrow-down-tray" :href="route('site.CE.sites')"
+                        :current="request()->routeIs('site.CE.sites')">
+                        {{ __('CE Sites') }}
+                    </x-ui.navlist.item>
+                </x-ui.navlist.group>
 
+                <x-ui.navlist.group expandable :heading="__('Modifications')"
+                    :expanded="request()->routeIs('modification.*', 'pos')">
+                    <x-ui.navlist.item icon="magnifying-glass" :href="route('modification.search')"
+                        :current="request()->routeIs('modification.search')" wire:navigate>
+                        {{ __('Search') }}
+                    </x-ui.navlist.item>
+                    {{-- <x-ui.navlist.item icon="magnifying-glass" href="#">
+                        {{ __('Price List') }}
+                    </x-ui.navlist.item> --}}
+                    {{-- <x-ui.navlist.item icon="plus-circle" :href="route('pos')"
+                        :current="request()->routeIs('pos')" wire:navigate>
+                        {{ __('POs') }}
+                    </x-ui.navlist.item> --}}
+                </x-ui.navlist.group>
+            </x-ui.navlist>
 
+            <x-ui.spacer />
 
-            <flux:navlist.group expandable :heading="__('Sites')" class="lg:grid">
+            {{-- desktop account menu --}}
+            <x-ui.dropdown class="hidden w-full lg:block" position="top" align="start">
+                <x-ui.profile :name="auth()->user()->name" :email="auth()->user()->email"
+                    :initials="auth()->user()->initials()" />
 
-                <flux:navlist.item :href="route('site.create')" :current="request()->routeIs('site.create')"
-                    wire:navigate>
-                    <div class=" flex items-center gap-1 ">
-                        <flux:icon.plus-circle />
-                        <p>{{ __('New Site') }} </p>
-                    </div>
-
-                </flux:navlist.item>
-
-
-
-
-                <flux:navlist.item :href="route('site.CE.sites')" :current="request()->routeIs('site.CE.sites')">
-                    <div class=" flex items-center gap-1">
-                        <flux:icon.arrow-down-tray />
-                        <p>{{ __('CE Sites') }}</p>
-                    </div>
-                </flux:navlist.item>
-
-
-
-
-
-            </flux:navlist.group>
-
-            <flux:navlist.group expandable :heading="__('Modifications')" class=" lg:grid">
-
-                <flux:navlist.item href="#" :href="route('modification.search')"
-                    :current="request()->routeIs('modification.search')" wire:navigate>
-                    <div class=" flex items-center gap-1">
-                        <flux:icon.magnifying-glass />
-                        <p>{{ __('Search') }} </p>
-
-                    </div>
-                </flux:navlist.item>
-
-
-                <flux:navlist.item href="#">
-                    <div class=" flex items-center gap-1">
-                        <flux:icon.magnifying-glass />
-                        <p> Price List</p>
-                    </div>
-                </flux:navlist.item>
-                {{-- <flux:navlist.item href="#">
-                    <div class=" flex items-center gap-1">
-                        <flux:icon.clipboard />
-                        <p> Dashboard</p>
-                    </div>
-
-                </flux:navlist.item> --}}
-
-                <flux:navlist.item :href="route('pos')" :current="request()->routeIs('pos')" wire:navigate>
-                    <div class=" flex items-center gap-1 ">
-                        <flux:icon.plus-circle />
-                        <p>{{ __('POs') }} </p>
-                    </div>
-
-                </flux:navlist.item>
-            </flux:navlist.group>
-        </flux:navlist>
-
-        <flux:spacer />
-
-        <!-- Desktop User Menu -->
-        <flux:dropdown class="hidden lg:block" position="bottom" align="start">
-            <flux:profile :name="auth()->user()->name" :initials="auth()->user()->initials()"
-                icon:trailing="chevrons-up-down" />
-
-            <flux:menu class="w-[220px]">
-                <flux:menu.radio.group>
-                    <div class="p-0 text-sm font-normal">
-                        <div class="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
-                            <span class="relative flex h-8 w-8 shrink-0 overflow-hidden rounded-lg">
-                                <span
-                                    class="flex h-full w-full items-center justify-center rounded-lg bg-neutral-200 text-black dark:bg-neutral-700 dark:text-white">
-                                    {{ auth()->user()->initials() }}
-                                </span>
-                            </span>
-
-                            <div class="grid flex-1 text-start text-sm leading-tight">
-                                <span class="truncate font-semibold">{{ auth()->user()->name }}</span>
-                                <span class="truncate text-xs">{{ auth()->user()->email }}</span>
-                            </div>
-                        </div>
-                    </div>
-                </flux:menu.radio.group>
-
-                <flux:menu.separator />
-
-                <flux:menu.radio.group>
-                    <flux:menu.item :href="route('settings.profile')" icon="cog" wire:navigate>
+                <x-ui.menu>
+                    <x-ui.menu.item :href="route('settings.profile')" icon="cog" wire:navigate>
                         {{ __('Settings') }}
-                    </flux:menu.item>
-                </flux:menu.radio.group>
+                    </x-ui.menu.item>
 
-                <flux:menu.separator />
+                    <x-ui.menu.separator />
 
-                <form method="POST" action="{{ route('logout') }}" class="w-full">
-                    @csrf
-                    <flux:menu.item as="button" type="submit" icon="arrow-right-start-on-rectangle" class="w-full">
-                        {{ __('Log Out') }}
-                    </flux:menu.item>
-                </form>
-            </flux:menu>
-        </flux:dropdown>
-    </flux:sidebar>
+                    <li>
+                        <form method="POST" action="{{ route('logout') }}" class="contents">
+                            @csrf
+                            <button type="submit" class="flex w-full items-center gap-2 text-error">
+                                <x-icons.arrow-right-start-on-rectangle class="size-4 shrink-0" />
+                                <span class="grow text-start">{{ __('Log Out') }}</span>
+                            </button>
+                        </form>
+                    </li>
+                </x-ui.menu>
+            </x-ui.dropdown>
+        </aside>
 
-    <!-- Mobile User Menu -->
-    <flux:header class="lg:hidden">
-        <flux:sidebar.toggle class="lg:hidden" icon="bars-2" inset="left" />
+        <div class="flex min-w-0 flex-1 flex-col">
 
-        <flux:spacer />
+            {{-- mobile top bar --}}
+            <header
+                class="sticky top-0 z-30 flex items-center gap-2 border-b border-base-300 bg-base-100 px-4 py-2 lg:hidden">
+                <button type="button" class="btn btn-ghost btn-square btn-sm" x-on:click="sidebar = true"
+                    aria-label="{{ __('Open menu') }}">
+                    <x-icons.bars-2 class="size-5" />
+                </button>
 
-        <flux:dropdown position="top" align="end">
-            <flux:profile :initials="auth()->user()->initials()" icon-trailing="chevron-down" />
+                <x-ui.spacer />
 
-            <flux:menu>
-                <flux:menu.radio.group>
-                    <div class="p-0 text-sm font-normal">
-                        <div class="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
-                            <span class="relative flex h-8 w-8 shrink-0 overflow-hidden rounded-lg">
-                                <span
-                                    class="flex h-full w-full items-center justify-center rounded-lg bg-neutral-200 text-black dark:bg-neutral-700 dark:text-white">
-                                    {{ auth()->user()->initials() }}
-                                </span>
+                <x-ui.dropdown position="bottom" align="end">
+                    <x-ui.profile :initials="auth()->user()->initials()" class="w-auto" />
+
+                    <x-ui.menu>
+                        <li class="menu-title px-2 py-1">
+                            <span class="block truncate text-sm font-semibold text-base-content">
+                                {{ auth()->user()->name }}
                             </span>
+                            <span class="block truncate text-xs font-normal">{{ auth()->user()->email }}</span>
+                        </li>
 
-                            <div class="grid flex-1 text-start text-sm leading-tight">
-                                <span class="truncate font-semibold">{{ auth()->user()->name }}</span>
-                                <span class="truncate text-xs">{{ auth()->user()->email }}</span>
-                            </div>
-                        </div>
-                    </div>
-                </flux:menu.radio.group>
+                        <x-ui.menu.separator />
 
-                <flux:menu.separator />
+                        <x-ui.menu.item :href="route('settings.profile')" icon="cog" wire:navigate>
+                            {{ __('Settings') }}
+                        </x-ui.menu.item>
 
-                <flux:menu.radio.group>
-                    <flux:menu.item :href="route('settings.profile')" icon="cog" wire:navigate>
-                        {{ __('Settings') }}
-                    </flux:menu.item>
-                </flux:menu.radio.group>
+                        <x-ui.menu.separator />
 
-                <flux:menu.separator />
+                        <li>
+                            <form method="POST" action="{{ route('logout') }}" class="contents">
+                                @csrf
+                                <button type="submit" class="flex w-full items-center gap-2 text-error">
+                                    <x-icons.arrow-right-start-on-rectangle class="size-4 shrink-0" />
+                                    <span class="grow text-start">{{ __('Log Out') }}</span>
+                                </button>
+                            </form>
+                        </li>
+                    </x-ui.menu>
+                </x-ui.dropdown>
+            </header>
 
-                <form method="POST" action="{{ route('logout') }}" class="w-full">
-                    @csrf
-                    <flux:menu.item as="button" type="submit" icon="arrow-right-start-on-rectangle" class="w-full">
-                        {{ __('Log Out') }}
-                    </flux:menu.item>
-                </form>
-            </flux:menu>
-        </flux:dropdown>
-    </flux:header>
-
-
-    {{ $slot }}
-
+            {{ $slot }}
+        </div>
+    </div>
 
     <x-toaster-hub />
 
-    <x-dialog z-index="z-50" align="center" />
-    @wireUiScripts
-
-
-    {{-- @livewire('wire-elements-modal') --}}
     @livewire('modal-manager')
-    @fluxScripts
 
-
-
+    @filamentScripts
 </body>
 
 </html>

@@ -4,17 +4,16 @@ namespace App\Livewire\Modifications\Actions;
 
 use Livewire\Component;
 use App\Models\Site\Site;
-use WireUi\Traits\WireUiActions;
 use App\Models\Modification\Modification;
 
 class SiteModifications extends Component
 {
-    use WireUiActions;
 
     public $modifications;
     public $site;
     public function mount(Site $site)
     {
+        $this->authorize('viewSiteModifications', $site);
         
         $this->site=$site;
         $this->modifications = $site->modifications()->with([
@@ -23,9 +22,6 @@ class SiteModifications extends Component
             'actions',
             'requester',
             'actionOwner',
-            'modification_status',
-            'team',
-            'zone',
             'reservation'
         ])->get();
 

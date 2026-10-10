@@ -1,8 +1,6 @@
 <?php
 
 namespace App\Livewire\Tables\Users;
-
-use App\Models\Team;
 use Livewire\Attributes\On;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
@@ -44,11 +42,6 @@ final class RolesTable extends PowerGridComponent
     public function datasource(): Collection
     {
         if ($this->data) {
-            $this->data = $this->data->map(function ($role) {
-
-                $role->team = Team::find($role->team_id);
-                return $role;
-            });
 
             return $this->data;
         };
@@ -73,8 +66,7 @@ final class RolesTable extends PowerGridComponent
         return PowerGrid::fields()
             ->add('id')
             ->add('name')
-            ->add('guard_name')
-            ->add('team', fn($model) => $model->team ? $model->team->code : 'Global');
+            ->add('guard_name');
     }
 
     public function columns(): array
@@ -89,8 +81,6 @@ final class RolesTable extends PowerGridComponent
                 ->sortable(),
 
             Column::make('Guard_Name', 'guard_name')
-                ->sortable(),
-            Column::make('Team', 'team')
                 ->sortable(),
 
             Column::action('Action')

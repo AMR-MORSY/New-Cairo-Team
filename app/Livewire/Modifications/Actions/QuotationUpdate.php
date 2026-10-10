@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Modifications\Actions;
 
+use App\Enums\ModificationStatus;
+
 use Livewire\Component;
 use Livewire\Attributes\On;
 use Illuminate\Support\Collection;
@@ -160,7 +162,7 @@ class QuotationUpdate extends Component
                 $this->quotation->modification->reservation->overPo->delete();
             }
             $this->quotation->modification->reservation->update(['status'=>"cancelled"]);
-            $this->quotation->modification->update(['modification_status_id'=>2]);
+            $this->quotation->modification->update(['status' => ModificationStatus::IN_PROGRESS]);
             $this->quotation->delete();
         }
 

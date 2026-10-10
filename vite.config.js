@@ -19,6 +19,16 @@ export default defineConfig({
         })
     ],
     server: {
+        // Bind IPv4 explicitly. Left to itself Vite listens on [::1] only, and
+        // the browser is on http://127.0.0.1:8000 -- a different origin, so the
+        // module scripts never load and Livewire never boots. The symptom is a
+        // form falling back to a native POST.
+        host: '127.0.0.1',
+        port: 5173,
+        strictPort: true,
         cors: true,
+        hmr: {
+            host: '127.0.0.1',
+        },
     },
 });

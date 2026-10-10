@@ -12,14 +12,14 @@
         </div>
             
         @else
-            <flux:callout icon="exclamation-triangle" variant="secondary" inline class=" mt-5">
-                <flux:callout.heading>No batteries Found in this site</flux:callout.heading>
-                <flux:callout.text>click the button to go to new record creation page.</flux:callout.text>
+            <x-ui.callout icon="exclamation-triangle" variant="secondary" inline class=" mt-5">
+                <x-ui.callout.heading>No batteries Found in this site</x-ui.callout.heading>
+                <x-ui.callout.text>click the button to go to new record creation page.</x-ui.callout.text>
                 <x-slot name="actions">
-                    <flux:button :href="route('battery.create',$site->site_code)" wire:navigate>New Battery Record
-                    </flux:button>
+                    <x-ui.button :href="route('battery.create',$site->site_code)" wire:navigate>New Battery Record
+                    </x-ui.button>
                 </x-slot>
-            </flux:callout>
+            </x-ui.callout>
         @endif
     </x-viewLayouts.main-view-layout>
 

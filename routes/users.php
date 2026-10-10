@@ -10,7 +10,7 @@ use App\Livewire\Users\Actions\ShowSingleUser;
 use App\Livewire\Users\Actions\ShowUsers;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware(['auth'])->prefix('users')->group(function () {
+Route::middleware(['auth', 'can:handle_users_activities'])->prefix('users')->group(function () {
 
  
     Route::get('index', ShowUsers::class)->name('users.index');

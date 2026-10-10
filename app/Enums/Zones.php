@@ -2,76 +2,79 @@
 
 namespace App\Enums;
 
+/**
+ * Operational zones, backed by their short code - the code is what is stored
+ * in users.zone, sites.zone and modifications.zone, so display wording can
+ * change freely without touching data.
+ *
+ * Adding a zone means: one case, one meta() arm. The match is exhaustive, so
+ * a case without a meta() arm throws \UnhandledMatchError, and the guard test
+ * in tests/Unit/ZonesEnumTest.php turns that into a CI failure.
+ */
 enum Zones: string
 {
-    case CAIRO_SOUTH = "Cairo South";
-    case CAIRO_EAST = "Cairo East";
-    case CAIRO_NORTH = "Cairo North";
-    case GIZA = "Giza";
-    case NORTH_UPPER = 'North Upper';
-    case RED_SEA = 'Red Sea';
-    case SOUTH_UPPER = 'South Upper';
-    case SINAI = 'Sinai';
-    case ALEX = "Alex";
-    case DELTA_NORTH = 'Delta North';
-    case DELTA_SOUTH = "Delta South";
-    case NORTH_COAST = "North Coast";
+    case CAIRO_SOUTH = 'CS';
+    case CAIRO_EAST  = 'CE';
+    case CAIRO_NORTH = 'CN';
+    case GIZA        = 'GZ';
+    case NORTH_UPPER = 'NU';
+    case SOUTH_UPPER = 'SU';
+    case RED_SEA     = 'RE';
+    case SINAI       = 'SI';
+    case DELTA_NORTH = 'DN';
+    case DELTA_SOUTH = 'DS';
+    case NORTH_COAST = 'NC';
+    case ALEX        = 'AL';
 
-
-    public function getCodes()
+    /** @return array{0: string, 1: Teams} label, owning team */
+    private function meta(): array
     {
         return match ($this) {
-            self::CAIRO_SOUTH => 'CS',
-            self::CAIRO_EAST => 'CE',
-            self::CAIRO_NORTH => 'CN',
-            self::GIZA => 'GZ',
-            self::DELTA_NORTH => 'DN',
-            self::DELTA_SOUTH => "DS",
-            self::NORTH_COAST => "NC",
-            self::ALEX => "AL",
-            self::NORTH_UPPER => 'NU',
-            self::RED_SEA => 'RE',
-            self::SOUTH_UPPER => 'SU',
-            self::SINAI => 'SI',
+            self::CAIRO_SOUTH => ['Cairo South', Teams::HGLI],
+            self::CAIRO_EAST  => ['Cairo East',  Teams::HGLI],
+            self::CAIRO_NORTH => ['Cairo North', Teams::HGLI],
+            self::GIZA        => ['Giza',        Teams::HGLI],
+
+            self::NORTH_UPPER => ['North Upper', Teams::NGLI],
+            self::SOUTH_UPPER => ['South Upper', Teams::NGLI],
+            self::RED_SEA     => ['Red Sea',     Teams::NGLI],
+            self::SINAI       => ['Sinai',       Teams::NGLI],
+
+            self::DELTA_NORTH => ['Delta North', Teams::AGLI],
+            self::DELTA_SOUTH => ['Delta South', Teams::AGLI],
+            self::NORTH_COAST => ['North Coast', Teams::AGLI],
+            self::ALEX        => ['Alex',        Teams::AGLI],
         };
     }
-     public static function getCodeByValue(string $value): ?string /// self::tryFrom($value) attempts to create an enum instance from the string value If successful, it calls getCodes() on that instance.If the value doesn't match any enum case, tryFrom() returns null, and the method returns null
+
+    public function label(): string
     {
-        $zone = self::tryFrom($value);
-        return $zone?->getCodes();
+        return $this->meta()[0];
     }
 
-    public static function HGLIZones() //////static means the function could be called in the class without creating object ex: Zones::HGLIZones
+    public function team(): Teams
     {
-        return [
-            self::CAIRO_SOUTH->value,
-            self::CAIRO_EAST->value,
-            self::CAIRO_NORTH->value,
-            self::GIZA->value
-
-        ];
+        return $this->meta()[1];
     }
 
-
-    public static function AGLIZones(): array
+    /** @return array<int, self> */
+    public static function forTeam(Teams $team): array
     {
-        return [
-            self::DELTA_NORTH->value,
-            self::DELTA_SOUTH->value,
-            self::NORTH_COAST->value,
-            self::ALEX->value
-
-        ];
+        return array_values(array_filter(
+            self::cases(),
+            fn (self $zone) => $zone->team() === $team
+        ));
     }
 
-    public static function NGLIZones()
+    /** @return array<string, string> value => label, for select inputs */
+    public static function options(?Teams $team = null): array
     {
-        return [
-            self::NORTH_UPPER->value,
-            self::SOUTH_UPPER->value,
-            self::RED_SEA->value,
-            self::SINAI->value
+        $cases = $team ? self::forTeam($team) : self::cases();
 
-        ];
+        return array_reduce(
+            $cases,
+            fn (array $c, self $z) => $c + [$z->value => $z->label()],
+            []
+        );
     }
 }

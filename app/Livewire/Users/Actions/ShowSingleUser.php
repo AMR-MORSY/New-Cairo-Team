@@ -2,132 +2,123 @@
 
 namespace App\Livewire\Users\Actions;
 
-use Toaster;
-use App\Models\Area;
-use App\Models\Team;
+use App\Enums\Teams;
+use App\Enums\Zones;
 use App\Models\User;
-use Livewire\Component;
-use WireUi\Traits\WireUiActions;
-use Livewire\Attributes\Validate;
 use Illuminate\Support\Collection;
+use Illuminate\Validation\Rules\Enum;
+use Livewire\Component;
 use Spatie\Permission\Models\Role;
+use Toaster;
 
+/**
+ * A user's scope is two columns now - users.team and users.zone - so there is
+ * no pivot to attach and no roles to revoke when the scope changes. Roles say
+ * what someone may do; the columns say where.
+ */
 class ShowSingleUser extends Component
 {
-    use WireUiActions;
-    public object $user;
-    public array $rolesAndPermissions;
 
-    public $teamAndZone;
+    public User $user;
 
-    public array $newRoles;
+    public array $rolesAndPermissions = [];
 
-    public Collection  $teamRoles;
+    public array $newRoles = [];
 
-    public $newZone;
+    public Collection $availableRoles;
 
-    #[Validate('required')]
-    public $newTeam;
+    /** Option lists for the selects. */
+    public array $teams = [];
 
-    public $teams;
+    public array $zones = [];
 
-    public int|null $team_id = null;
+    public ?string $newTeam = null;
 
-    public $zones;
-    public  $previousUrl;
+    public ?string $newZone = null;
+
+    public $previousUrl;
+
     public function mount(User $user)
     {
         $this->previousUrl = url()->previous();
-        $this->teams = Team::all();
-
-        $this->teamAndZone = $user->getTeamAndZone();
-
-        $team = $this->teamAndZone['team'];
-
-        if ($team) {
-            $this->team_id = $team->id; ////if the user does not belong to any team, only the generic roles could be assigned
-        }
-
         $this->user = $user;
 
+        $this->newTeam = $user->team?->value;
+        $this->newZone = $user->zone?->value;
 
+        $this->teams = $this->teamOptions();
+        $this->zones = $this->zoneOptions($user->team);
 
-        // set active global team_id
-        setPermissionsTeamId($this->team_id);
-        $this->teamRoles = Role::where('team_id', $this->team_id)->orWhere('team_id', null)->get(); ///team and generic roles could be assigned as generic roles has null team_id
-
-        // unset cached model relations so new team relations will get reloaded
-        $user->unsetRelation('roles')->unsetRelation('permissions');
+        $this->availableRoles = Role::orderBy('name')->get();
         $this->newRoles = $user->roles->pluck('name')->toArray();
 
+        $this->loadRolesAndPermissions();
+    }
 
+    private function teamOptions(): array
+    {
+        return array_map(
+            fn (Teams $team) => ['value' => $team->value, 'label' => $team->label()],
+            Teams::cases()
+        );
+    }
 
-        // dd($this->newRoles);
-        $rolesAndPermissions = [];
-        foreach ($this->newRoles as $role) {
-            $rolePermission = [];
-            $roleModel = Role::findByName($role);
+    private function zoneOptions(?Teams $team): array
+    {
+        $cases = $team ? Zones::forTeam($team) : Zones::cases();
 
-            $rolePermission['role'] = $role;
-            $rolePermission['permissions'] = $roleModel->permissions->pluck('name');
-            array_push($rolesAndPermissions, $rolePermission);
+        return array_map(
+            fn (Zones $zone) => ['value' => $zone->value, 'label' => $zone->label()],
+            $cases
+        );
+    }
+
+    private function loadRolesAndPermissions(): void
+    {
+        $this->rolesAndPermissions = [];
+
+        foreach ($this->user->roles as $role) {
+            $this->rolesAndPermissions[] = [
+                'role' => $role->name,
+                'permissions' => $role->permissions->pluck('name'),
+            ];
         }
+    }
 
+    /** Narrow the zone list when a team is picked. */
+    public function updatedNewTeam($value): void
+    {
+        $team = $value ? Teams::tryFrom($value) : null;
 
-        $this->rolesAndPermissions = $rolesAndPermissions;
+        $this->zones = $this->zoneOptions($team);
+        $this->newZone = null;
     }
 
     public function updateZoneAndTeam()
     {
+        $this->validate([
+            'newTeam' => ['required', new Enum(Teams::class)],
+            'newZone' => ['nullable', new Enum(Zones::class)],
+        ]);
 
-        // dd($this->newZone);
-        $this->validate();
-        setPermissionsTeamId($this->team_id);
+        $team = Teams::from($this->newTeam);
+        $zone = $this->newZone ? Zones::from($this->newZone) : null;
 
-        /////revoking all user's roles before changing area and zone
+        if ($zone && $zone->team() !== $team) {
+            $this->addError('newZone', 'The selected zone does not belong to this team.');
 
-
-        foreach ($this->newRoles as $role) {
-            $this->user->removeRole($role);
+            return null;
         }
 
-        if ($this->user->teams()->where('user_id', $this->user->id)->exists()) {
+        $this->user->update(['team' => $team, 'zone' => $zone]);
 
-            //delete all user's areas with zones
-            $this->user->teams()->newPivotQuery()
-                ->where('user_id', $this->user->id)
-                ->delete();
+        Toaster::success('Team and zone updated successfully');
 
-            // Create new relationship
-            $this->user->teams()->attach($this->newTeam, [
-                'zone_id' => $this->newZone,
-
-
-            ]);
-        } else {
-            // Create new relationship
-            $this->user->teams()->attach($this->newTeam, [
-                'zone_id' => $this->newZone,
-
-
-            ]);
-        }
         return redirect()->route('user.show', ['user' => $this->user->id]);
-    }
-    public function updatedNewTeam($value)
-    {
-        $team = Team::find($value);
-        $this->zones = $team->zones()->get();
     }
 
     public function updateRole()
     {
-
-
-        //   dd($this->newRoles);
-
-        setPermissionsTeamId($this->team_id);
-        // dd($this->newRoles);
         $this->user->syncRoles($this->newRoles);
 
         Toaster::success('Roles updated Successfully');
@@ -135,35 +126,29 @@ class ShowSingleUser extends Component
         return redirect()->route('user.show', ['user' => $this->user->id]);
     }
 
+    /** Clear the user's scope; their roles are left alone. */
     public function delete()
     {
-        $this->user->teams()->newPivotQuery()
-            ->where('user_id', $this->user->id)
-            ->delete();
-        Toaster::success('Team deleted Successfully');
+        $this->user->update(['team' => null, 'zone' => null]);
+
+        Toaster::success('Team removed successfully');
 
         return redirect()->route('user.show', ['user' => $this->user->id]);
     }
 
-    public function deleteTeam()
-    {
-
-        $this->dialog()->confirm([
-            'title' => 'Are you Sure?',
-            'description' => 'Delete this Team?',
-            'acceptLabel' => 'Yes, delete it',
-            'method' => 'delete',
-            'params' => 'Saved',
-        ]);
-    }
-
     public function goBack()
     {
-
         return redirect()->to($this->previousUrl);
     }
+
     public function render()
     {
-        return view('livewire.users.actions.show-single-user', ["teamAndZone" => $this->teamAndZone, "user" => $this->user, 'teamRoles' => $this->teamRoles, 'teams' => $this->teams, 'zones' => $this->zones, "rolesAndPermissions" => $this->rolesAndPermissions]);
+        return view('livewire.users.actions.show-single-user', [
+            'user' => $this->user,
+            'teamRoles' => $this->availableRoles,
+            'teams' => $this->teams,
+            'zones' => $this->zones,
+            'rolesAndPermissions' => $this->rolesAndPermissions,
+        ]);
     }
 }

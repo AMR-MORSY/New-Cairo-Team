@@ -1,11 +1,7 @@
 <?php
 
-
-use App\Providers\RepositoriesServiceProvider;
-
 return [
     App\Providers\AppServiceProvider::class,
-    RepositoriesServiceProvider::class,
-   
-    
+    App\Providers\Filament\AdminPanelProvider::class,
+    App\Providers\RepositoriesServiceProvider::class,
 ];

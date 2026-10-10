@@ -15,6 +15,7 @@ use PowerComponents\LivewirePowerGrid\Column;
 use PowerComponents\LivewirePowerGrid\PowerGridFields;
 use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
+use App\Services\Sites\SiteRouteMap;
 
 final class CascadesTable extends PowerGridComponent
 {
@@ -25,61 +26,64 @@ final class CascadesTable extends PowerGridComponent
 
     public $site;
 
-    public string $cascadesType;
+    // public string $cascadesType;
 
-    protected $siteRepository;
+    // protected $siteRepository;
 
     public function __construct()
     {
 
-        $this->siteRepository = app(SiteRepository::class);
+        // $this->siteRepository = app(SiteRepository::class);
     }
 
     public function actions($row): array
     {
 
-        if ($this->cascadesType == 'direct') {
-            return [
-                Button::add('edit-stock')
+        // if ($this->cascadesType == 'direct') {
+        //     return [
+        //         Button::add('edit-stock')
 
-                    ->icon('default-eye')
-                    ->class('cursor-pointer')
-                    ->dispatch('clickToGOSiteDetails', ['site_code' => $row->cascade_code]),
-            ];
-        } elseif ($this->cascadesType == 'updateCascades') {
-            return [
-                Button::add('edit-stock')
-                    ->icon('default-trash')
-                    ->class('cursor-pointer text-red-500')
-                    ->confirm('Are you sure you want to delete this site?')
-                    ->tooltip('Delete')
-                    ->dispatch('removeCascade', ['site_code' => $row->cascade_code]),
-            ];
-        } else {
+        //             ->icon('default-eye')
+        //             ->class('cursor-pointer')
+        //             ->dispatch('clickToGOSiteDetails', ['site_code' => $row->cascade_code]),
+        //     ];
+        // } elseif ($this->cascadesType == 'updateCascades') {
+        //     return [
+        //         Button::add('edit-stock')
+        //             ->icon('default-trash')
+        //             ->class('cursor-pointer text-red-500')
+        //             ->confirm('Are you sure you want to delete this site?')
+        //             ->tooltip('Delete')
+        //             ->dispatch('removeCascade', ['site_code' => $row->cascade_code]),
+        //     ];
+        // } else {
             return [
                 Button::add('edit-stock')
                     ->icon('default-eye')
                     ->class('cursor-pointer')
                     ->dispatch('clickToGOSiteDetails', ['site_code' =>  $row->site_code]),
             ];
-        }
+        // }
     }
 
-  
+
     public function datasource(): ?Builder
     {
 
-        if ($this->cascadesType == 'direct' || $this->cascadesType == 'updateCascades') {
+        // if ($this->cascadesType == 'direct' || $this->cascadesType == 'updateCascades') {
 
-            return Cascade::query()->where('nodal_code', $this->site->site_code);
-        } elseif ($this->cascadesType == 'indirect') {
+            // return Cascade::query()->where('nodal_code', $this->site->site_code);
+            $map = new SiteRouteMap();
+            $cascades = $map->cascadedCodes($this->site->site_code);
+            return   Site::query()->whereIn('site_code', $cascades);
+        // } elseif ($this->cascadesType == 'indirect') {
             $indirectCascades = $this->siteRepository->indirectCascades($this->site->cascades);
 
             $indirectCascades = collect($indirectCascades)->pluck('site_code')->toArray();
 
 
             return Site::query()->whereIn('site_code', $indirectCascades);
-        }
+        // }
 
         return Cascade::query()->whereRaw('1 = 0');
     }
@@ -100,15 +104,20 @@ final class CascadesTable extends PowerGridComponent
 
     public function fields(): PowerGridFields
     {
-        if ($this->cascadesType == 'direct' || $this->cascadesType == 'updateCascades') {
-            return PowerGrid::fields()
-                ->add('id')
-                ->add('site_code', fn($model) => $model ? $model->cascade_code : '')
-                ->add('site_name', fn($model) => $model ? Site::where('site_code', $model->cascade_code)->first()->site_name  : '')
-                ->add('count', function ($site) {
-                    return count($this->siteRepository->indirectCascades(Site::where('site_code', $site->cascade_code)->first()->cascades));
-                });
-        }
+        // if ($this->cascadesType == 'direct' || $this->cascadesType == 'updateCascades') {
+            // return PowerGrid::fields()
+            //     ->add('id')
+            //     ->add('site_code', fn($model) => $model ? $model->cascade_code : '')
+            //     ->add('site_name', fn($model) => $model ? Site::where('site_code', $model->cascade_code)->first()->site_name  : '')
+            //     ->add('count', function ($site) {
+            //         return count($this->siteRepository->indirectCascades(Site::where('site_code', $site->cascade_code)->first()->cascades));
+            //     });
+
+            // return PowerGrid::fields()
+            //     ->add('id')
+            //     ->add('site_code')
+            //     ->add('site_name');
+        // }
         return PowerGrid::fields()
             ->add('id')
             ->add('site_code')
@@ -119,18 +128,18 @@ final class CascadesTable extends PowerGridComponent
 
     public function columns(): array
     {
-        if ($this->cascadesType == 'indirect' ) {
-            return [
+        // if ($this->cascadesType == 'indirect') {
+        //     return [
 
 
-                Column::make('Code', 'site_code')
-                    ->sortable(),
-                Column::make('Name', 'site_name')
-                    ->searchable()
-                    ->sortable(),
-                Column::action('Action')
-            ];
-        }
+        //         Column::make('Code', 'site_code')
+        //             ->sortable(),
+        //         Column::make('Name', 'site_name')
+        //             ->searchable()
+        //             ->sortable(),
+        //         Column::action('Action')
+        //     ];
+        // }
         return [
 
             Column::make('Code', 'site_code')
@@ -141,8 +150,8 @@ final class CascadesTable extends PowerGridComponent
                 ->searchable()
                 ->sortable(),
 
-            Column::make('Count Cascades', 'count')
-                ->sortable(),
+            // Column::make('Count Cascades', 'count')
+            //     ->sortable(),
             Column::action('Action'),
 
 
@@ -155,7 +164,7 @@ final class CascadesTable extends PowerGridComponent
     public function clickToGOSiteDetails($site_code)
     {
 
-       
+
         return redirect()->route('site.show', ['site' => $site_code]);
     }
 }

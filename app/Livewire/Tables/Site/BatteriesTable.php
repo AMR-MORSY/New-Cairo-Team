@@ -2,7 +2,6 @@
 
 namespace App\Livewire\Tables\Site;
 
-use App\Models\Zone;
 use App\Models\Site\Site;
 use Livewire\Attributes\On;
 use App\Models\Site\Battery;
@@ -25,7 +24,7 @@ final class BatteriesTable extends PowerGridComponent
 
     public  $site;
 
-    public $oz;
+    public $zone;
 
 
 
@@ -54,11 +53,11 @@ final class BatteriesTable extends PowerGridComponent
                 ->whereHas('site', function ($query) {
                     $query->where('site_code', $this->site->site_code);
                 });
-        } elseif ($this->oz) {
+        } elseif ($this->zone) {
             return  Battery::query()
                 ->with(['site'])
                 ->whereHas('site', function ($query) {
-                    $query->where('zone_id', $this->oz);
+                    $query->where('zone', $this->zone);
                 });
         }
         return Battery::query();
@@ -70,7 +69,7 @@ final class BatteriesTable extends PowerGridComponent
         $setup = [PowerGrid::header()
             ->showSearchInput(), 
             PowerGrid::responsive()->fixedColumns('Brand', 'No.strings')];
-        if ($this->oz) {
+        if ($this->zone) {
             $setup[] =   PowerGrid::footer()
                 ->showPerPage()
                 ->showRecordCount();
@@ -88,7 +87,7 @@ final class BatteriesTable extends PowerGridComponent
             ->add('id')
             ->add('site_code', fn($model) => $model ? $model->site->site_code : '')
             ->add('site_name', fn($model) => $model ? $model->site->site_name : '')
-            ->add('zone', fn($model) => $model ? Zone::find($model->site->zone_id)->name : '')
+            ->add('zone', fn($model) => $model?->site?->zone?->label() ?? '')
             ->add('batteries_brand')
             ->add('stock')
             ->add('comment')
@@ -121,7 +120,7 @@ final class BatteriesTable extends PowerGridComponent
         if ($this->site) {
 
             return $columns;
-        } elseif ($this->oz) {
+        } elseif ($this->zone) {
             array_unshift(    ///////////////to be added to the beginning of the array 
                 $columns,
 

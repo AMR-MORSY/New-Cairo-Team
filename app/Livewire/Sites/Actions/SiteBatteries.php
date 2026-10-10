@@ -13,12 +13,13 @@ class SiteBatteries extends Component
 
     public function mount(Site $site)
     {
+        // the signed-in user is implicit; anything passed here lands on the
+        // policy AFTER $user, and Gate picks the policy from the first
+        // argument -- a User sent it looking for a UserPolicy, found none,
+        // and denied everyone
+        $this->authorize('viewSiteProperties', $site);
         $this->site = $site;
         $this->batteries = $this->site->batteries;
-
-      
-
-       
     }
     public function render()
     {

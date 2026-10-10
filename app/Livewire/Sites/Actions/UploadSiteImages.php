@@ -20,6 +20,7 @@ class UploadSiteImages extends Component
     public $site;
     public function mount(Site $site)
     {
+         $this->authorize('update', $site);
         $this->site = $site;
     }
 

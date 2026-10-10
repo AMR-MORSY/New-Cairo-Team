@@ -11,35 +11,35 @@
                    {{-- <x-slot:links>
                     <x-site-navlinks-group :site="$site" />
                 </x-slot:links> --}}
-                   <flux:heading size="xl">Category</flux:heading>
-                   <flux:subheading>Select searching category and corresponding option</flux:subheading>
-                   <flux:separator class="md:hidden" />
+                   <x-ui.heading size="xl">Category</x-ui.heading>
+                   <x-ui.subheading>Select searching category and corresponding option</x-ui.subheading>
+                   <x-ui.separator class="md:hidden" />
                    <form class="p-10 space-y-8" wire:submit="searchByCategory">
 
-                       <flux:field>
-                           <flux:label>Category *</flux:label>
-                           <flux:select wire:model.live="category"
+                       <x-ui.field>
+                           <x-ui.label>Category *</x-ui.label>
+                           <x-ui.select wire:model.live="category"
                                placeholder="Select the category and the corresponding options will be showed ">
                                @foreach ($categories as $category)
-                                   <flux:select.option :value="$category['id']">{{ $category['name'] }}
-                                   </flux:select.option>
+                                   <x-ui.select.option :value="$category['id']">{{ $category['name'] }}
+                                   </x-ui.select.option>
                                @endforeach
-                           </flux:select>
-                           <flux:error name="category" />
-                       </flux:field>
-                       <flux:field>
-                           <flux:label>Option *</flux:label>
-                           <flux:select wire:model="option" placeholder="Select the corresponding option">
+                           </x-ui.select>
+                           {{-- <x-ui.error name="category" /> --}}
+                       </x-ui.field>
+                       <x-ui.field>
+                           <x-ui.label>Option *</x-ui.label>
+                           <x-ui.select wire:model="option" placeholder="Select the corresponding option">
                                @foreach ($options as $option)
-                                   <flux:select.option :value="$option['id']">{{ $option['name'] }}
-                                   </flux:select.option>
+                                   <x-ui.select.option :value="$option['id']">{{ $option['name'] }}
+                                   </x-ui.select.option>
                                @endforeach
-                           </flux:select>
-                           <flux:error name="option" />
+                           </x-ui.select>
+                           {{-- <x-ui.error name="option" /> --}}
 
-                       </flux:field>
-                       <flux:button variant="primary" color="zinc" type="submit" class=" cursor-pointer">
-                           Search</flux:button>
+                       </x-ui.field>
+                       <x-ui.button variant="primary" color="zinc" type="submit" class=" cursor-pointer">
+                           Search</x-ui.button>
 
                    </form>
 
@@ -58,38 +58,38 @@
                <section class="w-full">
                    {{-- <x-viewLayouts.main-view-layout :heading="__('Date')" :subheading="__('Choose between the available dates Request,CW, or D6. ')"> --}}
 
-                   <flux:heading size="xl">Date</flux:heading>
-                   <flux:subheading>Choose between the available dates Request,CW, or D6.</flux:subheading>
-                   <flux:separator class="md:hidden" />
+                   <x-ui.heading size="xl">Date</x-ui.heading>
+                   <x-ui.subheading>Choose between the available dates Request,CW, or D6.</x-ui.subheading>
+                   <x-ui.separator class="md:hidden" />
                    <form class="p-6 space-y-8" wire:submit="date">
-                       <flux:field>
-                           <flux:label>Dates *</flux:label>
-                           <flux:select wire:model="selected_date" class="w-full" placeholder="select date">
+                       <x-ui.field>
+                           <x-ui.label>Dates *</x-ui.label>
+                           <x-ui.select wire:model="selected_date" class="w-full" placeholder="select date">
 
                                @foreach ($dates as $date)
-                                   <flux:select.option :value="$date['id']">{{ $date['name'] }}
-                                   </flux:select.option>
+                                   <x-ui.select.option :value="$date['id']">{{ $date['name'] }}
+                                   </x-ui.select.option>
                                @endforeach
-                           </flux:select>
-                           <flux:error name="selected_date" />
-                       </flux:field>
+                           </x-ui.select>
+                           {{-- <x-ui.error name="selected_date" /> --}}
+                       </x-ui.field>
 
-                       <flux:field>
-                           <flux:label>From *</flux:label>
-                           <flux:input type="date" wire:model="date_from" placeholder="Enter From date"
+                       <x-ui.field>
+                           <x-ui.label>From *</x-ui.label>
+                           <x-ui.input type="date" wire:model="date_from" placeholder="Enter From date"
                                class="w-full" />
-                           <flux:error name="date_from" />
-                       </flux:field>
+                           {{-- <x-ui.error name="date_from" /> --}}
+                       </x-ui.field>
 
 
-                       <flux:field>
-                           <flux:label>To *</flux:label>
-                           <flux:input type="date" wire:model="date_to" placeholder="Enter To date" class="w-full" />
-                           <flux:error name="date_to" />
-                       </flux:field>
+                       <x-ui.field>
+                           <x-ui.label>To *</x-ui.label>
+                           <x-ui.input type="date" wire:model="date_to" placeholder="Enter To date" class="w-full" />
+                           {{-- <x-ui.error name="date_to" /> --}}
+                       </x-ui.field>
 
-                       <flux:button variant="primary" color="zinc" type="submit" class=" cursor-pointer">
-                           Search</flux:button>
+                       <x-ui.button variant="primary" color="zinc" type="submit" class=" cursor-pointer">
+                           Search</x-ui.button>
 
 
                    </form>
@@ -107,23 +107,23 @@
                <section class="w-full">
 
 
-                   <flux:heading size="xl">Work order</flux:heading>
-                   <flux:subheading>Enter the work order code and press search. </flux:subheading>
-                   <flux:separator class="md:hidden" />
+                   <x-ui.heading size="xl">Work order</x-ui.heading>
+                   <x-ui.subheading>Enter the work order code and press search. </x-ui.subheading>
+                   <x-ui.separator class="md:hidden" />
 
                    <div>
                        <form wire:submit="searchWO" method="POST">
 
 
-                           <flux:input.group>
-                               <flux:input placeholder="work order code..." wire:model='work_order' />
+                           <x-ui.input.group>
+                               <x-ui.input placeholder="work order code..." wire:model='work_order' />
 
 
 
-                               <flux:button type="submit">Search</flux:button>
+                               <x-ui.button type="submit">Search</x-ui.button>
                               
-                           </flux:input.group>
-                            <flux:error name="work_order" />
+                           </x-ui.input.group>
+                            {{-- <x-ui.error name="work_order" /> --}}
 
 
 

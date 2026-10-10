@@ -7,9 +7,11 @@ use App\Models\User;
 use Livewire\Component;
 use App\Models\Site\Site;
 use App\Models\Site\MuxPlan;
+use App\Models\Site\SheetImport;
 use App\Contracts\SiteInterface;
 use App\Livewire\Forms\SiteForm;
 use App\Repositories\SiteRepository;
+use App\Services\Sites\SiteRouteMap;
 
 class ShowSite extends Component
 {
@@ -19,7 +21,42 @@ class ShowSite extends Component
 
     public  $site;
 
-    public $route;
+    /** The chain built from the cascades table: one parent per site. */
+    // public $route;
+
+    /**
+     * Routes as the planning sheet draws them. A site can sit on more than
+     * one, which the cascades table cannot express, so these are kept apart
+     * rather than merged into $route.
+     *
+     * @var array<int, array<int, array{code: string, name: ?string, mmu_near: ?string, mmu_far: ?string}>>
+     */
+    public array $sheetRoutes = [];
+
+    /** The sheet draws this site at the head of a chain. */
+    public bool $isSheetHub = false;
+
+    /**
+     * The site and everything cascading off it, laid out as the sheet draws
+     * it: merged blocks and the planners' colours.
+     */
+    public array $sheetGrid = [];
+
+    /**
+     * One sheet grid per route that reaches this site, so two ways in read
+     * as two drawings rather than one merged block.
+     *
+     * @var array<int, array{route: array<int, string>, grid: array}>
+     */
+    public array $sheetRouteGrids = [];
+
+    /** Distinct sites below this one, which the grid can repeat. */
+    public int $sheetCascadeCount = 0;
+
+    /** When the sheet behind that grid was last read, for an honest "as of". */
+    public ?string $sheetImportedAt = null;
+
+    public ?string $sheetSource = null;
 
     public $newDirectCascades;
 
@@ -31,6 +68,9 @@ class ShowSite extends Component
 
     public function mount(SiteRepository $siteRepository, Site $site)
     {
+        // the only check this page had was ->can('view', 'site') on the route;
+        // it lives here now so the component is not open when mounted directly
+        $this->authorize('view', $site);
 
         $this->previousUrl = url()->previous();
 
@@ -38,12 +78,22 @@ class ShowSite extends Component
 
         $this->form->setSite($site); ////this function binds the $site model with the form which contains the site model attributes which could be accessed inside the view 'livewire.sites.actions.show-site' by using the object form
 
-        $this->form->zone_id = $site->zone->code; //////override form->zone_id to show the zone name instead of zone id
-        $this->form->team_id = $site->team->code; ////////like zone_id
+        // form->zone / form->team already hold the enum codes
 
         $this->site = $site;
 
-        $this->route = $this->getSiteRoute();
+        // $this->route = $this->getSiteRoute();
+
+        $map = new SiteRouteMap();
+        $this->sheetRoutes = $map->routesTo($site->site_code);
+        $this->isSheetHub = $map->isHub($site->site_code);
+        $this->sheetGrid = $map->sheetGrid($site->site_code);
+        $this->sheetRouteGrids = $map->sheetGridsByRoute($site->site_code);
+        $this->sheetCascadeCount = count($map->cascadedCodes($site->site_code));
+
+        $import = SheetImport::query()->orderByDesc('imported_at')->first();
+        $this->sheetImportedAt = $import?->imported_at?->diffForHumans();
+        $this->sheetSource = $import?->source;
 
 
 
@@ -53,20 +103,20 @@ class ShowSite extends Component
         
     }
 
-    private function getSiteRoute()
-    {
-        $nodalCode = $this->site->getNodalNameAndCode('code');
-        $nodals = [];
+    // private function getSiteRoute()
+    // {
+    //     $nodalCode = $this->site->getNodalNameAndCode('code');
+    //     $nodals = [];
 
-        if ($nodalCode) {
-            $nodals = $this->siteRepository->nodals($nodalCode);
-            $stringNodals = implode('', $nodals);
-            $route = "{$this->site->site_code}_{$this->site->site_name}{$stringNodals}";
+    //     if ($nodalCode) {
+    //         $nodals = $this->siteRepository->nodals($nodalCode);
+    //         $stringNodals = implode('', $nodals);
+    //         $route = "{$this->site->site_code}_{$this->site->site_name}{$stringNodals}";
            
-            return $route;
-        }
-        return null;
-    }
+    //         return $route;
+    //     }
+    //     return null;
+    // }
     public function goBack()
     {
 

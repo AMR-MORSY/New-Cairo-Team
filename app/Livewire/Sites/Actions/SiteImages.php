@@ -11,6 +11,7 @@ class SiteImages extends Component
     public $site;
     public function mount(Site $site)
     {
+         $this->authorize('viewSiteProperties', $site);
         $this->site=$site;
       
 

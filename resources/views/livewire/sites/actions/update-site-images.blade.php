@@ -21,7 +21,7 @@
                                 <button wire:click="deleteImage({{ $media->id }})"
                                     wire:confirm="Are you sure you want to delete this image?" 
                                     title="Delete image">
-                                    <flux:icon.trash class=" text-red-700 cursor-pointer" />
+                                    <x-icons.trash class=" text-red-700 cursor-pointer" />
 
                                 </button>
                             </div>

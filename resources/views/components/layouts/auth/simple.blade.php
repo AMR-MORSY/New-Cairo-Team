@@ -19,7 +19,6 @@
             </div>
         </div>
     </div>
-    @fluxScripts
   
 </body>
 

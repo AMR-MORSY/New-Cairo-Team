@@ -1,13 +1,15 @@
 <?php
 
+use App\Livewire\Auth\Login;
 use App\Livewire\Settings\Appearance;
 use App\Livewire\Settings\Password;
 use App\Livewire\Settings\Profile;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
+// The landing page is the sign-in screen; there is no separate /login route.
+Route::get('/', Login::class)
+    ->middleware('guest')
+    ->name('home');
 
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])

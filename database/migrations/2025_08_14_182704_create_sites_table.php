@@ -40,10 +40,9 @@ return new class extends Migration
             $table->string("vf_code", 50)->nullable();
             $table->string("et_code", 50)->nullable();
             $table->string("we_code", 50)->nullable();
+            $table->string('zone', 20)->index();
+            $table->string('team', 20)->index();
 
-           $table->foreignId('zone_id')->constrained()->onDelete('cascade');
-
-            $table->foreignId('team_id')->constrained()->onDelete('cascade');
             $table->integer("cells_2G")->default(0);
             $table->integer("cells_3G")->default(0);
             $table->integer("cells_4G")->default(0);

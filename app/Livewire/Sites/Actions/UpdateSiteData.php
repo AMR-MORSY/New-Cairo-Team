@@ -15,7 +15,7 @@ class UpdateSiteData extends Component
 
     public function mount(SiteData $siteData)
     {
-      
+       $this->authorize('update', $siteData->site);
         $this->siteData = $siteData;
         $this->site=$siteData->site;
         $this->form->setSiteData($siteData);

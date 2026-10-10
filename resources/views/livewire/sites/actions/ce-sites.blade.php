@@ -2,53 +2,53 @@
     <x-viewLayouts.main-view-layout :heading="__('CE Sites')" :subheading="__('You will find very important information about Cairo East sites')">
 
 
-        <flux:callout icon="exclamation-triangle" variant="secondary" inline class=" mt-5">
-            <flux:callout.heading>Cairo East TP sites</flux:callout.heading>
-            <flux:callout.text>click the button to view CE TP sites with batteries.</flux:callout.text>
+        <x-ui.callout icon="exclamation-triangle" variant="secondary" inline class=" mt-5">
+            <x-ui.callout.heading>Cairo East TP sites</x-ui.callout.heading>
+            <x-ui.callout.text>click the button to view CE TP sites with batteries.</x-ui.callout.text>
             <x-slot name="actions">
               
-                <flux:button :href="route('site.CE.sites.TP')" class=" cursor-pointer" wire:navigate>CE TP SITES
-                </flux:button>
+                <x-ui.button :href="route('site.CE.sites.TP')" class=" cursor-pointer" wire:navigate>CE TP SITES
+                </x-ui.button>
             </x-slot>
-        </flux:callout>
-        <flux:callout icon="exclamation-triangle" variant="secondary" inline class=" mt-5">
-            <flux:callout.heading>Cairo East Nodal sites</flux:callout.heading>
-            <flux:callout.text>click the button to view CE nodal sites with batteries.</flux:callout.text>
+        </x-ui.callout>
+        <x-ui.callout icon="exclamation-triangle" variant="secondary" inline class=" mt-5">
+            <x-ui.callout.heading>Cairo East Nodal sites</x-ui.callout.heading>
+            <x-ui.callout.text>click the button to view CE nodal sites with batteries.</x-ui.callout.text>
             <x-slot name="actions">
          
-                <flux:button :href="route('site.CE.sites.nodal')" class=" cursor-pointer" wire:navigate>CE NODAL SITES
-                </flux:button>
+                <x-ui.button :href="route('site.CE.sites.nodal')" class=" cursor-pointer" wire:navigate>CE NODAL SITES
+                </x-ui.button>
             </x-slot>
-        </flux:callout>
-        <flux:callout icon="exclamation-triangle" variant="secondary" inline class=" mt-5">
-            <flux:callout.heading>Cairo East VIP sites</flux:callout.heading>
-            <flux:callout.text>click the button to view CE VIP sites with batteries.</flux:callout.text>
+        </x-ui.callout>
+        <x-ui.callout icon="exclamation-triangle" variant="secondary" inline class=" mt-5">
+            <x-ui.callout.heading>Cairo East VIP sites</x-ui.callout.heading>
+            <x-ui.callout.text>click the button to view CE VIP sites with batteries.</x-ui.callout.text>
             <x-slot name="actions">
 
-                <flux:button :href="route('site.CE.sites.vip')" class=" cursor-pointer" wire:navigate>CE VIP
+                <x-ui.button :href="route('site.CE.sites.vip')" class=" cursor-pointer" wire:navigate>CE VIP
                     SITES
-                </flux:button>
+                </x-ui.button>
             </x-slot>
-        </flux:callout>
-        <flux:callout icon="exclamation-triangle" variant="secondary" inline class=" mt-5">
-            <flux:callout.heading>Cairo East Golden Square sites</flux:callout.heading>
-            <flux:callout.text>click the button to view CE Golden Square sites with batteries.</flux:callout.text>
+        </x-ui.callout>
+        <x-ui.callout icon="exclamation-triangle" variant="secondary" inline class=" mt-5">
+            <x-ui.callout.heading>Cairo East Golden Square sites</x-ui.callout.heading>
+            <x-ui.callout.text>click the button to view CE Golden Square sites with batteries.</x-ui.callout.text>
             <x-slot name="actions">
 
-                <flux:button :href="route('site.CE.sites.golden')" class=" cursor-pointer" wire:navigate>CE G.SQUARE
+                <x-ui.button :href="route('site.CE.sites.golden')" class=" cursor-pointer" wire:navigate>CE G.SQUARE
                     SITES
-                </flux:button>
+                </x-ui.button>
             </x-slot>
-        </flux:callout>
-          <flux:callout icon="exclamation-triangle" variant="secondary" inline class=" mt-5">
-            <flux:callout.heading>Cairo East Batteries data</flux:callout.heading>
-            <flux:callout.text>click the button to view CE batteries data.</flux:callout.text>
+        </x-ui.callout>
+          <x-ui.callout icon="exclamation-triangle" variant="secondary" inline class=" mt-5">
+            <x-ui.callout.heading>Cairo East Batteries data</x-ui.callout.heading>
+            <x-ui.callout.text>click the button to view CE batteries data.</x-ui.callout.text>
             <x-slot name="actions">
 
-                <flux:button :href="route('site.CE.sites.batteries')" class=" cursor-pointer" wire:navigate>CE BATTERIES
-                </flux:button>
+                <x-ui.button :href="route('site.CE.sites.batteries')" class=" cursor-pointer" wire:navigate>CE BATTERIES
+                </x-ui.button>
             </x-slot>
-        </flux:callout>
+        </x-ui.callout>
 
     </x-viewLayouts.main-view-layout>
 </div>

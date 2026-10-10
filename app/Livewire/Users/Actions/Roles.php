@@ -1,9 +1,6 @@
 <?php
 
 namespace App\Livewire\Users\Actions;
-
-use App\Models\Area;
-use App\Models\Team;
 use Livewire\Component;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Validate;
@@ -15,16 +12,10 @@ use Spatie\Permission\Models\Permission;
 class Roles extends Component
 {
     public  $roles;
-
-    public Collection $teams;
     public  $previousUrl;
 
 
     public Collection $permissions;
-
-
-    #[Validate]
-    public int|null $team_id = null;
 
     public string $newRole;
 
@@ -34,10 +25,7 @@ class Roles extends Component
     protected function rules()
     {
         return [
-            "team_id" => 'nullable|exists:teams,id', /////////////////when the team id is null, this means that the role is global and could be assigned to any user inside any team. All users must be belong to teams to have roles
-            'newRole' => ['required', "min:3", "max:40", Rule::unique('roles', 'name')->where(function ($query) {
-                return $query->where('team_id', $this->team_id);
-            })],
+            'newRole' => ['required', "min:3", "max:40", Rule::unique('roles', 'name')],
             'newPermissions' => 'required|exists:permissions,name',
         ];
     }
@@ -46,16 +34,7 @@ class Roles extends Component
     {
         $this->previousUrl = url()->previous();
         $roles = Role::all();
-
-        $this->roles = $roles->map(function ($role) {
-
-            $role->team = Team::find($role->team_id);
-            return $role;
-        });
-
-
-
-        $this->teams = Team::all();
+        $this->roles = $roles;
 
         $this->permissions = Permission::all();
     }
@@ -66,7 +45,7 @@ class Roles extends Component
 
         $role = Role::create([
             "name" => $this->newRole,
-            "team_id" => $this->team_id
+            "guard_name" => 'web',
         ]);
         if ($role) {
             $role->givePermissionTo($this->newPermissions);

@@ -1,7 +1,7 @@
 <div>
-    <flux:callout icon="exclamation-triangle" variant="secondary" inline class="mt-5 overflow-y-hidden">
-        <flux:callout.heading>{{ $site->site_code }} - {{ $site->site_name }}</flux:callout.heading>
-        <flux:callout.text>Up to five images could be uploaded (max 1MB each).</flux:callout.text>
+    <x-ui.callout icon="exclamation-triangle" variant="secondary" inline class="mt-5 overflow-y-hidden">
+        <x-ui.callout.heading>{{ $site->site_code }} - {{ $site->site_name }}</x-ui.callout.heading>
+        <x-ui.callout.text>Up to five images could be uploaded (max 1MB each).</x-ui.callout.text>
 
         <form wire:submit.prevent="save">
             @error('photos')
@@ -19,15 +19,15 @@
 
                 <div class="flex items-center justify-between gap-6 flex-wrap">
                     <div class="mt-9">
-                        <flux:field>
+                        <x-ui.field>
 
-                            <flux:input type="file" wire:model="photos" multiple accept="image/*" />
+                            <x-ui.input type="file" wire:model="photos" multiple accept="image/*" />
                             <label class="label">Max size 1MB per image, up to 5 images</label>
-                        </flux:field>
+                        </x-ui.field>
 
-                        <flux:button variant="primary" type="submit" class="mt-4 cursor-pointer">
+                        <x-ui.button variant="primary" type="submit" class="mt-4 cursor-pointer">
                             Save Photos
-                        </flux:button>
+                        </x-ui.button>
 
                         <!-- Progress Bar -->
                         <div x-show="uploading" class="mt-4">
@@ -56,5 +56,5 @@
                 </div>
             </div>
         </form>
-    </flux:callout>
+    </x-ui.callout>
 </div>
