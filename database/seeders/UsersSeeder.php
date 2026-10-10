@@ -26,42 +26,46 @@ class UsersSeeder extends Seeder
 
     public function run(): void
     {
-        $this->make('Super Admin', 'super_admin@company.com', UserRoles::SUPER_ADMIN);
-        $this->make('Site Admin', 'site_admin@company.com', UserRoles::SITE_ADMIN);
-        $this->make('Modification Admin', 'modification_admin@company.com', UserRoles::MODIFICATION_ADMIN);
+        // $this->make('Super Admin', 'super_admin@company.com', UserRoles::SUPER_ADMIN);
+        // $this->make('Site Admin', 'site_admin@company.com', UserRoles::SITE_ADMIN);
+        // $this->make('Modification Admin', 'modification_admin@company.com', UserRoles::MODIFICATION_ADMIN);
 
-        foreach (Teams::cases() as $team) {
-            $this->make(
-                $team->value . ' Team Manager',
-                strtolower($team->value) . '_team_manager@company.com',
-                UserRoles::TEAM_MANAGER,
-                $team
-            );
+        // foreach (Teams::cases() as $team) {
+        //     $this->make(
+        //         $team->value . ' Team Manager',
+        //         strtolower($team->value) . '_team_manager@company.com',
+        //         UserRoles::TEAM_MANAGER,
+        //         $team
+        //     );
 
-            foreach (Zones::forTeam($team) as $zone) {
-                $slug = Str::slug($zone->label(), '_');
+        //     foreach (Zones::forTeam($team) as $zone) {
+        //         $slug = Str::slug($zone->label(), '_');
 
-                $this->make(
-                    $zone->label() . ' Zone Manager',
-                    strtolower($team->value . '_' . $slug . '_zone_manager@company.com'),
-                    UserRoles::ZONE_MANAGER,
-                    $team,
-                    $zone
-                );
+        //         $this->make(
+        //             $zone->label() . ' Zone Manager',
+        //             strtolower($team->value . '_' . $slug . '_zone_manager@company.com'),
+        //             UserRoles::ZONE_MANAGER,
+        //             $team,
+        //             $zone
+        //         );
 
-                for ($i = 1; $i <= 2; $i++) {
-                    $this->make(
-                        $zone->label() . ' Site Engineer ' . $i,
-                        strtolower($team->value . '_' . $slug . '_engineer_' . $i . '@company.com'),
-                        UserRoles::SITE_ENGINEER,
-                        $team,
-                        $zone
-                    );
-                }
-            }
-        }
+        //         for ($i = 1; $i <= 2; $i++) {
+        //             $this->make(
+        //                 $zone->label() . ' Site Engineer ' . $i,
+        //                 strtolower($team->value . '_' . $slug . '_engineer_' . $i . '@company.com'),
+        //                 UserRoles::SITE_ENGINEER,
+        //                 $team,
+        //                 $zone
+        //             );
+        //         }
+        //     }
+        // }
 
-        $this->command?->info('Seeded ' . User::count() . ' users.');
+         $superAdmin = User::where('email', 'morsy.mamr@gmail.com')->first();
+         $superAdmin->syncRoles([UserRoles::SUPER_ADMIN->value]);
+         $superAdmin->update(['is_active' => true]);
+
+        $this->command?->info('Super Admin Seeded ' . $superAdmin->email );
     }
 
     private function make(
@@ -85,4 +89,7 @@ class UsersSeeder extends Seeder
 
         return $user;
     }
+
+   
+        
 }

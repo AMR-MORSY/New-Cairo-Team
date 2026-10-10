@@ -22,6 +22,7 @@ return new class extends Migration
             $table->rememberToken();
             $table->string('time_zone', 50)->nullable();
             $table->timestamp('login_at')->nullable();
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
 
