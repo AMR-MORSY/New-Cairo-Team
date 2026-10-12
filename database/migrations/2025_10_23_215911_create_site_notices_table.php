@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('site_code');
             $table->foreign("site_code")->references("site_code")->on('sites')->onUpdate("cascade")->onDelete("cascade");
-            $table->string('notice_type',50);
+            $table->foreignId('site_notice_type_id')->constrained()->onDelete('cascade');
             $table->string('title',200);
             $table->text('description');
             $table->boolean('is_solved')->default(0);

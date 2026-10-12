@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Livewire\Tables\Site;
-
+use App\Support\PowerGrid\Themes\CompactDaisyUI;
 use App\Models\Site\Site;
 use Livewire\Attributes\On;
 use App\Models\Site\Battery;
@@ -27,6 +27,11 @@ final class BatteriesTable extends PowerGridComponent
     public $zone;
 
 
+  /** A dozen columns wide; the compact theme keeps them on one screen. */
+    public function customThemeClass(): ?string
+    {
+        return CompactDaisyUI::class;
+    }
 
 
     public function actions($row): array

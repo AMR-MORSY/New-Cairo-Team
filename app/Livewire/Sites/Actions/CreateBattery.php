@@ -17,6 +17,8 @@ class CreateBattery extends Component
 
 
     public $site;
+
+    public string $page='create';
     public function mount(Site $site)
     {
         $this->authorize('create', Site::class);

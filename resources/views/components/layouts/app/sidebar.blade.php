@@ -46,7 +46,7 @@
 
                 {{-- same ability the users/roles/permissions routes are gated on,
                      so the menu cannot show a page the user cannot open --}}
-                @can('handle_users_activities')
+                {{-- @can('handle_users_activities')
                     <x-ui.navlist.group expandable icon="layout-grid" :heading="__('Users')"
                         :expanded="request()->routeIs('users.*', 'permission.*', 'role.*')">
                         <x-ui.navlist.item :href="route('users.index')"
@@ -62,7 +62,7 @@
                             {{ __('Roles') }}
                         </x-ui.navlist.item>
                     </x-ui.navlist.group>
-                @endcan
+                @endcan --}}
 
                 <x-ui.navlist.group expandable :heading="__('Sites')"
                     :expanded="request()->routeIs('site.*')">

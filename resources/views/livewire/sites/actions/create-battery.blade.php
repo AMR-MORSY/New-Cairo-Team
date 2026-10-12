@@ -6,7 +6,7 @@
          {{-- <livewire:Sites.SiteCreationForm :readonly="false" :site="$site" target="Update" /> --}}
 
          <x-slot:links>
-             <livewire:sites.batteries-links :site="$site" :battery="null" />
+             <livewire:sites.batteries-links :site="$site" :battery="null" :page="$page" />
          </x-slot:links>
          <x-battery-creation-form target="New" :readonly="false" :categories="$categories" :site="$site" />
 

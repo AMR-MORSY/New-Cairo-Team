@@ -14,6 +14,8 @@ class ShowBattery extends Component
     public $site;
     public $battery;
 
+    public string $page='show';
+
     public function mount(Battery $battery)
     {
           $this->authorize('viewSiteProperties', $battery->site);

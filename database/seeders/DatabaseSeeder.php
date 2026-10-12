@@ -12,7 +12,7 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            RolesAndPermissionsSeeder::class,
+            // RolesAndPermissionsSeeder::class,
             // UsersSeeder::class,
             // ProjectsSeeder::class,
             // ModificationActionsSeeder::class,
@@ -20,6 +20,8 @@ class DatabaseSeeder extends Seeder
             // RequestersSeeder::class,
 
             // ModificationSeeder::class,
+
+            SiteNoticeTypesSeeder::class,
         ]);
     }
 }

@@ -11,6 +11,8 @@ class SiteBatteries extends Component
 
     public $batteries;
 
+    public $page='site.batteries';
+
     public function mount(Site $site)
     {
         // the signed-in user is implicit; anything passed here lands on the

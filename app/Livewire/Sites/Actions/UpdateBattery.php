@@ -13,6 +13,8 @@ class UpdateBattery extends Component
     public $battery;
     public $categories;
     public $site;
+
+    public string $page='update.battery';
     public function mount(Battery $battery)
     {
          $this->authorize('update', $battery->site);

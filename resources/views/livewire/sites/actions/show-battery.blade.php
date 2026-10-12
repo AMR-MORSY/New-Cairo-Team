@@ -3,7 +3,7 @@
 
 
         <x-slot:links>
-            <livewire:sites.batteries-links :site="$site" :battery="$battery" />
+            <livewire:sites.batteries-links :site="$site" :battery="$battery" :page="$page" />
         </x-slot:links>
           <x-battery-creation-form :target="null" :readonly="true" :categories="null" :site="$site"/>
     </x-viewLayouts.main-view-layout>

@@ -1,33 +1,35 @@
- <x-ui.navlist.group expandable heading="Quick Links" class=" lg:grid mt-20">
+<div>
+    <x-ui.navlist class="mt-20 lg:grid">
+        <x-ui.navlist.group expandable :heading="__('Quick Links')" :expanded="true">
 
 
-     <x-ui.navlist>
-         @if (request()->routeIs('battery.show'))
+    
+          @if ($page === 'show')
              <x-ui.navlist.item :href="route('battery.update',$battery->id)" wire:navigate>
                  {{ __('Update') }}
              </x-ui.navlist.item>
 
-             <x-ui.navlist.item wire:click="delete" class=" cursor-pointer">
+             <x-ui.navlist.item wire:click="mountAction('delete')" class=" cursor-pointer">
                  {{ __('Delete') }}
              </x-ui.navlist.item>
               <x-ui.navlist.item :href="route('site.batteries',$site->site_code)" wire:navigate>
                  {{ __('Back') }}
              </x-ui.navlist.item>
-         @elseif (request()->routeIs('battery.update'))
+         @elseif ($page === 'update.battery')
           <x-ui.navlist.item :href="route('battery.show',$battery->id)" wire:navigate>
                  {{ __('Back To Details') }}
              </x-ui.navlist.item>
-             <x-ui.navlist.item wire:click="delete" class=" cursor-pointer">
+             <x-ui.navlist.item wire:click="mountAction('delete')" class=" cursor-pointer">
                  {{ __('Delete') }}
              </x-ui.navlist.item>
-         @elseif (request()->routeIs('site.batteries'))
+         @elseif ($page === 'site.batteries')
              <x-ui.navlist.item :href="route('battery.create',$site->site_code)" wire:navigate>
                  {{ __('New Record') }}
              </x-ui.navlist.item>
              <x-ui.navlist.item :href="route('site.show',$site->site_code)" wire:navigate>
                  {{ __('Back') }}
              </x-ui.navlist.item>
-         @elseif (request()->routeIs('battery.create'))
+         @elseif ($page === 'create')
               <x-ui.navlist.item :href="route('site.show',$site->site_code)" wire:navigate>
                  {{ __('Back') }}
              </x-ui.navlist.item>
@@ -37,7 +39,11 @@
 
 
 
-     </x-ui.navlist>
+    
 
 
  </x-ui.navlist.group>
+    </x-ui.navlist>
+
+      <x-filament-actions::modals />
+</div>

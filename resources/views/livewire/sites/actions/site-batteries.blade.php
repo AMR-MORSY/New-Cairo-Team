@@ -3,7 +3,7 @@
 
 
         <x-slot:links>
-            <livewire:sites.batteries-links :site="$site" />
+            <livewire:sites.batteries-links :site="$site" :page="$page" />
         </x-slot:links>
         @if (count($batteries) > 0)
         <div class="max-w-xl xl:max-w-3xl  2xl:max-w-7xl">

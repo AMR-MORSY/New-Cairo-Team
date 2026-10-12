@@ -8,6 +8,7 @@ use App\Filament\Resources\Modification\Requesters\RequesterResource;
 use App\Filament\Resources\Modification\Subcontractors\Pages\CreateSubcontractor;
 use App\Filament\Resources\Modification\Subcontractors\Pages\EditSubcontractor;
 use App\Filament\Resources\Modification\Subcontractors\SubcontractorResource;
+use App\Filament\Resources\Site\SiteNoticeTypes\SiteNoticeTypeResource;
 use App\Models\Modification\Subcontractor;
 use App\Models\User;
 use Database\Seeders\RolesAndPermissionsSeeder;
@@ -64,6 +65,7 @@ it('opens each lookup list for an administrator', function (string $resource) {
     'projects' => ProjectResource::class,
     'requesters' => RequesterResource::class,
     'actions' => ActionResource::class,
+    'site notice types' => SiteNoticeTypeResource::class,
 ]);
 
 it('refuses those lists to a non-administrator', function (string $resource) {
@@ -75,6 +77,7 @@ it('refuses those lists to a non-administrator', function (string $resource) {
     'projects' => ProjectResource::class,
     'requesters' => RequesterResource::class,
     'actions' => ActionResource::class,
+    'site notice types' => SiteNoticeTypeResource::class,
 ]);
 
 it('offers no way to delete a lookup row', function (string $resource) {
@@ -84,6 +87,7 @@ it('offers no way to delete a lookup row', function (string $resource) {
     'projects' => ProjectResource::class,
     'requesters' => RequesterResource::class,
     'actions' => ActionResource::class,
+    'site notice types' => SiteNoticeTypeResource::class,
 ]);
 
 it('can add a subcontractor that is not already in the table', function () {
