@@ -20,9 +20,14 @@ use App\Models\Modification\Subcontractor;
 use Illuminate\Database\Eloquent\Collection;
 use App\Enums\ModificationStatus;
 use App\Models\Modification\ModificationReservation;
+use Livewire\Attributes\Locked;
+
+
 
 class CreateModification extends Component
 {
+    #[Locked]
+    public bool $submitted = false;
     public ModificationForm $form;
 
     public Collection $subcontractors;
@@ -59,8 +64,15 @@ class CreateModification extends Component
 
     public function create()
     {
+        if ($this->submitted) {
+            return;   // the first submit is already saved and redirecting
+        }
+
+        $this->form->normalize();
 
         $this->validate();
+
+         $this->submitted = true;
 
         // if (ModificationStatus::tryFrom($this->form->status)?->isQuoted()) { /////////////////status done or waiting D6
         //     Toaster::error('Modification status is considered done or waiting D6 after quotation submission')->duration('7000');

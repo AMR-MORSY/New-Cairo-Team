@@ -16,7 +16,7 @@ use PowerComponents\LivewirePowerGrid\PowerGridFields;
 use PowerComponents\LivewirePowerGrid\Facades\PowerGrid;
 use PowerComponents\LivewirePowerGrid\PowerGridComponent;
 use App\Services\Sites\SiteRouteMap;
-
+use App\Support\PowerGrid\Themes\CompactDaisyUI;
 final class CascadesTable extends PowerGridComponent
 {
     public string $tableName = 'cascades-table-lvjnmv-table';
@@ -24,11 +24,18 @@ final class CascadesTable extends PowerGridComponent
 
     // public  $cascades;
 
-    public $site;
+    public object $site;
 
-    // public string $cascadesType;
+    public string $cascadesType;
 
     // protected $siteRepository;
+
+
+    /** A dozen columns wide; the compact theme keeps them on one screen. */
+    public function customThemeClass(): ?string
+    {
+        return CompactDaisyUI::class;
+    }
 
     public function __construct()
     {
@@ -47,23 +54,24 @@ final class CascadesTable extends PowerGridComponent
         //             ->class('cursor-pointer')
         //             ->dispatch('clickToGOSiteDetails', ['site_code' => $row->cascade_code]),
         //     ];
-        // } elseif ($this->cascadesType == 'updateCascades') {
-        //     return [
-        //         Button::add('edit-stock')
-        //             ->icon('default-trash')
-        //             ->class('cursor-pointer text-red-500')
-        //             ->confirm('Are you sure you want to delete this site?')
-        //             ->tooltip('Delete')
-        //             ->dispatch('removeCascade', ['site_code' => $row->cascade_code]),
-        //     ];
-        // } else {
+        //  } 
+         if ($this->cascadesType == 'updateCascades') {
+            return [
+                Button::add('edit-stock')
+                    ->icon('default-trash')
+                    ->class('cursor-pointer text-red-500')
+                    ->confirm('Are you sure you want to delete this site?')
+                    ->tooltip('Delete')
+                    ->dispatch('removeCascade', ['site_code' => $row->site_code]),
+            ];
+        } else {
             return [
                 Button::add('edit-stock')
                     ->icon('default-eye')
                     ->class('cursor-pointer')
                     ->dispatch('clickToGOSiteDetails', ['site_code' =>  $row->site_code]),
             ];
-        // }
+        }
     }
 
 

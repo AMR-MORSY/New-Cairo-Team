@@ -5,30 +5,33 @@
 
 
         <x-slot:links>
-            <livewire:sites.site-notes-links :site="$site" />
+            <livewire:sites.site-notes-links :site="$site" :page="$page" />
         </x-slot:links>
         @if (count($notices) > 0)
 
 
 
             @foreach ($notices as $notice)
-                <x-ui.callout icon="exclamation-triangle" variant="secondary" inline class=" mt-5">
+                <x-ui.callout icon="exclamation-triangle" variant="primary" inline class=" bg-white mt-5">
                     <x-ui.callout.heading>{{ $notice->title }}</x-ui.callout.heading>
-                    <x-ui.callout.text color="blue">{{ $notice->formatted_created_at }}</x-ui.callout.text>
+                      <x-ui.callout.text class="text-sm text-muted-foreground text-green-600">
+                          {{ $notice->siteNoticeType->name ?? 'Unknown Type' }}
+                      </x-ui.callout.subheading>
+                    <x-ui.callout.text class="text-sm text-muted-foreground text-gray-800">{{ $notice->formatted_created_at }}</x-ui.callout.text>
                     <x-ui.callout.text>{{ $notice->description }}</x-ui.callout.text>
                     @if ($notice->is_solved)
-                        <x-ui.text color='green'>Solved</x-ui.callout.text>
+                        <x-ui.text class="text-sm text-muted-foreground text-green-600">Solved</x-ui.callout.text>
                         @else
-                            <x-ui.text color='red'>Not Solved</x-ui.callout.text>
+                            <x-ui.text class="text-sm text-muted-foreground text-red-600">Not Solved</x-ui.callout.text>
                     @endif
                     <x-slot name="actions">
                         <x-ui.button :href="route('site.note.update',$notice->id)" wire:navigate class=" cursor-pointer">
                             UPDATE
                         </x-ui.button>
-                        <x-ui.modal.trigger name="delete-note-{{ $notice->id }}">
-                            <x-ui.button wire:key="delete-btn-{{ $notice->id }}" class=" cursor-pointer">DELETE
+                        {{-- <x-ui.modal.trigger name="delete-note-{{ $notice->id }}"> --}}
+                            <x-ui.button wire:click="mountAction('delete', { notice_id: {{ $notice->id }} })" class=" cursor-pointer">DELETE
                             </x-ui.button>
-                        </x-ui.modal.trigger>
+                        {{-- </x-ui.modal.trigger> --}}
                     </x-slot>
                 </x-ui.callout>
 
@@ -63,4 +66,6 @@
                 </x-slot>
             </x-ui.callout>
         @endif
+
+        <x-filament-actions::modals />
     </x-viewLayouts.main-view-layout>

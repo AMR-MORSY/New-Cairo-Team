@@ -22,10 +22,11 @@ use App\Models\Modification\Subcontractor;
 use Illuminate\Database\Eloquent\Collection;
 use App\Enums\ModificationStatus;
 use App\Models\Modification\ModificationReservation;
+use Livewire\Attributes\Locked;
 
 class ModificationForm extends Form
 {
-
+    #[Locked]
     public $id;
 
     /**
@@ -38,12 +39,14 @@ class ModificationForm extends Form
      * /livewire/update, not to the page route. The two entry points set this
      * themselves instead.
      */
+    #[Locked]
     public string $context = 'create';
+    #[Locked]
     public $site_code = '';
     public $subcontractor_id = '';
     public $pending = "";
     public $est_cost;
-    public $final_cost ;
+    public $final_cost;
     public $request_date = '';
     public $requester_id = '';
     public $project_id = '';
@@ -53,10 +56,14 @@ class ModificationForm extends Form
     public $description = "";
     public $reported = 0;
     public $reported_at = '';
+    #[Locked]
     public $zone = '';
+    #[Locked]
     public $team = '';
+    #[Locked]
     public $action_owner = '';
     public array $action_id = [];
+    #[Locked]
     public $wo_code = '';
 
     public $expires_at = '';
@@ -96,10 +103,31 @@ class ModificationForm extends Form
             "reported_at",
             'team',
             'zone',
-            'action_owner'
+            'action_owner',
+            'project_id',
+            'subcontractor_id',
 
         ];
     }
+    /** Values that only make sense together; run before validating. */
+    public function normalize(): void
+    {
+        if (! $this->reported) {   // covers 0, '0', false, ''
+            $this->reported_at = null;
+        }
+    }
+
+    /**
+     * Active entries only - except, on update, the ones this modification
+     * already uses, so a retired subcontractor doesn't block saving it.
+     */
+    private function activeLookup(string $table, array $keep = []): \Illuminate\Validation\Rules\Exists
+    {
+        return Rule::exists($table, 'id')->where(
+            fn($q) => $q->where('is_active', true)->when($keep, fn($q) => $q->orWhereIn('id', $keep))
+        );
+    }
+
 
     public function setModificationDetails(Modification $modification)
     {
@@ -120,7 +148,7 @@ class ModificationForm extends Form
         $this->d6_date = $modification->d6_date;
         $this->description = $modification->description;
         $this->reported = $modification->reported;
-        $this->reported_at = $modification->reported_at;
+        $this->reported_at = $modification->reported_at?->toDateString();
         $this->zone = $modification->zone?->value;
         $this->team = $modification->team?->value;
         $this->action_owner = $modification->action_owner;
@@ -137,36 +165,38 @@ class ModificationForm extends Form
 
     public function rules()
     {
+        $current = $this->context === 'update' ? Modification::with('actions')->find($this->id) : null;
         $rules = [
             "site_code" => ['required', 'exists:sites,site_code'],
-            // "subcontractor_id" => ["required", "exists:subcontractors,id"],
+             "subcontractor_id" => ['required', $this->activeLookup('subcontractors', array_filter([$current?->subcontractor_id]))],
             "action_id" => ["required", "array"],
-            "action_id.*" => ['required', 'exists:actions,id'],
-            "description" => ["nullable", "string", 'regex:/^[a-zA-Z0-9\-_!@#$%^&*(),.?":{}\n\t|<> ]+$/'], //////regex for special chars, chars,numbers,spaces,underscore,dash
-            "pending" => ['nullable', 'string', 'regex:/^[a-zA-Z0-9\-_!@#$%^&*(),.?":{}\n\t|<> ]+$/'],
+                "action_id.*"      => ['required', $this->activeLookup('actions', $current?->actions->pluck('id')->all() ?? [])],
+            "description" => ["nullable", "string", 'max:2000'], //////regex for special chars, chars,numbers,spaces,underscore,dash
+            "pending" => ['nullable', 'string', 'max:2000'],
             "request_date" => "required|date",
             "cw_date" => [" nullable", "date", "required_if:status,Done,Waiting D6", "after_or_equal:request_date"],
-            "d6_date" => [" nullable", "date", "required_if:status,Done", "after_or_equal:request_date", "after_or_equal:cw_date"],
+            "d6_date" => [" nullable", "date", "required_if:status,Done", "after_or_equal:request_date", "after_or_equal:cw_date", 'prohibited_if:status,Cancelled'],
             "status" => ["required", new Enum(ModificationStatus::class), function ($attribute, $value, $fail) {
                 $status = ModificationStatus::tryFrom($value);
-                $cwDate = $this->cw_date;
-                $d6Date = $this->d6_date;
-                $noDates = (is_null($cwDate) || $cwDate == '') && (is_null($d6Date) || $d6Date == '');
 
-                if ($noDates) {
-                    if ($status !== ModificationStatus::IN_PROGRESS) {
-                        $fail('The modification status must be "in progress" when both cw_date and d6_date are null.');
-                    }
-                } elseif (! $status?->isQuoted()) {
-                    $fail('The modification status must be "Done" or "waiting D6" when either cw_date or d6_date is provided.');
+                $noDates = blank($this->cw_date) && blank($this->d6_date);
+                if ($status === null || $status->isCancelled()) {
+                    return;
+                }
+                if ($noDates  && ! $status->isInProgress()) {
+
+                    $fail('The modification status must be "in progress" when both  CW date and D6 date are empty.');
+                } elseif (! $noDates && ! $status->isQuoted()) {
+                    $fail('The modification status must be "Done" or "waiting D6" when either CW date or D6 date is provided.');
                 }
             }],
-            "requester_id" => ["required", 'exists:requesters,id'],
-            // "project_id" => ["required", 'exists:projects,id'],
-            "est_cost" => ["required_if:status,Done,In Progress,Waiting D6", new CommaSeparatedNumber],
-            "final_cost" => ["required_if:status,Done,Waiting D6", new CommaSeparatedNumber],
+            "requester_id"     => ['required', $this->activeLookup('requesters',     array_filter([$current?->requester_id]))],
+            "project_id"       => ['required', $this->activeLookup('projects',       array_filter([$current?->project_id]))],
+            "est_cost" => ['nullable',"required_if:status,Done,In Progress,Waiting D6", new CommaSeparatedNumber],
+            "final_cost" => ['nullable',"required_if:status,Done,Waiting D6", new CommaSeparatedNumber],
             "reported" => ["required",  Rule::in([1, 0])],
-            "reported_at" => ["nullable", "date", "required_if:reported,1"],
+            "reported_at" => ["nullable", "date", "required_if:reported,1", "after_or_equal:request_date"],
+
             'team' => ['required', new Enum(Teams::class)],
             'zone' => ['required', new Enum(Zones::class)],
             'action_owner' => ['required', 'exists:users,id']
@@ -175,10 +205,7 @@ class ModificationForm extends Form
 
         if ($this->context === 'update') {
             $rules['id'] = ["required", "exists:modifications,id"];
-        } else {
-            $rules["subcontractor_id"] = ["required", "exists:subcontractors,id"];
-            $rules["project_id"] = ["required", 'exists:projects,id'];
-        }
+        } 
 
         return $rules;
     }
@@ -188,7 +215,7 @@ class ModificationForm extends Form
         return
             [
                 "est_cost.required_if" => "Estimated cost is required",
-                "final_cost.required_if" => "Estimated cost is required",
+                "final_cost.required_if" => "Final cost is required",
                 "subcontractor_id.required" => "The subcontractor is required",
                 "requester_id.required" => "The Requester is required",
                 "status.required" => "The status is required",

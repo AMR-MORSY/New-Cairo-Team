@@ -10,9 +10,10 @@ use App\Livewire\Forms\PowerDataForm;
 class UpdatePowerData extends Component
 {
      public PowerDataForm $form;
-    public $powerData;
+    public object $powerData;
  
-    public $site;
+    public object $site;
+    public string $page="powerData.update";
     public function mount(PowerData $powerData)
     {
          $this->authorize('update', $powerData->site);

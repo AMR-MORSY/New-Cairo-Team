@@ -17,11 +17,13 @@ class CreateSiteData extends Component
 
 
 
-    public $site;
+    public object $site;
+
+    public string $page="siteData.create";
     public function mount(Site $site)
     {
 
-     $this->authorize('create', Site::class);
+        $this->authorize('create', Site::class);
 
         $this->form->setSiteCode($site->site_code);
         $this->site = $site;

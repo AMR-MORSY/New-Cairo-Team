@@ -27,17 +27,17 @@
 
                         <x-ui.field>
                             <x-ui.label>Notice Type *</x-ui.label>
-                            {{-- @if ($target == 'Update' || $target == 'New') --}}
+                            @if ($target == 'Update' || $target == 'New')
 
 
-                            <x-select-enums wire:model="form.notice_type" :enumOptions="('App\Enums\SiteNoticeTypes')::cases()" class="w-full"
-                                placeholder="Enter the Status" />
-                            {{-- @else --}}
-                            {{-- <x-ui.input wire:model="form.notice_type"
+                            <x-select-named-options wire:model="form.site_notice_type_id" :options="$siteNoticeTypes" class="w-full"
+                                placeholder="Enter notice type" />
+                            @else 
+                            <x-ui.input wire:model="form.site_notice_type_id"
                                     :placeholder="$readonly ? null : 'Enter Site Status'" :readonly="$readonly"
-                                    class="w-full" /> --}}
-                            {{-- @endif --}}
-                            <x-ui.error name="form.notice_type" />
+                                    class="w-full" /> 
+                             @endif
+                            {{-- <x-ui.error name="form.site_notice_type_id" /> --}}
                         </x-ui.field>
 
                         <x-ui.field>

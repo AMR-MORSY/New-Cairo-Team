@@ -14,4 +14,10 @@ class SiteNoticeType extends Model
     protected $fillable = ['name', 'is_active'];
 
     protected $casts = ['is_active' => 'boolean'];
+
+    public function siteNotices()
+    {
+        return $this->hasMany(SiteNote::class, 'site_notice_type_id', 'id');
+    }
+   
 }

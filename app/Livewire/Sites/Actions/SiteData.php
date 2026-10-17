@@ -9,11 +9,12 @@ use App\Livewire\Forms\SiteDataForm;
 class SiteData extends Component
 {
     public SiteDataForm $form;
-    public $site;
+    public object $site;
 
-    public $siteData;
+    public ?object $siteData;
 
 
+    public string $page="site.noSiteData";
     public function mount(Site $site)
     {
          $this->authorize('viewSiteProperties', $site);
@@ -24,6 +25,8 @@ class SiteData extends Component
         if ($this->siteData) {
             $this->form->setSiteData($this->siteData);
             $this->form->adjustBooleanValues();
+
+            $this->page="site.siteData";
 
         }
     }

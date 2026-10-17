@@ -14,8 +14,8 @@ class BatteriesLinks extends Component implements HasActions, HasSchemas
     use InteractsWithActions;
     use InteractsWithSchemas;
 
-    public $site;
-    public $battery;
+    public object $site;
+    public object $battery;
 
     public string $page;
 

@@ -5,9 +5,9 @@
         $site->site_name">
 
         <x-slot:links>
-            <livewire:sites.site-notes-links :site="$site" />
+            <livewire:sites.site-notes-links :site="$site" :page="$page" />
         </x-slot:links>
-        <x-site-note-creation-form target="Update" :readonly="false" :site="$site" />
+        <x-site-note-creation-form target="Update" :readonly="false" :site="$site" :siteNoticeTypes="$siteNoticeTypes"/>
 
 
 

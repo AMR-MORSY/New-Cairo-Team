@@ -10,9 +10,10 @@ use App\Livewire\Forms\SiteDataForm;
 class UpdateSiteData extends Component
 {
     public SiteDataForm $form;
-    public $siteData;
-    public $site;
+    public SiteData $siteData;
+    public object $site;
 
+    public string $page='siteData.update';
     public function mount(SiteData $siteData)
     {
        $this->authorize('update', $siteData->site);

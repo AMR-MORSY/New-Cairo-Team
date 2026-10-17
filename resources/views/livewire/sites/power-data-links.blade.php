@@ -1,37 +1,43 @@
- <x-ui.navlist.group expandable heading="Quick Links" class=" lg:grid mt-20">
-
-
-     <x-ui.navlist>
-
-         @if (request()->routeIs('powerData.update'))
-           
-             <x-ui.navlist.item wire:click="delete" class=" cursor-pointer">
-                 {{ __('Delete') }}
-             </x-ui.navlist.item>
-               <x-ui.navlist.item :href="route('site.powerData',$site->site_code)" wire:navigate>
-                 {{ __('Back') }}
-             </x-ui.navlist.item>
-         @elseif (request()->routeIs('site.powerData'))
-             <x-ui.navlist.item :href="route('powerData.update',$powerData->id)" wire:navigate>
-                 {{ __('Update') }}
-             </x-ui.navlist.item>
-               <x-ui.navlist.item wire:click="delete" class=" cursor-pointer">
-                 {{ __('Delete') }}
-             </x-ui.navlist.item>
-             <x-ui.navlist.item :href="route('site.show',$site->site_code)" wire:navigate>
-                 {{ __('Back') }}
-             </x-ui.navlist.item>
-         @elseif (request()->routeIs('powerData.create'))
-             <x-ui.navlist.item :href="route('site.show',$site->site_code)" wire:navigate>
-                 {{ __('Back') }}
-             </x-ui.navlist.item>
-         @endif
+<x-ui.navlist class="mt-20 lg:grid">
+    <x-ui.navlist.group expandable :heading="__('Quick Links')" :expanded="true">
 
 
 
 
 
-     </x-ui.navlist>
+        @if ($page == 'powerData.update')
+            {{-- <x-ui.navlist.item wire:click="delete" class=" cursor-pointer">
+                {{ __('Delete') }}
+            </x-ui.navlist.item> --}}
+            <x-ui.navlist.item :href="route('site.powerData', $site->site_code)" wire:navigate>
+                {{ __('Back') }}
+            </x-ui.navlist.item>
+        @elseif ($page == 'site.powerData')
+            <x-ui.navlist.item :href="route('powerData.update', $powerData->id)" wire:navigate>
+                {{ __('Update') }}
+            </x-ui.navlist.item>
+            <x-ui.navlist.item wire:click="mountAction('delete')" class=" cursor-pointer">
+                {{ __('Delete') }}
+            </x-ui.navlist.item>
+            <x-ui.navlist.item :href="route('site.show', $site->site_code)" wire:navigate>
+                {{ __('Back') }}
+            </x-ui.navlist.item>
+        @elseif ($page == 'site.noPowerData')
+            <x-ui.navlist.item :href="route('site.show', $site->site_code)" wire:navigate>
+                {{ __('Back') }}
+            </x-ui.navlist.item>
+        @elseif ($page == 'powerData.create')
+            <x-ui.navlist.item :href="route('site.show', $site->site_code)" wire:navigate>
+                {{ __('Back') }}
+            </x-ui.navlist.item>
+        @endif
 
 
- </x-ui.navlist.group>
+
+
+
+
+
+    </x-ui.navlist.group>
+    <x-filament-actions::modals />
+</x-ui.navlist>

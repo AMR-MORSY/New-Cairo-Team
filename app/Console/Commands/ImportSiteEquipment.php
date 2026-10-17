@@ -235,6 +235,10 @@ class ImportSiteEquipment extends Command
         $skipped = [];
         $payload = [];
 
+        // legacy notice_type holds either a site_notice_types id ('1'..'6') or its name ('Microwave')
+        $types = DB::table('site_notice_types')->pluck('name', 'id');
+        $idByName = $types->mapWithKeys(fn ($name, $id) => [strtolower(trim($name)) => (int) $id]);
+
         foreach (DB::connection('legacy')->table('site_notices')->orderBy('site_code')->get() as $r) {
             $code = $this->normalise($r->site_code);
 
@@ -242,10 +246,21 @@ class ImportSiteEquipment extends Command
                 $skipped[] = "{$code} (not in sites table)";
                 continue;
             }
+
+            $type = trim((string) $r->notice_type);
+            $typeId = ctype_digit($type)
+                ? (isset($types[(int) $type]) ? (int) $type : null)
+                : ($idByName[strtolower($type)] ?? null);
+
+            if ($typeId === null) {
+                $skipped[] = "#{$r->id} (notice type '{$type}' not in site_notice_types)";
+                continue;
+            }
+
              $payload[$r->id] = [
                 'id' => $r->id,                 // preserved - modifications.action_owner points here
                 'site_code' => strtoupper(trim($r->site_code)),
-                'notice_type' => $r->notice_type,
+                'site_notice_type_id' => $typeId,
                 "title" => $r->title,
                 "description" => $r->description,
                 "is_solved" => $r->is_solved,

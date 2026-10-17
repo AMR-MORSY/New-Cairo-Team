@@ -27,13 +27,15 @@ trait IsLookupOption
      * whichever this record already uses, so a retired entry does not quietly
      * disappear from the form and change the saved value.
      */
-    public function scopeActiveOr(Builder $query, int|string|null $keep): Builder
+    public function scopeActiveOr(Builder $query, int|string|array|null $keep): Builder
     {
+        $keep = array_filter((array) $keep, fn($id) => $id !== null && $id !== '');
+
         return $query->where(function (Builder $q) use ($keep) {
             $q->where('is_active', true);
 
-            if ($keep !== null && $keep !== '') {
-                $q->orWhere($this->getKeyName(), $keep);
+            if ($keep) {
+                $q->orWhereIn($this->getKeyName(), $keep);
             }
         });
     }

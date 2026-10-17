@@ -49,17 +49,17 @@
                 <div class=" w-full ">
 
                     {{-- <livewire:tables.site.cascades-table :site="$site" cascadesType='direct' /> --}}
-                      <livewire:tables.site.cascades-table :site="$site"  />
+                      <livewire:tables.site.cascades-table :site="$site" cascadesType='direct' />
                 </div>
 
-                {{-- <x-ui.callout icon="exclamation-triangle" variant="secondary" inline class=" mt-5">
+                <x-ui.callout icon="exclamation-triangle" variant="secondary" inline class=" mt-5">
                     <x-ui.callout.heading>{{ $site->site_code }}-{{ $site->site_name }}</x-ui.callout.heading>
                     <x-ui.callout.text>click the button to go to cascades update page.</x-ui.callout.text>
                     <x-slot name="actions">
                         <x-ui.button :href="route('site.cascades.update',['site'=>$site->site_code])">UPDATE CASCADES
                         </x-ui.button>
                     </x-slot>
-                </x-ui.callout> --}}
+                </x-ui.callout>
                 <x-ui.callout icon="exclamation-triangle" variant="secondary" inline class=" mt-5">
                     <x-ui.callout.heading>{{ $site->site_code }}-{{ $site->site_name }}</x-ui.callout.heading>
                     <x-ui.callout.text>click the button to view the site's Mux plan.</x-ui.callout.text>

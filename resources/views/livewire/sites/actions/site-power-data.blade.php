@@ -6,17 +6,21 @@
 
 
 
+
         @if ($powerData)
             <x-slot:links>
-                <livewire:sites.power-data-links :site="$site" :powerData="$powerData" />
+                <livewire:sites.power-data-links :site="$site" :powerData="$powerData" :page="$page" />
             </x-slot:links>
             <x-site-power-data-creation-form :target="null" :readonly="true" :site="$site" />
         @else
+            <x-slot:links>
+                <livewire:sites.power-data-links :site="$site" :page="$page" />
+            </x-slot:links>
             <x-ui.callout icon="exclamation-triangle" variant="secondary" inline class=" mt-5">
                 <x-ui.callout.heading>No Power Data Found for this site</x-ui.callout.heading>
                 <x-ui.callout.text>click the button to go to new record creation page.</x-ui.callout.text>
                 <x-slot name="actions">
-                    <x-ui.button :href="route('powerData.create',$site->site_code)" wire:navigate>New Power data Record
+                    <x-ui.button :href="route('powerData.create', $site->site_code)" wire:navigate>New Power data Record
                     </x-ui.button>
                 </x-slot>
             </x-ui.callout>

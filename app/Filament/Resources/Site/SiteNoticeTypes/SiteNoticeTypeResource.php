@@ -55,9 +55,9 @@ class SiteNoticeTypeResource extends Resource
     }
 
     /**
-     * Retiring an entry is a toggle. site_notices.notice_type holds the name
-     * as text, so a deleted type would leave existing notes pointing at a
-     * category that no longer exists.
+     * Retiring an entry is a toggle. site_notices.site_notice_type_id is a
+     * cascading foreign key, so deleting a type would delete every notice
+     * filed under it.
      */
     public static function canDelete(Model $record): bool
     {

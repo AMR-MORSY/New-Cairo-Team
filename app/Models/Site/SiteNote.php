@@ -2,6 +2,7 @@
 
 namespace App\Models\Site;
 
+use App\Models\Concerns\IsLookupOption;
 use Attribute;
 use Carbon\Carbon;
 use App\Models\Site\Site;
@@ -14,11 +15,12 @@ class SiteNote extends Model
     protected $table = 'site_notices';
     protected $hidden = ['updated_at'];
 
+    use IsLookupOption;
 
 
     protected $fillable = [
         'site_code',
-        "notice_type",
+        "site_notice_type_id",
         "title",
         "description",
         "is_solved",
@@ -37,5 +39,10 @@ class SiteNote extends Model
     public function site(): BelongsTo
     {
         return $this->belongsTo(Site::class, 'site_code', "site_code");
+    }
+
+    public function siteNoticeType(): BelongsTo
+    {
+        return $this->belongsTo(SiteNoticeType::class, 'site_notice_type_id', 'id');
     }
 }

@@ -5,7 +5,7 @@
         $site->site_name">
 
         <x-slot:links>
-            <livewire:sites.site-data-links :site="$site" :siteData="null" />
+            <livewire:sites.site-data-links :site="$site" :page="$page" />
         </x-slot:links>
         <x-site-data-creation-form target="New" :readonly="false" :site="$site" />
 

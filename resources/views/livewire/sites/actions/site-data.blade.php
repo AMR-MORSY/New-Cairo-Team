@@ -8,10 +8,13 @@
 
         @if ($siteData)
             <x-slot:links>
-                <livewire:sites.site-data-links :site="$site" :siteData="$siteData" />
+                <livewire:sites.site-data-links :site="$site" :siteData="$siteData" :page="$page" />
             </x-slot:links>
             <x-site-data-creation-form :target="null" :readonly="true" :site="$site" />
         @else
+         <x-slot:links>
+                <livewire:sites.site-data-links :site="$site"  :page="$page" />
+            </x-slot:links>
             <x-ui.callout icon="exclamation-triangle" variant="secondary" inline class=" mt-5">
                 <x-ui.callout.heading>No site Data Found for this site</x-ui.callout.heading>
                 <x-ui.callout.text>click the button to go to new record creation page.</x-ui.callout.text>

@@ -9,18 +9,21 @@ use App\Models\Site\Site;
 class SitePowerData extends Component
 {
     public PowerDataForm $form;
-    public $site;
+    public object $site;
 
-    public $powerData;
+    public ?object $powerData;
 
 
+    public string $page="site.noPowerData";
     public function mount(Site $site)
     {
          $this->authorize('viewSiteProperties', $site);
         $this->site = $site;
         $this->powerData = $this->site->power_data;
-        if ($this->powerData) {
+      
+        if (isSet($this->powerData)) {
             $this->form->setPowerData($this->powerData);
+            $this->page="site.powerData";
         }
     }
 

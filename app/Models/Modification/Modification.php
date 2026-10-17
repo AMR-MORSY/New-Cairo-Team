@@ -79,7 +79,7 @@ class Modification extends Model
 
     public function site(): BelongsTo
     {
-        return $this->belongsTo(Site::class, 'site_code','site_code');
+        return $this->belongsTo(Site::class, 'site_code', 'site_code');
     }
     protected function casts(): array
     {
@@ -144,11 +144,10 @@ class Modification extends Model
     {
         $quotation = $this->quotation()->where('is_active', 1)->first();
         if ($quotation) {
-            $quotationCost=$quotation->sumMailListItems() + $quotation->sumPriceListItems();
-            $this->update(['final_cost'=>$quotationCost]);
-           
+            $quotationCost = $quotation->sumMailListItems() + $quotation->sumPriceListItems();
+            $this->update(['final_cost' => $quotationCost]);
         } else {
-            $this->update(['final_cost'=>0]);
+            $this->update(['final_cost' => 0]);
         }
     }
     protected static function boot()
@@ -261,41 +260,27 @@ class Modification extends Model
     // }
     protected function estCost(): Attribute
     {
-        return Attribute::make(
+         return Attribute::make(
             set: function ($value) {
-                if (is_string($value)) {
-                    // Convert comma to dot for decimal separator
-                    $value = str_replace(',', '', $value);
-                    return (float)$value;
+                if ($value === null || $value === '') {
+                    return 0;
                 }
-                return $value;
+                return is_string($value) ? (float) str_replace(',', '', $value) : $value;
             },
-            get: function ($value) {
-
-                return (float) $value;
-            }
-
-
+            get: fn($value) => (float) $value,
         );
     }
 
-     protected function finalCost(): Attribute
+    protected function finalCost(): Attribute
     {
         return Attribute::make(
             set: function ($value) {
-                if (is_string($value)) {
-                    // Convert comma to dot for decimal separator
-                    $value = str_replace(',', '', $value);
-                    return (float)$value;
+                if ($value === null || $value === '') {
+                    return 0;
                 }
-                return $value;
+                return is_string($value) ? (float) str_replace(',', '', $value) : $value;
             },
-            get: function ($value) {
-
-                return (float) $value;
-            }
-
-
+            get: fn($value) => (float) $value,
         );
     }
 

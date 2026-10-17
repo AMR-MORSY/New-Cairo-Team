@@ -95,6 +95,8 @@ class ModificationLinks extends Component implements HasActions, HasSchemas
         //     $this->modification->delete();
         // }
 
+        $this->authorize('updateModification', $this->modification);
+
         $this->modification->delete();
         Toaster::success('Modification deleted Successfully');
 

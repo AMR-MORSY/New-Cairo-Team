@@ -12,7 +12,9 @@ class CreatePowerData extends Component
 {
      public PowerDataForm $form;
    
-    public $site;
+    public object $site;
+
+    public string $page="powerData.create";
     public function mount(Site $site)
     {
          $this->authorize('create', Site::class);

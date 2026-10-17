@@ -247,28 +247,28 @@
                     <div class="grid grid-cols-1 xl:grid-cols-2  gap-6">
                           <x-ui.field>
 
-                            @if ($target == 'Update' || $target == 'Create')
+                            @if ($target == 'Update' || $target == 'New')
                                 <x-ui.textarea label="Description *" placeholder="Action descriptions..." rows="4"
-                                    wire:model="description" class="w-full" />
+                                    wire:model="form.description" class="w-full" />
                             @else
-                                <x-ui.textarea label="Description *" wire:model="description" rows="4"
+                                <x-ui.textarea label="Description *" wire:model="form.description" rows="4"
                                     :placeholder="$readonly ? null : 'Action descriptions...'" :readonly="$readonly" class="w-full" />
                             @endif
 
-                            <x-ui.error name="form.description" />
+                            {{-- <x-ui.error name="form.description" /> --}}
                         </x-ui.field>
 
                         <x-ui.field>
 
                             @if ($target == 'Update' || $target == 'New')
                                 <x-ui.textarea label="Pending *" placeholder="Reasons..." rows="2"
-                                    wire:model="pending" class="w-full" />
+                                    wire:model="form.pending" class="w-full" />
                             @else
-                                <x-ui.textarea label="Pending *" wire:model="pending" rows="4" :placeholder="$readonly ? null : 'Reasons...'"
+                                <x-ui.textarea label="Pending *" wire:model="form.pending" rows="4" :placeholder="$readonly ? null : 'Reasons...'"
                                     :readonly="$readonly" class="w-full" />
                             @endif
 
-                            <x-ui.error name="form.pending" />
+                            {{-- <x-ui.error name="form.pending" /> --}}
                         </x-ui.field>
                     </div>
 

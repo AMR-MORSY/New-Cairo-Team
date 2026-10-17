@@ -5,8 +5,10 @@ namespace App\Livewire\Sites\Actions;
 use Livewire\Component;
 use App\Models\Site\Site;
 use App\Models\Site\SiteNote;
+use App\Models\Site\SiteNoticeType;
 use Livewire\Attributes\Title;
 use App\Livewire\Forms\SiteNoteForm;
+use Illuminate\Support\Collection;
 use Toaster;
 
 class CreateSiteNote extends Component
@@ -16,10 +18,15 @@ class CreateSiteNote extends Component
 
     public SiteNoteForm $form;
 
-    public function mount(Site $site)
+    public Collection $siteNoticeTypes;
+
+    public string $page="create-site-note";
+    public function mount(Site $site, SiteNoticeType $siteNoticeType)
     {
          $this->authorize('create', Site::class);
         $this->site = $site;
+
+        $this->siteNoticeTypes=$siteNoticeType->active()->get();
 
         $this->form->setSiteCode($site);
     }

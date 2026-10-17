@@ -7,11 +7,11 @@ use App\Models\Site\Site;
 
 class SiteBatteries extends Component
 {
-    public $site;
+    public object $site;
 
-    public $batteries;
+    public ?object $batteries;
 
-    public $page='site.batteries';
+    public string $page='site.batteries';
 
     public function mount(Site $site)
     {
