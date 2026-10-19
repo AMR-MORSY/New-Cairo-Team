@@ -19,7 +19,7 @@
                             <x-ui.label>Site Code *</x-ui.label>
                             <x-ui.input wire:model="form.site_code" :readonly="$readonly"
                                 :placeholder="$readonly ? null : 'Enter Site Code'" class="w-full" />
-                            <x-ui.error name="form.site_code" />
+                            {{-- <x-ui.error name="form.site_code" /> --}}
                         </x-ui.field>
 
 
@@ -28,7 +28,7 @@
                             <x-ui.label>Site Name *</x-ui.label>
                             <x-ui.input wire:model="form.site_name" :readonly="$readonly"
                                 :placeholder="$readonly ? null : 'Enter Site Name'" class="w-full" />
-                            <x-ui.error name="form.site_name" />
+                            {{-- <x-ui.error name="form.site_name" /> --}}
                         </x-ui.field>
 
                         @if ($target == 'Information')
@@ -36,7 +36,7 @@
                                 <x-ui.label>Nodal Code *</x-ui.label>
                                 <x-ui.input wire:model="form.nodal_code" :readonly="$readonly"
                                     :placeholder="$readonly ? null : 'Enter nodal code'" class="w-full" />
-                                <x-ui.error name="form.nodal_code" />
+                                {{-- <x-ui.error name="form.nodal_code" /> --}}
                             </x-ui.field>
                             <x-ui.field>
                                 <x-ui.label>Nodal Name *</x-ui.label>
@@ -59,14 +59,14 @@
                             <x-ui.label>RNC *</x-ui.label>
                             <x-ui.input wire:model="form.RNC" :readonly="$readonly" type="text"
                                 :placeholder="$readonly ? null : 'Enter RNC'" class="w-full" />
-                            <x-ui.error name="form.RNC" />
+                            {{-- <x-ui.error name="form.RNC" /> --}}
                         </x-ui.field>
 
                         <x-ui.field>
                             <x-ui.label>Office *</x-ui.label>
                             <x-ui.input wire:model="form.office" type="text" :readonly="$readonly"
                                 :placeholder="$readonly ? null : 'Enter Office'" class="w-full" />
-                            <x-ui.error name="form.office" />
+                            {{-- <x-ui.error name="form.office" /> --}}
                         </x-ui.field>
 
                         <x-ui.field>
@@ -81,7 +81,7 @@
 
                             @endif
 
-                            <x-ui.error name="form.severity" />
+                            {{-- <x-ui.error name="form.severity" /> --}}
                         </x-ui.field>
                         <x-ui.field>
                             <x-ui.label>Category *</x-ui.label>
@@ -94,7 +94,7 @@
                                     :placeholder="$readonly ? null : 'Enter Site Category'" class="w-full" />
                             @endif
 
-                            <x-ui.error name="form.category" />
+                            {{-- <x-ui.error name="form.category" /> --}}
                         </x-ui.field>
 
                         <x-ui.field>
@@ -108,7 +108,7 @@
                                     :readonly="$readonly" class="w-full" />
                             @endif
 
-                            <x-ui.error name="form.type" />
+                            {{-- <x-ui.error name="form.type" /> --}}
                         </x-ui.field>
                         <x-ui.field>
                             <x-ui.label>Sharing *</x-ui.label>
@@ -122,7 +122,7 @@
                                     class="w-full" />
                             @endif
 
-                            <x-ui.error name="form.sharing" />
+                            {{-- <x-ui.error name="form.sharing" /> --}}
                         </x-ui.field>
 
                         <x-ui.field>
@@ -136,7 +136,7 @@
                                     :readonly="$readonly" class="w-full" />
                             @endif
 
-                            <x-ui.error name="form.host" />
+                            {{-- <x-ui.error name="form.host" /> --}}
                         </x-ui.field>
 
                         <x-ui.field>
@@ -150,7 +150,7 @@
                                     :readonly="$readonly" class="w-full" />
                             @endif
 
-                            <x-ui.error name="form.gest" />
+                            {{-- <x-ui.error name="form.gest" /> --}}
                         </x-ui.field>
 
                         <x-ui.field>
@@ -170,7 +170,7 @@
                                     :readonly="$readonly" class="w-full" />
                             @endif
 
-                            <x-ui.error name="form.team" />
+                            {{-- <x-ui.error name="form.team" /> --}}
                         </x-ui.field>
                         <x-ui.field>
                             <x-ui.label>VF Code *</x-ui.label>
@@ -183,33 +183,33 @@
                             <x-ui.label>ET Code *</x-ui.label>
                             <x-ui.input wire:model="form.et_code" :placeholder="$readonly ? null : 'Enter ET Code'"
                                 :readonly="$readonly" class="w-full" />
-                            <x-ui.error name="form.et_code" />
+                            {{-- <x-ui.error name="form.et_code" /> --}}
                         </x-ui.field>
 
                         <x-ui.field>
                             <x-ui.label>We Code *</x-ui.label>
                             <x-ui.input wire:model="form.we_code" :placeholder="$readonly ? null : 'Enter WE Code'"
                                 :readonly="$readonly" class="w-full" />
-                            <x-ui.error name="form.we_code" />
+                            {{-- <x-ui.error name="form.we_code" /> --}}
                         </x-ui.field>
 
                         <x-ui.field>
                             <x-ui.label>2G Cells *</x-ui.label>
                             <x-ui.input wire:model="form.cells_2G" type="number" :readonly="$readonly"
                                 :placeholder="$readonly ? null : 'Enter 2G Cells'" class="w-full" />
-                            <x-ui.error name="form.cells_2G" />
+                            {{-- <x-ui.error name="form.cells_2G" /> --}}
                         </x-ui.field>
                         <x-ui.field>
                             <x-ui.label>3G Cells *</x-ui.label>
                             <x-ui.input wire:model="form.cells_3G" type="number" :readonly="$readonly"
                                 :placeholder="$readonly ? null : 'Enter 3G Cells'" class="w-full" />
-                            <x-ui.error name="form.cells_3G" />
+                            {{-- <x-ui.error name="form.cells_3G" /> --}}
                         </x-ui.field>
                         <x-ui.field>
                             <x-ui.label>4G Cells *</x-ui.label>
                             <x-ui.input wire:model="form.cells_4G" type="number" :readonly="$readonly"
                                 :placeholder="$readonly ? null : 'Enter 4G Cells'" class="w-full" />
-                            <x-ui.error name="form.cells_4G" />
+                            {{-- <x-ui.error name="form.cells_4G" /> --}}
                         </x-ui.field>
 
                         <x-ui.field>
@@ -225,7 +225,7 @@
                                     class="w-full" />
                             @endif
 
-                            <x-ui.error name="form.status" />
+                            {{-- <x-ui.error name="form.status" /> --}}
                         </x-ui.field>
 
                         <x-ui.field>
@@ -246,7 +246,7 @@
                                     :readonly="$readonly" class="w-full" />
                             @endif
 
-                            <x-ui.error name="form.zone" />
+                            {{-- <x-ui.error name="form.zone" /> --}}
                         </x-ui.field>
 
 

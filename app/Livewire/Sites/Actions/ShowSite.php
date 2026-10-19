@@ -66,6 +66,8 @@ class ShowSite extends Component
 
     public  $previousUrl;
 
+    public string $page = "site.show";
+
     public function mount(SiteRepository $siteRepository, Site $site)
     {
         // the only check this page had was ->can('view', 'site') on the route;

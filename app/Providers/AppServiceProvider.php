@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Models\User;
+use Filament\Support\Colors\Color;
+use Filament\Support\Facades\FilamentColor;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -42,5 +44,14 @@ class AppServiceProvider extends ServiceProvider
          * and fatal on every page carrying a @can.
          */
         Gate::before(fn (User $user) => $user->isSuperAdmin() ?: null);
+
+        /*
+         * The admin panel sets its own colours, but only while it is serving
+         * /admin. Filament components embedded in the app (dashboard widgets,
+         * action modals) would otherwise fall back to Filament's amber.
+         */
+        FilamentColor::register([
+            'primary' => Color::hex('#ff7900'),
+        ]);
     }
 }

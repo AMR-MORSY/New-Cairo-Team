@@ -14,16 +14,16 @@ use App\Livewire\Forms\SiteForm;
 class UpdateSite extends Component
 {
     public SiteForm $form;
-    public $site;
+    public Site $site;
 
     public $zones, $teams;
+    public string $page = "site.update";
 
-
-    public  $previousUrl;
+    // public  $previousUrl;
     public function mount(Site $site)
     {
         $this->authorize('update', $site);
-        $this->previousUrl = url()->previous();
+        // $this->previousUrl = url()->previous();
         $this->site = $site;
         $this->zones = Zones::cases();
         $this->teams = Teams::cases();
@@ -44,11 +44,11 @@ class UpdateSite extends Component
 
         return redirect()->route('site.show', ['site' => $this->site->site_code]);
     }
-    public function goBack()
-    {
+    // public function goBack()
+    // {
 
-        return redirect()->to($this->previousUrl);
-    }
+    //     return redirect()->to($this->previousUrl);
+    // }
     public function render()
     {
         return view('livewire.sites.actions.update-site');

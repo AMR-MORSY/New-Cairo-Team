@@ -19,13 +19,15 @@ class CreateSite extends Component
 
     public $zones, $teams;
 
-    public  $previousUrl;
+    // public  $previousUrl;
 
+    public string $page = "site.create";
     public function mount()
     {
 
         $this->authorize('create', Site::class);
-        $this->previousUrl = url()->previous();
+        // $this->previousUrl = url()->previous();
+      
         $this->zones = Zones::cases();
         $this->teams = Teams::cases();
     }
@@ -64,11 +66,11 @@ class CreateSite extends Component
         return redirect()->route('site.show', ['site' => $site->site_code]);
     }
 
-    public function goBack()
-    {
+    // public function goBack()
+    // {
 
-        return redirect()->to($this->previousUrl);
-    }
+    //     return redirect()->to($this->previousUrl);
+    // }
     public function render()
     {
         return view('livewire.sites.actions.create-site');

@@ -5,12 +5,18 @@
    theme, which @filamentStyles does not link on these pages, so they are
    compiled into this build instead -- that keeps one Tailwind preflight
    rather than loading the panel's 615KB stylesheet with a second one.
-   The colour variables they read come from @filamentStyles' inline block. */
+   The colour variables they read come from @filamentStyles' inline block.
+   The dashboard embeds Filament widgets the same way: stats and charts need
+   widgets, and the stats grid is laid out with schemas. */
 @import '../../vendor/filament/support/resources/css/index.css';
 @import '../../vendor/filament/actions/resources/css/index.css';
+@import '../../vendor/filament/schemas/resources/css/index.css';
+@import '../../vendor/filament/widgets/resources/css/index.css';
 
 @source '../../vendor/filament/support/resources/views';
 @source '../../vendor/filament/actions/resources/views';
+@source '../../vendor/filament/schemas/resources/views';
+@source '../../vendor/filament/widgets/resources/views';
 
 
 
