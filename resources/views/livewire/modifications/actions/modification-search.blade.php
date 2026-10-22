@@ -83,7 +83,7 @@
 
 
                        <x-ui.field>
-                           <x-ui.label>To *</x-ui.label>
+                           <x-ui.label>To</x-ui.label>
                            <x-ui.input type="date" wire:model="date_to" placeholder="Enter To date" class="w-full" />
                            {{-- <x-ui.error name="date_to" /> --}}
                        </x-ui.field>
@@ -136,7 +136,7 @@
 
        </div>
        <div class="  w-full  p-4">
-           <livewire:tables.modification.site-modifications-table :modifications="$modifications" :site="null" />
+           <livewire:tables.modification.site-modifications-table :modifications="$modifications"  />
        </div>
 
    </x-viewLayouts.main-view-layout>

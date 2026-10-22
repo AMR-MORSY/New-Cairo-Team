@@ -25,17 +25,28 @@ final class SiteModificationsTable extends PowerGridComponent
 
     public string $tableName = 'site-modifications-table-nrpqqf-table';
 
-    public Collection|null $modifications;
+    public ?Collection $modifications = null;
 
-    public  $site;
+    public ?Site $site = null;
 
 
+    /** Relations every row reads; loaded up front rather than once per row. */
+    private const ROW_RELATIONS = ['site', 'subcontractor', 'requester', 'actionOwner', 'project', 'actions'];
+
+    /** The search sends ids only: whole models made a heavy event payload and arrived without their relations. */
     #[On('modificationsFound')]
-    public function modificationsFound($modifications)
+    public function modificationsFound(array $ids)
     {
+        $this->modifications = Modification::with(self::ROW_RELATIONS)->whereKey($ids)->get();
 
-        $this->modifications = Modification::hydrate($modifications); /////when dispatching a collection of models, it is received as an array of arrays. This method return into original value.a collection of models
-        // dd($this->modifications);
+        /*
+         * A new result set starts on page 1 with the table's own search box
+         * empty. PowerGrid pages a collection with forPage() and never checks
+         * the page still exists, so a page or search left over from the last
+         * results showed "No records" for a search that had found plenty.
+         */
+        $this->search = '';
+        $this->resetPage();
     }
 
 
@@ -60,12 +71,13 @@ final class SiteModificationsTable extends PowerGridComponent
     {
 
 
-
-
-
-
         if ($this->modifications) {
             ///////because we cast the est_cost & final_cost number_format will not work on these attributes, so we made new formatted attributes for both est & final costs to be used as fields
+
+            // collections passed in by the site and PO pages arrive without their relations
+            if ($this->modifications instanceof \Illuminate\Database\Eloquent\Collection) {
+                $this->modifications->loadMissing(self::ROW_RELATIONS);
+            }
 
             $modifications = $this->modifications->map(function ($modification) {
                 // Add formatted properties to the model object
@@ -112,14 +124,12 @@ final class SiteModificationsTable extends PowerGridComponent
 
                 PowerGrid::exportable(fileName: $this->site->site_code . '-' . $this->site->site_name)
                 ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV);
-           
         } elseif (!$this->site) {
             $setup[] =
 
 
                 PowerGrid::exportable(fileName: 'Modifications')
                 ->type(Exportable::TYPE_XLS, Exportable::TYPE_CSV);
-         
         }
         return $setup;
     }
@@ -159,7 +169,7 @@ final class SiteModificationsTable extends PowerGridComponent
              * row view then hands to preg_replace(). Modification::$status is
              * the only enum cast among the tables, so only this one collides.
              */
-            ->add('status_label', fn ($model) => $model->status?->value ?? '')
+            ->add('status_label', fn($model) => $model->status?->value ?? '')
             ->add('actionOwner', function ($model) {
                 if (is_object($model->actionOwner)) {
                     return $model->actionOwner->name;
@@ -185,15 +195,18 @@ final class SiteModificationsTable extends PowerGridComponent
 
     public function columns(): array
     {
-        return [
-            // Column::add()
-            //     ->title('Code')
-            //     ->field('site_code')
-            //     ->searchable(),
-            // Column::add()
-            //     ->title('Site')
-            //     ->field('site_name')
-            //     ->searchable(),
+       
+
+        $columns = [
+             $columns[] =  Column::add()
+                ->title('Code')
+                ->field('site_code')
+                ->searchable(),
+            $columns[] =  Column::add()
+                ->title('Site')
+                ->field('site_name')
+                ->searchable(),
+
             Column::add()
                 ->title('Subcontractor')
                 ->field('subcontractor')
@@ -226,20 +239,14 @@ final class SiteModificationsTable extends PowerGridComponent
                 ->headerAttribute('text-right')
                 ->bodyAttribute('text-right font-mono tabular-nums whitespace-nowrap'),
             Column::make('Actions', 'actions'),
-            Column::action('View')
+             Column::action('View')
+
         ];
+
+       
+        return $columns;
     }
 
-
-    /** Cancelled work stays in the list but should not read as live. */
-    // public function actionRules($row): array
-    // {
-    //     return [
-    //         Rule::rows()
-    //             ->when(fn ($row) => $row->status_label === 'Cancelled')
-    //             ->setAttribute('class', 'opacity-60'),
-    //     ];
-    // }
 
     #[On('clickToGoModificationDetails')]
     public function clickToGoModificationDetails($modificationId)
