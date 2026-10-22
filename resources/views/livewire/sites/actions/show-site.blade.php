@@ -72,52 +72,5 @@
             </x-viewLayouts.main-view-layout>
     </div>
 
-    {{-- @if ($newDirectCascades) --}}
-    {{-- <span class="indicator-item badge">@php
-        echo $site->cascades()->count();
-    @endphp</span> --}}
-    {{-- @endif --}}
-
-    {{-- //////////////////////////indirect cascades view///////////////////////////////  --}}
-
-
-    {{-- <input type="radio" name="my_tabs_2" class="tab" aria-label="In.Cascades" /> --}}
-
-    {{-- <div class="tab-content min-w-0 border-2  border-gray-200 bg-base-100 p-4 md:p-10"> --}}
-        {{-- <section class="w-full"> --}}
-            {{-- <x-viewLayouts.main-view-layout :heading="__('Indirect Cascade')" :subheading="__('You will find very important information about the site here. ')">
-                <x-slot:links>
-                    <x-site-navlinks-group :site="$site" />
-                </x-slot:links> --}}
-                {{-- @if ($indirectCascades) --}}
-                {{-- <div class=" w-full "> --}}
-                    {{-- <livewire:site-indirect-cascades-table :data=$indirectCascades /> --}}
-                    {{-- <livewire:tables.site.cascades-table :site="$site" cascadesType='indirect' /> --}}
-                {{-- </div> --}}
-                {{-- @endif --}}
-            {{-- </x-viewLayouts.main-view-layout> --}}
-    {{-- </div> --}}
-
-    {{-- @if ($indirectCascades)
-        <span class="indicator-item badge">@php
-            echo count($indirectCascades);
-        @endphp</span>
-    @endif --}}
-
-    {{-- //////////////////////////sheet view/////////////////////////////// --}}
-
-    {{-- <input type="radio" name="my_tabs_2" class="tab" aria-label="Sheet" /> --}}
-
-    {{-- <div class="tab-content min-w-0 border-2 border-gray-200 bg-base-100 p-4 md:p-10"> --}}
-        {{-- <section class="w-full"> --}}
-            {{-- <x-viewLayouts.main-view-layout :heading="__('Planning Sheet')" :subheading="__('This site and everything cascading off it, exactly as the sheet draws it.')"> --}}
-                {{-- <x-slot:links>
-                    <x-site-navlinks-group :site="$site" />
-                </x-slot:links> --}}
-
-                {{-- <x-site-sheet-view :grid="$sheetGrid" :current="$site->site_code"
-                    :imported-at="$sheetImportedAt" :source="$sheetSource" class="mt-5" /> --}}
-            {{-- </x-viewLayouts.main-view-layout> --}}
-        {{-- </section> --}}
-    {{-- </div> --}}
+  
 </div>

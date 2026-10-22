@@ -71,15 +71,13 @@ class ShowSite extends Component
 
     public string $page = "site.show";
 
-    public function mount(SiteRepository $siteRepository, Site $site)
+    public function mount( Site $site)
     {
         // the only check this page had was ->can('view', 'site') on the route;
         // it lives here now so the component is not open when mounted directly
         $this->authorize('view', $site);
 
-        // $this->previousUrl = url()->previous();
-
-        // $this->siteRepository = $siteRepository;
+      
 
         $this->form->setSite($site); ////this function binds the $site model with the form which contains the site model attributes which could be accessed inside the view 'livewire.sites.actions.show-site' by using the object form
 
@@ -103,30 +101,11 @@ class ShowSite extends Component
 
 
 
-        // $this->indirectCascades = $this->siteRepository->indirectCascades($site->cascades);
-        // $this->indirectCascades = collect($this->indirectCascades);
+       
 
     }
 
-    // private function getSiteRoute()
-    // {
-    //     $nodalCode = $this->site->getNodalNameAndCode('code');
-    //     $nodals = [];
-
-    //     if ($nodalCode) {
-    //         $nodals = $this->siteRepository->nodals($nodalCode);
-    //         $stringNodals = implode('', $nodals);
-    //         $route = "{$this->site->site_code}_{$this->site->site_name}{$stringNodals}";
-
-    //         return $route;
-    //     }
-    //     return null;
-    // }
-    // public function goBack()
-    // {
-
-    //     return redirect()->to($this->previousUrl);
-    // }
+   
 
     public function muxPlan()
     {
