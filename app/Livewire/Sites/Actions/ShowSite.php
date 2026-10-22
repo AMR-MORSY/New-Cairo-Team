@@ -10,16 +10,19 @@ use App\Models\Site\MuxPlan;
 use App\Models\Site\SheetImport;
 use App\Contracts\SiteInterface;
 use App\Livewire\Forms\SiteForm;
+use Livewire\Attributes\Title;
 use App\Repositories\SiteRepository;
 use App\Services\Sites\SiteRouteMap;
 
+
+#[Title('Show Site')]
 class ShowSite extends Component
 {
 
     public SiteForm $form;
-    protected $siteRepository;
+    // protected $siteRepository;
 
-    public  $site;
+    public Site $site;
 
     /** The chain built from the cascades table: one parent per site. */
     // public $route;
@@ -58,13 +61,13 @@ class ShowSite extends Component
 
     public ?string $sheetSource = null;
 
-    public $newDirectCascades;
+    // public ?array $newDirectCascades = null;
 
-    public $muxPlans;
+    public ?array $muxPlans = null;
 
-    public $indirectCascades;
+    // public ?array $indirectCascades = null;
 
-    public  $previousUrl;
+    // public  $previousUrl;
 
     public string $page = "site.show";
 
@@ -74,9 +77,9 @@ class ShowSite extends Component
         // it lives here now so the component is not open when mounted directly
         $this->authorize('view', $site);
 
-        $this->previousUrl = url()->previous();
+        // $this->previousUrl = url()->previous();
 
-        $this->siteRepository = $siteRepository;
+        // $this->siteRepository = $siteRepository;
 
         $this->form->setSite($site); ////this function binds the $site model with the form which contains the site model attributes which could be accessed inside the view 'livewire.sites.actions.show-site' by using the object form
 
@@ -100,9 +103,9 @@ class ShowSite extends Component
 
 
 
-        $this->indirectCascades = $this->siteRepository->indirectCascades($site->cascades);
-        $this->indirectCascades = collect($this->indirectCascades);
-        
+        // $this->indirectCascades = $this->siteRepository->indirectCascades($site->cascades);
+        // $this->indirectCascades = collect($this->indirectCascades);
+
     }
 
     // private function getSiteRoute()
@@ -114,16 +117,16 @@ class ShowSite extends Component
     //         $nodals = $this->siteRepository->nodals($nodalCode);
     //         $stringNodals = implode('', $nodals);
     //         $route = "{$this->site->site_code}_{$this->site->site_name}{$stringNodals}";
-           
+
     //         return $route;
     //     }
     //     return null;
     // }
-    public function goBack()
-    {
+    // public function goBack()
+    // {
 
-        return redirect()->to($this->previousUrl);
-    }
+    //     return redirect()->to($this->previousUrl);
+    // }
 
     public function muxPlan()
     {

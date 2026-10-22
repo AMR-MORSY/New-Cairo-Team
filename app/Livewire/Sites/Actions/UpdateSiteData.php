@@ -3,10 +3,11 @@
 namespace App\Livewire\Sites\Actions;
 
 use Livewire\Component;
+use Livewire\Attributes\Title;
 use App\Models\Site\SiteData;
 use Masmerise\Toaster\Toaster;
 use App\Livewire\Forms\SiteDataForm;
-
+#[Title('Update Site Data')]
 class UpdateSiteData extends Component
 {
     public SiteDataForm $form;
@@ -24,11 +25,8 @@ class UpdateSiteData extends Component
 
     public function updateSiteData()
     {
-        $validated = $this->form->validate();
-
-     
-
-        $battery = $this->siteData->update($validated);
+        // the record keeps its site; validatedForSave() leaves site_code out
+        $this->siteData->update($this->form->validatedForSave());
 
         Toaster::success('Updated Successfully');
         return redirect()->route('site.siteData', ['site' => $this->site->site_code]);

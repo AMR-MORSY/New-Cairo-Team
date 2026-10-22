@@ -6,6 +6,9 @@ use App\Livewire\Forms\PowerDataForm;
 use Livewire\Component;
 use App\Models\Site\Site;
 
+
+use Livewire\Attributes\Title;
+#[Title('Site Power Data')]
 class SitePowerData extends Component
 {
     public PowerDataForm $form;

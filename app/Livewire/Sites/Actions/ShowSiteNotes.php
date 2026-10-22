@@ -7,12 +7,14 @@ use App\Models\Site\Site;
 use App\Models\Site\SiteNote;
 use Livewire\WithPagination;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\Title;
 use Filament\Actions\Action;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Schemas\Concerns\InteractsWithSchemas;
 use Filament\Schemas\Contracts\HasSchemas;
 
+#[Title('Show Site Notes')]
 class ShowSiteNotes extends Component implements HasActions, HasSchemas
 {
     use WithPagination;
@@ -20,7 +22,7 @@ class ShowSiteNotes extends Component implements HasActions, HasSchemas
      use InteractsWithActions;
     use InteractsWithSchemas;
 
-    public $site;
+    public Site $site;
 
 
     public string $page="site.notes";

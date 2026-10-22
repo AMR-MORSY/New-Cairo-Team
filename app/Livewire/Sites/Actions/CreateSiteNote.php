@@ -11,10 +11,11 @@ use App\Livewire\Forms\SiteNoteForm;
 use Illuminate\Support\Collection;
 use Toaster;
 
+ #[Title('create Site Note')]
 class CreateSiteNote extends Component
 {
-    #[Title('create Site Note')]
-    public $site;
+   
+    public Site $site;
 
     public SiteNoteForm $form;
 

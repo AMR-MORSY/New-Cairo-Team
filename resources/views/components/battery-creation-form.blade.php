@@ -26,7 +26,7 @@
 
 
                         <x-ui.field>
-                            <x-ui.label>Stock *</x-ui.label>
+                            <x-ui.label>Stock</x-ui.label>
                             <x-ui.input wire:model="form.stock" :readonly="$readonly"
                                 :placeholder="$readonly ? null : 'Enter Stock'" class="w-full" />
                             <x-ui.error name="form.stock" />
@@ -34,13 +34,13 @@
 
                       
                             <x-ui.field>
-                                <x-ui.label>Battery Volt *</x-ui.label>
+                                <x-ui.label>Battery Volt</x-ui.label>
                                 <x-ui.input wire:model="form.battery_volt" :readonly="$readonly"
                                     :placeholder="$readonly ? null : 'Enter Batteries volt'" class="w-full" />
                                 <x-ui.error name="form.battery_volt" />
                             </x-ui.field>
                             <x-ui.field>
-                                <x-ui.label>Battery Amp Hr *</x-ui.label>
+                                <x-ui.label>Battery Amp Hr</x-ui.label>
                                 <x-ui.input wire:model="form.battery_amp_hr" :readonly="$readonly"
                                     :placeholder="$readonly ? null : 'Enter Battery Amp Hr'" class="w-full" />
                                 <x-ui.error name="form.battery_amp_hr" />
@@ -78,7 +78,7 @@
                             <x-ui.error name="form.no_strings" />
                         </x-ui.field>
                         <x-ui.field>
-                            <x-ui.label>Batteries status *</x-ui.label>
+                            <x-ui.label>Batteries status</x-ui.label>
                             <x-ui.input wire:model="form.batteries_status" :readonly="$readonly" type="text"
                                 :placeholder="$readonly ? null : 'Enter batteries status'" class="w-full" />
                             <x-ui.error name="form.batteries_status" />
@@ -96,7 +96,7 @@
                             <x-ui.error name="form.installation_date" />
                         </x-ui.field>
                         <x-ui.field>
-                            <x-ui.label>Theft case date *</x-ui.label>
+                            <x-ui.label>Theft case date</x-ui.label>
                             @if ($target == 'Update' || $target == 'New')
                                 <x-ui.input type="date" wire:model="form.theft_case"
                                     placeholder="Enter theft case date" class="w-full" />
@@ -110,10 +110,10 @@
                         <x-ui.field>
                             {{-- <x-ui.label>Description *</x-ui.label> --}}
                             @if ($target == 'Update' || $target == 'New')
-                                <x-ui.textarea label="Comment *" placeholder="Comments..." rows="4"
+                                <x-ui.textarea label="Comment" placeholder="Comments..." rows="4"
                                     wire:model="form.comment" class="w-full" />
                             @else
-                                <x-ui.textarea label="Comment *" wire:model="form.comment" rows="4"
+                                <x-ui.textarea label="Comment" wire:model="form.comment" rows="4"
                                     :placeholder="$readonly ? null : 'Comments...'" :readonly="$readonly"
                                     class="w-full" />
                             @endif

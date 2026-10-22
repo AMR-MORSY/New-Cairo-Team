@@ -3,9 +3,11 @@
 namespace App\Livewire\Sites\Actions;
 
 use Livewire\Component;
+use Livewire\Attributes\Title;
 use App\Models\Site\Site;
 use App\Livewire\Forms\SiteDataForm;
 
+#[Title('Site Data')]
 class SiteData extends Component
 {
     public SiteDataForm $form;

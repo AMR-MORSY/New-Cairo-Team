@@ -3,6 +3,7 @@
 namespace App\Livewire\Modifications\Actions;
 
 use Livewire\Component;
+use Livewire\Attributes\Title;
 use Masmerise\Toaster\Toaster;
 use Illuminate\Support\Collection;
 use App\Models\Modification\Action;
@@ -16,6 +17,7 @@ use App\Models\Modification\OverPoInvoice;
 use App\Models\Modification\Subcontractor;
 use App\Enums\ModificationStatus;
 
+#[Title('Update Modification')]
 class UpdateModification extends Component
 {
     public ModificationForm $form;

@@ -15,7 +15,9 @@ use App\Livewire\Forms\ModificationForm;
 use App\Models\Modification\Modification;
 use App\Models\Modification\Subcontractor;
 use App\Enums\ModificationStatus;
+use Livewire\Attributes\Title;
 
+#[Title('Modification Details')]
 class ModificationDetails extends Component
 {
     public ModificationForm $form;

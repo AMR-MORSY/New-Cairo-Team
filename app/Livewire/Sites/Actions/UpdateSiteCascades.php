@@ -5,13 +5,14 @@ namespace App\Livewire\Sites\Actions;
 use Livewire\Component;
 use App\Models\Site\Site;
 use Livewire\Attributes\On;
+use Livewire\Attributes\Title;
 use App\Contracts\SiteInterface;
 use App\Models\Site\SiteRoute;
 use Toaster;
-
+#[Title('Update Site Cascades')]
 class UpdateSiteCascades extends Component
 {
-    public object $site;
+    public Site $site;
   
     
     public function mount( Site $site)

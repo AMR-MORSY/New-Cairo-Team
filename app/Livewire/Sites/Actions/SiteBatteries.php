@@ -3,8 +3,10 @@
 namespace App\Livewire\Sites\Actions;
 
 use Livewire\Component;
+use Livewire\Attributes\Title;
 use App\Models\Site\Site;
 
+#[Title('Site Batteries')]
 class SiteBatteries extends Component
 {
     public object $site;

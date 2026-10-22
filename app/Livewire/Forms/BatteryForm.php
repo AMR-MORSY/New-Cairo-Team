@@ -8,7 +8,8 @@ use Livewire\Attributes\Validate;
 
 class BatteryForm extends Form
 {
-   
+    /** The values of the batteries.category enum column. */
+    public const CATEGORIES = ['New', 'Tested', 'Used'];
 
     public     $battery;
     public     $batteries_brand = '';
@@ -53,10 +54,11 @@ class BatteryForm extends Form
             "batteries_brand" =>  ["required", 'max:50'],
             "stock" =>  ["nullable", 'max:50'],
             "comment" => ["nullable", 'max:250'],
-            "category" => ["required", 'regex:/^Used|New|Tested$/'],
+            // the regex /^Used|New|Tested$/ let "Brand New" through: | split the whole pattern
+            "category" => ["required", Rule::in(self::CATEGORIES)],
             "battery_volt" =>  ['nullable', 'max:50'],
             "battery_amp_hr" =>  ['nullable', 'max:50'],
-            "no_strings" =>  ["required", 'integer', 'max:100'],
+            "no_strings" =>  ["required", 'integer', 'min:1', 'max:100'],
             "batteries_status" =>  ['nullable', 'max:50'],
             "installation_date" => ["required_without:theft_case", "date"],
             "theft_case" => ["nullable", "date"],
@@ -66,5 +68,20 @@ class BatteryForm extends Form
       
 
         return $rules;
+    }
+
+    /**
+     * Validated values ready to save. A field cleared in the browser comes
+     * back as '', which MySQL strict mode refuses in a DATE column, so
+     * blanks become null. site_code is left out: it is a public property the
+     * browser can change, so callers take it from the site they loaded.
+     */
+    public function validatedForSave(): array
+    {
+        $validated = $this->validate();
+
+        unset($validated['site_code']);
+
+        return array_map(fn($value) => $value === '' ? null : $value, $validated);
     }
 }

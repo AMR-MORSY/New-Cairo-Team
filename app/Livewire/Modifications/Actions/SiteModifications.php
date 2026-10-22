@@ -3,14 +3,17 @@
 namespace App\Livewire\Modifications\Actions;
 
 use Livewire\Component;
+use Livewire\Attributes\Title;
+use Illuminate\Support\Collection;
 use App\Models\Site\Site;
 use App\Models\Modification\Modification;
 
+#[Title('Site Modifications')]
 class SiteModifications extends Component
 {
 
-    public $modifications;
-    public $site;
+    public Collection $modifications;
+    public Site $site;
     public function mount(Site $site)
     {
         $this->authorize('viewSiteModifications', $site);

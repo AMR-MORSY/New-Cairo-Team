@@ -8,7 +8,8 @@ use Livewire\Attributes\Validate;
 
 class SiteDataForm extends Form
 {
-   
+    /** The Yes/No selects; each is a NOT NULL boolean column. */
+    public const FLAGS = ['ntra_cluster', 'care_ceo', 'axis', 'serve_compound', 'universities', 'hot_spot', 'need_access_permission'];
     public $site_code = '';
     public $on_air_date = null;
     public $topology = '';
@@ -105,24 +106,35 @@ class SiteDataForm extends Form
             "topology" => ['nullable', 'max:50', 'string'],
             "structure" => ['nullable', 'max:50', 'string'],
             "equip_room" => ['nullable', 'max:50', 'string'],
-            "ntra_cluster" =>   ['nullable', 'in:0,1'],
-            "care_ceo" =>  ['nullable', 'in:0,1'],
-            "axis" =>  ['nullable', 'in:0,1'],
-            "serve_compound" =>   ['nullable', 'in:0,1'],
-            "universities" => ['nullable', 'in:0,1'],
-            "hot_spot" => ['nullable', 'in:0,1'],
             "x_coordinate" => ['nullable', 'max:15', 'string'],
             "y_coordinate" => ['nullable', 'max:15', 'string'],
             "address" => ['nullable', 'max:255', 'string'],
-            "network_type" => ['nullable', 'max:55', 'regex:/^[a-zA-Z0-9 \/]+$/'],
+            "network_type" => ['nullable', 'max:50', 'regex:/^[a-zA-Z0-9 \/]+$/'],
             "last_pm_date" => ['nullable', 'date'],
-            "need_access_permission" => ['nullable', 'in:0,1'],
-            "permission_type" => ['nullable', 'max:55', 'string'],
+            "permission_type" => ['nullable', 'max:50', 'string'],
 
         ];
 
-      
+        // the columns are NOT NULL, so an empty choice is not an answer
+        foreach (self::FLAGS as $flag) {
+            $rules[$flag] = ['required', 'in:0,1'];
+        }
 
         return $rules;
+    }
+
+    /**
+     * Validated values ready to save. A field cleared in the browser comes
+     * back as '', which MySQL strict mode refuses in a DATE column, so
+     * blanks become null. site_code is left out: it is a public property the
+     * browser can change, so callers take it from the site they loaded.
+     */
+    public function validatedForSave(): array
+    {
+        $validated = $this->validate();
+
+        unset($validated['site_code']);
+
+        return array_map(fn($value) => $value === '' ? null : $value, $validated);
     }
 }

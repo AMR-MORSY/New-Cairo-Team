@@ -3,6 +3,7 @@
 namespace App\Livewire\Sites\Actions;
 
 use App\Livewire\Forms\SiteNoteForm;
+use App\Models\Site\Site;
 use App\Models\Site\SiteNoticeType;
 use App\Models\Site\SiteNote;
 use Illuminate\Support\Collection;
@@ -10,15 +11,14 @@ use Livewire\Attributes\Title;
 use Livewire\Component;
 use Toaster;
 
+#[Title('Update Site Note')]
 class UpdateSiteNote extends Component
 {
-    #[Title('update Site Note')]
-
     public SiteNoteForm $form;
 
-    public $siteNote;
+    public SiteNote $siteNote;
 
-    public $site;
+    public Site $site;
 
     public Collection $siteNoticeTypes;
 

@@ -78,8 +78,9 @@ class SiteForm extends Form
     public function rules()
     {
         $rules = [
-            "site_code" => ["required", Rule::unique('sites', 'site_code')],
-            "site_name" => ["required",  "regex:/^([0-9a-zA-Z_-]){2,60}$/"],
+            // the code is a URL segment (show/{site}), so / ? # and spaces would break its links
+            "site_code" => ["required", 'max:20', 'regex:/^[0-9A-Za-z_-]+$/', Rule::unique('sites', 'site_code')],
+            "site_name" => ["required",  "regex:/^([0-9a-zA-Z_-]){2,50}$/"],
             "BSC" => ["nullable", "regex:/^([0-9a-zA-Z_-]|\s){3,50}$/"],
             "RNC" => ["nullable", "regex:/^([0-9a-zA-Z_-]|\s){3,50}$/"],
             "office" => ["nullable", "string", 'max:50'],
@@ -117,9 +118,26 @@ class SiteForm extends Form
         if ($this->isUpdate) {
             
 
-            $rules['site_code'] = ["required", "exists:sites,site_code", Rule::unique('sites', 'site_code')->ignore($this->site)];
+            $rules['site_code'] = ["required", 'max:20', 'regex:/^[0-9A-Za-z_-]+$/', "exists:sites,site_code", Rule::unique('sites', 'site_code')->ignore($this->site)];
         }
 
         return $rules;
+    }
+
+    /**
+     * Validated values ready to save. A cleared cells box comes back as '',
+     * which MySQL strict mode refuses in an INTEGER column, so it becomes 0.
+     */
+    public function validatedForSave(): array
+    {
+        $validated = $this->validate();
+
+        foreach (['cells_2G', 'cells_3G', 'cells_4G'] as $cells) {
+            if (blank($validated[$cells] ?? null)) {
+                $validated[$cells] = 0;
+            }
+        }
+
+        return $validated;
     }
 }

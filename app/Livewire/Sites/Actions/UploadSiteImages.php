@@ -3,11 +3,13 @@
 namespace App\Livewire\Sites\Actions;
 
 use Livewire\Component;
+use Livewire\Attributes\Title;
 use App\Models\Site\Site;
 use Livewire\WithFileUploads;
 use Masmerise\Toaster\Toaster;
 use Illuminate\Support\Facades\Storage;
 
+   #[Title('Upload Site Images')]
 class UploadSiteImages extends Component
 {
 
@@ -17,7 +19,8 @@ class UploadSiteImages extends Component
     public $photos = [];
 
 
-    public $site;
+    public Site $site;
+ 
     public function mount(Site $site)
     {
          $this->authorize('update', $site);

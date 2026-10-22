@@ -1,4 +1,4 @@
-<x-viewLayouts.main-view-layout :heading="__('Site Images')" :subheading="__('You will find very important information about the power data of site ') .
+<x-viewLayouts.main-view-layout :heading="__('Site Images')" :subheading="__('You will find very important information about the images of site ') .
     $site->site_code .
     '-' .
     $site->site_name">

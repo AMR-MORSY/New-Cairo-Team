@@ -17,7 +17,7 @@
 
                     <div class="grid grid-cols-1 xl:grid-cols-2  2xl:grid-cols-3 gap-6">
                         <x-ui.field>
-                            <x-ui.label>On Air Date *</x-ui.label>
+                            <x-ui.label>On Air Date</x-ui.label>
                             @if ($target == 'Update' || $target == 'New')
                                 <x-ui.input type="date" wire:model="form.on_air_date" placeholder="Enter on air Date"
                                     class="w-full" />
@@ -30,7 +30,7 @@
 
 
                         <x-ui.field>
-                            <x-ui.label>Topology *</x-ui.label>
+                            <x-ui.label>Topology</x-ui.label>
                             <x-ui.input wire:model="form.topology" :readonly="$readonly"
                                 :placeholder="$readonly ? null : 'Enter Topology'" class="w-full" />
                             <x-ui.error name="form.topology" />
@@ -38,13 +38,13 @@
 
 
                         <x-ui.field>
-                            <x-ui.label>structure *</x-ui.label>
+                            <x-ui.label>Structure</x-ui.label>
                             <x-ui.input wire:model="form.structure" :readonly="$readonly"
                                 :placeholder="$readonly ? null : 'Enter Structure'" class="w-full" />
                             <x-ui.error name="form.structure" />
                         </x-ui.field>
                         <x-ui.field>
-                            <x-ui.label>Equipment Room *</x-ui.label>
+                            <x-ui.label>Equipment Room</x-ui.label>
                             <x-ui.input wire:model="form.equip_room" :readonly="$readonly"
                                 :placeholder="$readonly ? null : 'Enter Equipment Room'" class="w-full" />
                             <x-ui.error name="form.equip_room" />
@@ -52,13 +52,13 @@
 
 
                         <x-ui.field>
-                            <x-ui.label>X.coordinate *</x-ui.label>
+                            <x-ui.label>X.coordinate</x-ui.label>
                             <x-ui.input wire:model="form.x_coordinate" :readonly="$readonly"
                                 :placeholder="$readonly ? null : 'Enter x.coordinate'" class="w-full" />
                             <x-ui.error name="form.x_coordinate" />
                         </x-ui.field>
                         <x-ui.field>
-                            <x-ui.label>Y.coordinate *</x-ui.label>
+                            <x-ui.label>Y.coordinate</x-ui.label>
                             <x-ui.input wire:model="form.y_coordinate" 
                                 :readonly="$readonly" :placeholder="$readonly ? null : 'Enter y.coordinate'"
                                 class="w-full" />
@@ -66,9 +66,9 @@
                         </x-ui.field>
 
                         <x-ui.field>
-                            <x-ui.label>NTRA *</x-ui.label>
+                            <x-ui.label>NTRA</x-ui.label>
                             @if ($target == 'Update' || $target == 'New')
-                                <x-ui.select wire:model="form.ntra_cluster"  placeholder="Is NTRA?"
+                                <x-ui.select wire:model="form.ntra_cluster"
                                     class="w-full">
 
                                     <x-ui.select.option :value="0">No
@@ -85,10 +85,9 @@
                             <x-ui.error name="form.ntra_cluster" />
                         </x-ui.field>
                         <x-ui.field>
-                            <x-ui.label>Serve Compound *</x-ui.label>
+                            <x-ui.label>Serve Compound</x-ui.label>
                             @if ($target == 'Update' || $target == 'New')
-                                <x-ui.select wire:model="form.serve_compound" type="text"
-                                    placeholder="Serve Compound?" class="w-full">
+                                <x-ui.select wire:model="form.serve_compound" type="text" class="w-full">
 
                                     <x-ui.select.option :value="0">No
                                     </x-ui.select.option>
@@ -105,9 +104,9 @@
                         </x-ui.field>
 
                         <x-ui.field>
-                            <x-ui.label>Serve CEO *</x-ui.label>
+                            <x-ui.label>Serve CEO</x-ui.label>
                             @if ($target == 'Update' || $target == 'New')
-                                <x-ui.select wire:model="form.care_ceo" type="text" placeholder="Is Care of CEO"
+                                <x-ui.select wire:model="form.care_ceo" type="text"
                                     class="w-full">
 
                                     <x-ui.select.option :value="0">No
@@ -124,9 +123,9 @@
                             <x-ui.error name="form.care_ceo" />
                         </x-ui.field>
                         <x-ui.field>
-                            <x-ui.label>Host Spot *</x-ui.label>
+                            <x-ui.label>Hot Spot</x-ui.label>
                             @if ($target == 'Update' || $target == 'New')
-                                <x-ui.select wire:model="form.hot_spot" type="text" placeholder="Is Hot spot?"
+                                <x-ui.select wire:model="form.hot_spot" type="text"
                                     class="w-full">
 
                                     <x-ui.select.option :value="0">No
@@ -143,9 +142,9 @@
                             <x-ui.error name="form.hot_spot" />
                         </x-ui.field>
                         <x-ui.field>
-                            <x-ui.label>Universities *</x-ui.label>
+                            <x-ui.label>Universities</x-ui.label>
                             @if ($target == 'Update' || $target == 'New')
-                                <x-ui.select wire:model="form.universities" type="text" placeholder="Is Hot spot?"
+                                <x-ui.select wire:model="form.universities" type="text"
                                     class="w-full">
 
                                     <x-ui.select.option :value="0">No
@@ -162,9 +161,9 @@
                             <x-ui.error name="form.universities" />
                         </x-ui.field>
                         <x-ui.field>
-                            <x-ui.label>Axis *</x-ui.label>
+                            <x-ui.label>Axis</x-ui.label>
                             @if ($target == 'Update' || $target == 'New')
-                                <x-ui.select wire:model="form.axis" type="text" placeholder="Is Axis?"
+                                <x-ui.select wire:model="form.axis" type="text"
                                     class="w-full">
 
                                     <x-ui.select.option :value="0" >No
@@ -181,10 +180,9 @@
                             <x-ui.error name="form.axis" />
                         </x-ui.field>
                         <x-ui.field>
-                            <x-ui.label>Need Permission *</x-ui.label>
+                            <x-ui.label>Need Permission</x-ui.label>
                             @if ($target == 'Update' || $target == 'New')
-                                <x-ui.select wire:model="form.need_access_permission" 
-                                    placeholder="Need Permission?" class="w-full">
+                                <x-ui.select wire:model="form.need_access_permission" class="w-full">
 
                                     <x-ui.select.option :value="0">No
                                     </x-ui.select.option>
@@ -200,7 +198,7 @@
                             <x-ui.error name="form.need_access_permission" />
                         </x-ui.field>
                         <x-ui.field>
-                            <x-ui.label>Permission Type *</x-ui.label>
+                            <x-ui.label>Permission Type</x-ui.label>
                             <x-ui.input wire:model="form.permission_type" :readonly="$readonly"
                                 :placeholder="$readonly ? null : 'Enter Permission Type'" class="w-full" />
                             <x-ui.error name="form.permission_type" />
@@ -208,7 +206,7 @@
 
 
                         <x-ui.field>
-                            <x-ui.label>Last PM Date *</x-ui.label>
+                            <x-ui.label>Last PM Date</x-ui.label>
                             @if ($target == 'Update' || $target == 'New')
                                 <x-ui.input type="date" wire:model="form.last_pm_date"
                                     placeholder="Enter on last PM Date" class="w-full" />
@@ -221,7 +219,7 @@
                         <x-ui.field>
                         
 
-                            <x-ui.textarea label="Address *" wire:model="form.address" rows="4"
+                            <x-ui.textarea label="Address" wire:model="form.address" rows="4"
                                 :placeholder="$readonly ? null : 'Address...'" :readonly="$readonly"
                                 class="w-full" />
 

@@ -6,6 +6,7 @@ use App\Models\Site\SiteNote;
 use Livewire\Form;
 use App\Enums\SiteNoticeTypes;
 use Illuminate\Validation\Rule;
+use Livewire\Attributes\Locked;
 use Livewire\Attributes\Validate;
 use Illuminate\Validation\Rules\Enum;
 
@@ -15,7 +16,10 @@ class SiteNoteForm extends Form
 
 
 
+    // set on the server only: the browser could otherwise move a note to another site
+    #[Locked]
     public $id = '';
+    #[Locked]
     public $site_code = '';
     public $title = '';
     public $site_notice_type_id = '';

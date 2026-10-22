@@ -7,11 +7,11 @@ use App\Models\Site\Site;
 use Livewire\Attributes\Title;
 use App\Contracts\SiteInterface;
 use App\Repositories\SiteRepository;
-
+    #[Title('CE Sites')]
 class CeSites extends Component
 {
 
-    #[Title('CE Sites')]
+
     public $sites;
 
 

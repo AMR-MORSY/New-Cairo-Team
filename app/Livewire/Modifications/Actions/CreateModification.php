@@ -21,9 +21,10 @@ use Illuminate\Database\Eloquent\Collection;
 use App\Enums\ModificationStatus;
 use App\Models\Modification\ModificationReservation;
 use Livewire\Attributes\Locked;
+use Livewire\Attributes\Title;
 
 
-
+#[Title('Create Modification')]
 class CreateModification extends Component
 {
     #[Locked]

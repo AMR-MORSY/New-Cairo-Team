@@ -49,21 +49,21 @@
 
 
                         <x-ui.field>
-                            <x-ui.label>BSC *</x-ui.label>
+                            <x-ui.label>BSC</x-ui.label>
                             <x-ui.input wire:model="form.BSC" :readonly="$readonly" type="text"
                                 :placeholder="$readonly ? null : 'Enter BSC'" class="w-full" />
                             <x-ui.error name="form.BSC" />
                         </x-ui.field>
 
                         <x-ui.field>
-                            <x-ui.label>RNC *</x-ui.label>
+                            <x-ui.label>RNC</x-ui.label>
                             <x-ui.input wire:model="form.RNC" :readonly="$readonly" type="text"
                                 :placeholder="$readonly ? null : 'Enter RNC'" class="w-full" />
                             {{-- <x-ui.error name="form.RNC" /> --}}
                         </x-ui.field>
 
                         <x-ui.field>
-                            <x-ui.label>Office *</x-ui.label>
+                            <x-ui.label>Office</x-ui.label>
                             <x-ui.input wire:model="form.office" type="text" :readonly="$readonly"
                                 :placeholder="$readonly ? null : 'Enter Office'" class="w-full" />
                             {{-- <x-ui.error name="form.office" /> --}}
@@ -126,7 +126,7 @@
                         </x-ui.field>
 
                         <x-ui.field>
-                            <x-ui.label>Host *</x-ui.label>
+                            <x-ui.label>Host</x-ui.label>
                             @if ($target == 'Update' || $target == 'Create')
                               
                                 <x-select-enums wire:model="form.host" :enumOptions="('App\Enums\Host')::cases()" class="w-full"
@@ -140,7 +140,7 @@
                         </x-ui.field>
 
                         <x-ui.field>
-                            <x-ui.label>Guest *</x-ui.label>
+                            <x-ui.label>Guest</x-ui.label>
                             @if ($target == 'Update' || $target == 'Create')
                               
                                 <x-select-enums wire:model="form.gest" :enumOptions="('App\Enums\Guest')::cases()" class="w-full"
@@ -173,40 +173,40 @@
                             {{-- <x-ui.error name="form.team" /> --}}
                         </x-ui.field>
                         <x-ui.field>
-                            <x-ui.label>VF Code *</x-ui.label>
+                            <x-ui.label>VF Code</x-ui.label>
                             <x-ui.input wire:model="form.vf_code" :placeholder="$readonly ? null : 'Enter VF Code'"
                                 :readonly="$readonly" class="w-full" />
                             <x-ui.error name="form.vf_code" />
                         </x-ui.field>
 
                         <x-ui.field>
-                            <x-ui.label>ET Code *</x-ui.label>
+                            <x-ui.label>ET Code</x-ui.label>
                             <x-ui.input wire:model="form.et_code" :placeholder="$readonly ? null : 'Enter ET Code'"
                                 :readonly="$readonly" class="w-full" />
                             {{-- <x-ui.error name="form.et_code" /> --}}
                         </x-ui.field>
 
                         <x-ui.field>
-                            <x-ui.label>We Code *</x-ui.label>
+                            <x-ui.label>We Code</x-ui.label>
                             <x-ui.input wire:model="form.we_code" :placeholder="$readonly ? null : 'Enter WE Code'"
                                 :readonly="$readonly" class="w-full" />
                             {{-- <x-ui.error name="form.we_code" /> --}}
                         </x-ui.field>
 
                         <x-ui.field>
-                            <x-ui.label>2G Cells *</x-ui.label>
+                            <x-ui.label>2G Cells</x-ui.label>
                             <x-ui.input wire:model="form.cells_2G" type="number" :readonly="$readonly"
                                 :placeholder="$readonly ? null : 'Enter 2G Cells'" class="w-full" />
                             {{-- <x-ui.error name="form.cells_2G" /> --}}
                         </x-ui.field>
                         <x-ui.field>
-                            <x-ui.label>3G Cells *</x-ui.label>
+                            <x-ui.label>3G Cells</x-ui.label>
                             <x-ui.input wire:model="form.cells_3G" type="number" :readonly="$readonly"
                                 :placeholder="$readonly ? null : 'Enter 3G Cells'" class="w-full" />
                             {{-- <x-ui.error name="form.cells_3G" /> --}}
                         </x-ui.field>
                         <x-ui.field>
-                            <x-ui.label>4G Cells *</x-ui.label>
+                            <x-ui.label>4G Cells</x-ui.label>
                             <x-ui.input wire:model="form.cells_4G" type="number" :readonly="$readonly"
                                 :placeholder="$readonly ? null : 'Enter 4G Cells'" class="w-full" />
                             {{-- <x-ui.error name="form.cells_4G" /> --}}

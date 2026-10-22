@@ -15,7 +15,8 @@ class BatteriesLinks extends Component implements HasActions, HasSchemas
     use InteractsWithSchemas;
 
     public object $site;
-    public object $battery;
+    // null on the create and site-batteries pages, which have no battery yet
+    public ?object $battery = null;
 
     public string $page;
 

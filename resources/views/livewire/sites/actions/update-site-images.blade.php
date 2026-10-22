@@ -1,5 +1,5 @@
 <section class="w-full">
-    <x-viewLayouts.main-view-layout :heading="__('Update Site Images')" :subheading="__('You will find very important information about the power data of site ') .
+    <x-viewLayouts.main-view-layout :heading="__('Update Site Images')" :subheading="__('You will find very important information about the images of site ') .
         $site->site_code .
         '-' .
         $site->site_name">

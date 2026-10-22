@@ -6,17 +6,19 @@ use Toaster;
 use App\Enums\Teams;
 use App\Enums\Zones;
 use Livewire\Component;
+use Livewire\Attributes\Title;
 use App\Models\Site\Site;
 use Masmerise\Toaster\Toast;
 use App\Livewire\Forms\SiteForm;
 
-
+#[Title('Update Site')]
 class UpdateSite extends Component
 {
     public SiteForm $form;
     public Site $site;
 
-    public $zones, $teams;
+    public array $zones;
+    public array $teams;
     public string $page = "site.update";
 
     // public  $previousUrl;
@@ -36,8 +38,7 @@ class UpdateSite extends Component
 
         $this->form->isUpdate = true;
 
-        $validated = $this->validate();
-        $this->site->update($validated);
+        $this->site->update($this->form->validatedForSave());
 
         Toaster::success('Updated Successfully');
 

@@ -52,12 +52,27 @@ class PowerDataForm extends Form
             "gen_capacity" => ['nullable', 'max:50', 'string'],
             "c_length" => ['nullable', 'max:50', 'string'],
             "c_size" => ['nullable', 'max:50', 'string'],
-            "overhaul_consumption" => ['nullable', 'max:100000', 'integer'],
+            "overhaul_consumption" => ['nullable', 'integer', 'min:0', 'max:100000'],
 
         ];
 
-       
+
 
         return $rules;
+    }
+
+    /**
+     * Validated values ready to save. A field cleared in the browser comes
+     * back as '', which MySQL strict mode refuses in the INTEGER column, so
+     * blanks become null. site_code is left out: it is a public property the
+     * browser can change, so callers take it from the site they loaded.
+     */
+    public function validatedForSave(): array
+    {
+        $validated = $this->validate();
+
+        unset($validated['site_code']);
+
+        return array_map(fn($value) => $value === '' ? null : $value, $validated);
     }
 }

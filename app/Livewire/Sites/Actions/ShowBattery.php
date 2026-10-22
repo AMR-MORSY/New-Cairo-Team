@@ -5,14 +5,16 @@ namespace App\Livewire\Sites\Actions;
 use App\Livewire\Forms\BatteryForm;
 use App\Models\Site\Battery;
 use App\Models\Site\Site;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 
+ #[Title('Show Battery')]
 class ShowBattery extends Component
 {
    public BatteryForm $form;
 
-    public $site;
-    public $battery;
+    public Site $site;
+    public Battery $battery;
 
     public string $page='show';
 
