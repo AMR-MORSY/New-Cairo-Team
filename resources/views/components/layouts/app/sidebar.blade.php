@@ -44,34 +44,19 @@
                     </x-ui.navlist.item>
                 </x-ui.navlist.group>
 
-                {{-- same ability the users/roles/permissions routes are gated on,
-                     so the menu cannot show a page the user cannot open --}}
-                {{-- @can('handle_users_activities')
-                    <x-ui.navlist.group expandable icon="layout-grid" :heading="__('Users')"
-                        :expanded="request()->routeIs('users.*', 'permission.*', 'role.*')">
-                        <x-ui.navlist.item :href="route('users.index')"
-                            :current="request()->routeIs('users.index')" wire:navigate>
-                            {{ __('All') }}
-                        </x-ui.navlist.item>
-                        <x-ui.navlist.item :href="route('permission.index')"
-                            :current="request()->routeIs('permission.index')" wire:navigate>
-                            {{ __('Permissions') }}
-                        </x-ui.navlist.item>
-                        <x-ui.navlist.item :href="route('role.index')"
-                            :current="request()->routeIs('role.index')" wire:navigate>
-                            {{ __('Roles') }}
-                        </x-ui.navlist.item>
-                    </x-ui.navlist.group>
-                @endcan --}}
-
+        
                 <x-ui.navlist.group expandable :heading="__('Sites')"
                     :expanded="request()->routeIs('site.*')">
                     <x-ui.navlist.item icon="plus-circle" :href="route('site.create')"
                         :current="request()->routeIs('site.create')" wire:navigate>
                         {{ __('New Site') }}
                     </x-ui.navlist.item>
+                    <x-ui.navlist.item icon="plus-circle" :href="route('site.import_new_sites')"
+                        :current="request()->routeIs('site.import_new_sites')" wire:navigate>
+                        {{ __('Import New Sites') }}
+                    </x-ui.navlist.item>
                     <x-ui.navlist.item icon="arrow-down-tray" :href="route('site.CE.sites')"
-                        :current="request()->routeIs('site.CE.sites')">
+                        :current="request()->routeIs('site.CE.sites')" wire:navigate>
                         {{ __('CE Sites') }}
                     </x-ui.navlist.item>
                 </x-ui.navlist.group>

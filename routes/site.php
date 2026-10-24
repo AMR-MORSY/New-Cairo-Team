@@ -11,6 +11,7 @@ use App\Livewire\Sites\SearchingForSite;
 use App\Livewire\Sites\Actions\CeTPSites;
 use App\Livewire\Sites\Actions\CeVipSites;
 use App\Livewire\Sites\Actions\CreateSite;
+use App\Livewire\Sites\Actions\ImportNewSites;
 use App\Livewire\Sites\Actions\SiteImages;
 use App\Livewire\Sites\Actions\SiteNodals;
 use App\Livewire\Sites\Actions\UpdateSite;
@@ -37,36 +38,36 @@ use App\Livewire\Sites\Actions\UpdateSiteCascades;
 
 Route::middleware(['auth', 'team.member'])->prefix('site')->group(function () {
 
-    Route::post('/search', SearchingForSite::class)->name('site.search');
-    Route::get('sites/{target}/{search}/{updateSite?}', ShowSearchedSites::class)->name('site.searched.sites');
-    Route::get('show/{site:site_code}', ShowSite::class)->name('site.show');
-    Route::get('show/notes/{site:site_code}', ShowSiteNotes::class)->name('site.notes');
-    Route::get('create/note/{site:site_code}', CreateSiteNote::class)->name('site.note.create');
-    Route::get('update/note/{siteNote}', UpdateSiteNote::class)->name('site.note.update');
-    Route::get('update/{site:site_code}', UpdateSite::class)->name('site.update');
-    Route::get('create', CreateSite::class)->name('site.create');
-    Route::get('update/cascades/{site:site_code}', UpdateSiteCascades::class)->name('site.cascades.update');
+  Route::post('/search', SearchingForSite::class)->name('site.search');
+  Route::get('sites/{target}/{search}/{updateSite?}', ShowSearchedSites::class)->name('site.searched.sites');
+  Route::get('show/{site:site_code}', ShowSite::class)->name('site.show');
+  Route::get('show/notes/{site:site_code}', ShowSiteNotes::class)->name('site.notes');
+  Route::get('create/note/{site:site_code}', CreateSiteNote::class)->name('site.note.create');
+  Route::get('update/note/{siteNote}', UpdateSiteNote::class)->name('site.note.update');
+  Route::get('update/{site:site_code}', UpdateSite::class)->name('site.update');
+  Route::get('create', CreateSite::class)->name('site.create');
+  Route::get('update/cascades/{site:site_code}', UpdateSiteCascades::class)->name('site.cascades.update');
+  Route::get('import-new-sites', ImportNewSites::class)->name('site.import_new_sites');
+  Route::get('batteries/{site:site_code}', SiteBatteries::class)->name('site.batteries');
+  Route::get('create/battery/{site:site_code}', CreateBattery::class)->name('battery.create');
+  Route::get('show/battery/{battery}', ShowBattery::class)->name('battery.show');
+  Route::get('update/battery/{battery}', UpdateBattery::class)->name('battery.update');
 
-    Route::get('batteries/{site:site_code}', SiteBatteries::class)->name('site.batteries');
-    Route::get('create/battery/{site:site_code}', CreateBattery::class)->name('battery.create');
-    Route::get('show/battery/{battery}', ShowBattery::class)->name('battery.show');
-    Route::get('update/battery/{battery}', UpdateBattery::class)->name('battery.update');
+  Route::get('powerData/{site:site_code}', SitePowerData::class)->name('site.powerData');
+  Route::get('create/powerData/{site:site_code}', CreatePowerData::class)->name('powerData.create');
+  Route::get('update/powerData/{powerData}', UpdatePowerData::class)->name('powerData.update');
 
-    Route::get('powerData/{site:site_code}', SitePowerData::class)->name('site.powerData');
-    Route::get('create/powerData/{site:site_code}', CreatePowerData::class)->name('powerData.create');
-    Route::get('update/powerData/{powerData}', UpdatePowerData::class)->name('powerData.update');
+  Route::get('show/images/{site:site_code}', SiteImages::class)->name('site.images');
 
-    Route::get('show/images/{site:site_code}', SiteImages::class)->name('site.images');
-
-    Route::get('upload/images/{site:site_code}', UploadSiteImages::class)->name('site.images.upload');
-    Route::get('update/images/{site:site_code}', UpdateSiteImages::class)->name('site.images.update');
-    Route::get('siteData/{site:site_code}', SiteData::class)->name('site.siteData');
-    Route::get('create/siteData/{site:site_code}', CreateSiteData::class)->name('siteData.create');
-    Route::get('update/siteData/{siteData}', UpdateSiteData::class)->name('siteData.update');
-    Route::get('cairoEast/sites', CeSites::class)->name('site.CE.sites');
-    Route::get('cairoEast/sites/nodal', CeNodalSites::class)->name('site.CE.sites.nodal');
-    Route::get('cairoEast/sites/TP', CeTPSites::class)->name('site.CE.sites.TP');
-    Route::get('cairoEast/sites/golden', CeGSquareSites::class)->name('site.CE.sites.golden');
-    Route::get('cairoEast/sites/vip', CeVipSites::class)->name('site.CE.sites.vip');
-      Route::get('cairoEast/sites/batteries', CeBatteries::class)->name('site.CE.sites.batteries');
+  Route::get('upload/images/{site:site_code}', UploadSiteImages::class)->name('site.images.upload');
+  Route::get('update/images/{site:site_code}', UpdateSiteImages::class)->name('site.images.update');
+  Route::get('siteData/{site:site_code}', SiteData::class)->name('site.siteData');
+  Route::get('create/siteData/{site:site_code}', CreateSiteData::class)->name('siteData.create');
+  Route::get('update/siteData/{siteData}', UpdateSiteData::class)->name('siteData.update');
+  Route::get('cairoEast/sites', CeSites::class)->name('site.CE.sites');
+  Route::get('cairoEast/sites/nodal', CeNodalSites::class)->name('site.CE.sites.nodal');
+  Route::get('cairoEast/sites/TP', CeTPSites::class)->name('site.CE.sites.TP');
+  Route::get('cairoEast/sites/golden', CeGSquareSites::class)->name('site.CE.sites.golden');
+  Route::get('cairoEast/sites/vip', CeVipSites::class)->name('site.CE.sites.vip');
+  Route::get('cairoEast/sites/batteries', CeBatteries::class)->name('site.CE.sites.batteries');
 });

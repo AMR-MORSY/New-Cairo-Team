@@ -70,7 +70,7 @@ it('survives a site that appears as its own ancestor', function () {
     $map = new SiteRouteMap('test');
 
     expect($map->routesTo('AAA01A'))->toHaveCount(2);
-    expect(array_keys($map->cascadedCodes('AAA01A')))->toBe(['BBB01A']);
+    expect($map->cascadedCodes('AAA01A'))->toBe(['BBB01A']);
 });
 
 it('collects everything downstream of a site', function () {
@@ -82,7 +82,7 @@ it('collects everything downstream of a site', function () {
 
     $map = new SiteRouteMap('test');
 
-    expect(array_keys($map->cascadedCodes('AAA01A')))->toEqualCanonicalizing(['BBB01A', 'CCC01A', 'DDD01A']);
+    expect($map->cascadedCodes('AAA01A'))->toEqualCanonicalizing(['BBB01A', 'CCC01A', 'DDD01A']);
 
     $tree = $map->cascadesUnder('AAA01A');
     expect($tree)->toHaveCount(2);
@@ -96,21 +96,27 @@ it('leaves red sites out of the cascaded count', function () {
     hop('HUB01A>AAA01A>DDD01A', ['fill' => 'red']);      // rerouted...
     hop('HUB01A>AAA01A>CCC01A>DDD01A');                 // ...and still drawn here
 
-    expect(array_keys((new SiteRouteMap('test'))->cascadedCodes('AAA01A')))
+    expect((new SiteRouteMap('test'))->cascadedCodes('AAA01A'))
         ->toEqualCanonicalizing(['CCC01A', 'DDD01A']);
 });
 
-it('names each cascaded site, even when only one of its rows carries the name', function () {
-    hop('HUB01A>AAA01A>BBB01A', ['child_name' => 'Same Name']);
-    hop('HUB01A>AAA01A>CCC01A', ['child_name' => 'Same Name']);
-    hop('HUB01A>AAA01A>DDD01A', ['child_name' => 'Dee']);
-    hop('HUB01A>AAA01A>BBB01A>DDD01A', ['child_name' => null]);
+it('drops everything drawn under a red cell, keeping the other route', function () {
+    // 3531CA on the sheet: red on one row with four sites under it, yellow on
+    // another with one. Only the yellow route still stands.
+    hop('HUB01A>MID01A>TGT01A', ['path_fills' => ',,red', 'fill' => 'red']);
+    hop('HUB01A>MID01A>TGT01A>OLD01A', ['path_fills' => ',,red,red', 'fill' => 'red']);
+    hop('HUB01A>MID01A>TGT01A>OLD02A', ['path_fills' => ',,red,', 'fill' => null]);   // uncoloured, still under red
+    hop('HUB01A>MID01A>TGT01A', ['path_fills' => ',,yellow', 'fill' => 'yellow']);
+    hop('HUB01A>MID01A>TGT01A>NEW01A', ['path_fills' => ',,yellow,yellow', 'fill' => 'yellow']);
 
-    expect((new SiteRouteMap('test'))->cascadedCodes('AAA01A'))->toBe([
-        'BBB01A' => 'Same Name',
-        'CCC01A' => 'Same Name',
-        'DDD01A' => 'Dee',
-    ]);
+    expect((new SiteRouteMap('test'))->cascadedCodes('TGT01A'))->toBe(['NEW01A']);
+});
+
+it('ignores red cells above the site', function () {
+    // a red ancestor is another site's problem; it does not hide this one's cascades
+    hop('HUB01A>AAA01A>TGT01A>LEAF1A', ['path_fills' => ',red,,']);
+
+    expect((new SiteRouteMap('test'))->cascadedCodes('TGT01A'))->toBe(['LEAF1A']);
 });
 
 it('reports no descendants for a leaf', function () {

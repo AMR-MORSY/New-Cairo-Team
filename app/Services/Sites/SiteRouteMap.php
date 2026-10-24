@@ -96,7 +96,14 @@ class SiteRouteMap
         return $this->nest($below, $code);
     }
 
-    /** Flat list of every distinct site downstream of $code. */
+    /**
+     * Flat list of every distinct site downstream of $code.
+     *
+     * Red cells are sites the planners have removed or rerouted, so a row is
+     * ignored when $code or anything below it on that row is red: whatever
+     * hangs off a red cell goes with it. A site drawn red on one row and
+     * uncoloured or yellow on another still counts through the other row.
+     */
     public function cascadedCodes(string $code): array
     {
         $code = $this->normalise($code);
@@ -106,7 +113,13 @@ class SiteRouteMap
                 $chain = explode('>', $hop->path);
                 $at = array_search($code, $chain, true);
 
-                return $at !== false && $at < count($chain) - 1;
+                if ($at === false || $at >= count($chain) - 1) {
+                    return false;
+                }
+
+                $fills = array_slice(explode(',', (string) $hop->path_fills), $at);
+
+                return ! in_array('red', $fills, true) && $hop->fill !== 'red';
             })
             ->pluck('child_code')
             ->unique()
