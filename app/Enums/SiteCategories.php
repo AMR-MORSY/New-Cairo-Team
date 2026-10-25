@@ -24,6 +24,22 @@ enum SiteCategories: string
     case TP_G_SQR_VIP_NDL = "TP + G.SQR + VIP + NDL";
 
     /**
+     * Every category value carrying $tag, in any combination and order:
+     * withTag(self::VIP) is "VIP", "VIP + NDL", "TP + G.SQR + VIP", ...
+     * Derived from the cases, so a new combination is picked up without
+     * touching the queries that filter on it.
+     *
+     * @return array<int, string>
+     */
+    public static function withTag(self $tag): array
+    {
+        return array_values(array_map(
+            fn (self $case) => $case->value,
+            array_filter(self::cases(), fn (self $case) => in_array($tag->value, explode(' + ', $case->value), true)),
+        ));
+    }
+
+    /**
      * The category a site takes once it is a nodal (NDL): "TP" -> "TP + NDL",
      * "Normal" -> "NDL". A category that already carries NDL comes back as it is.
      *
@@ -57,6 +73,83 @@ enum SiteCategories: string
             self::TP_G_SQR_NDL, self::VIP_NDL_G_SQR, self::VIP_NDL_TP, self::TP_G_SQR_VIP_NDL => $category->value,
 
             self::LDN, self::BSC => $category->value, // no NDL variant
+        };
+    }
+
+    /**
+     * The reverse of mapSiteNodality(): the category a site falls back to when
+     * it stops being a nodal ("TP + NDL" -> "TP", "NDL" -> "Normal"). A
+     * category without NDL comes back as it is; null when the value is not a
+     * category. For every case, mapSiteNodality(removeNodality($c)) restores
+     * an NDL category exactly.
+     */
+    public static function removeNodality(self|string $category): ?string
+    {
+        $category = $category instanceof self ? $category : self::tryFrom($category);
+
+        if ($category === null) {
+            return null;
+        }
+
+        return match ($category) {
+            self::NDL => self::NORMAL->value,
+            self::TP_NDL => self::TP->value,
+            self::VIP_NDL => self::VIP->value,
+            self::VIP_NDL_TP => self::TP_VIP->value,
+            self::NDL_GSQR => self::GOLDEN_SQUARE->value,
+            self::TP_G_SQR_NDL => self::TP_G_SQR->value,
+            self::VIP_NDL_G_SQR => self::VIP_G_SQR->value,
+            self::TP_G_SQR_VIP_NDL => self::TP_G_SQR_VIP->value,
+            self::NORMAL, self::TP, self::VIP, self::TP_VIP, self::GOLDEN_SQUARE,
+            self::TP_G_SQR, self::VIP_G_SQR, self::TP_G_SQR_VIP,
+            self::LDN, self::BSC => $category->value,
+        };
+    }
+
+
+    public static function upgradeToVip(self|string $category): ?string
+    {
+        $category = $category instanceof self ? $category : self::tryFrom($category);
+
+        if ($category === null) {
+            return null;
+        }
+
+        return match ($category) {
+            self::NORMAL => self::VIP->value,
+            self::TP => self::TP_VIP->value,
+            self::NDL => self::VIP_NDL->value,
+            self::TP_NDL => self::VIP_NDL_TP->value,
+            self::GOLDEN_SQUARE => self::VIP_G_SQR->value,
+            self::TP_G_SQR => self::TP_G_SQR_VIP->value,
+            self::NDL_GSQR => self::VIP_NDL_G_SQR->value,
+            self::TP_G_SQR_NDL => self::TP_G_SQR_VIP_NDL->value,
+
+            // already VIP or VIP + NDL, or no VIP variant: keep it as it is
+            default => $category->value,
+        };
+    }
+
+    public static function downgradeFromVip(self|string $category): ?string
+    {
+        $category = $category instanceof self ? $category : self::tryFrom($category);
+
+        if ($category === null) {
+            return null;
+        }
+
+        return match ($category) {
+            self::VIP => self::NORMAL->value,
+            self::TP_VIP => self::TP->value,
+            self::VIP_NDL => self::NDL->value,
+            self::VIP_NDL_TP => self::TP_NDL->value,
+            self::VIP_G_SQR => self::GOLDEN_SQUARE->value,
+            self::TP_G_SQR_VIP => self::TP_G_SQR->value,
+            self::VIP_NDL_G_SQR => self::NDL_GSQR->value,
+            self::TP_G_SQR_VIP_NDL => self::TP_G_SQR_NDL->value,
+
+            // already not VIP or no VIP variant: keep it as it is
+            default => $category->value,
         };
     }
 }

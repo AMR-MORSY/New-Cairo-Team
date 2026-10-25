@@ -12,6 +12,7 @@ use App\Livewire\Sites\Actions\CeTPSites;
 use App\Livewire\Sites\Actions\CeVipSites;
 use App\Livewire\Sites\Actions\CreateSite;
 use App\Livewire\Sites\Actions\ImportNewSites;
+use App\Livewire\Sites\Actions\ImportNewBatteries;
 use App\Livewire\Sites\Actions\SiteImages;
 use App\Livewire\Sites\Actions\SiteNodals;
 use App\Livewire\Sites\Actions\UpdateSite;
@@ -48,6 +49,7 @@ Route::middleware(['auth', 'team.member'])->prefix('site')->group(function () {
   Route::get('create', CreateSite::class)->name('site.create');
   Route::get('update/cascades/{site:site_code}', UpdateSiteCascades::class)->name('site.cascades.update');
   Route::get('import-new-sites', ImportNewSites::class)->name('site.import_new_sites');
+  Route::get('import-new-batteries', ImportNewBatteries::class)->name('site.import_new_batteries');
   Route::get('batteries/{site:site_code}', SiteBatteries::class)->name('site.batteries');
   Route::get('create/battery/{site:site_code}', CreateBattery::class)->name('battery.create');
   Route::get('show/battery/{battery}', ShowBattery::class)->name('battery.show');

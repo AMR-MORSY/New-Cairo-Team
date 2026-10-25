@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Models\User;
 use Filament\Support\Colors\Color;
 use Filament\Support\Facades\FilamentColor;
+use Filament\Support\Facades\FilamentView;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -53,5 +54,18 @@ class AppServiceProvider extends ServiceProvider
         FilamentColor::register([
             'primary' => Color::hex('#ff7900'),
         ]);
+
+        /*
+         * The app moves between pages with wire:navigate, and Livewire re-runs
+         * every <script> in the new page's <body> unless it is marked
+         * data-navigate-once. Filament only adds that mark in SPA mode, which
+         * its panel switches on for /admin alone. Without it, each navigation
+         * ran support.js again, which set up a second copy of Filament's
+         * on-demand component loader after Alpine had already started. That copy
+         * was never wired in, so the dashboard's x-load chart components never
+         * loaded until a full refresh. The panel sets its own mode when it
+         * boots, so /admin is unaffected.
+         */
+        FilamentView::spa();
     }
 }

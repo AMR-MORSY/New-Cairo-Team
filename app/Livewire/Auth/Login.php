@@ -43,9 +43,15 @@ class Login extends Component
         RateLimiter::clear($this->throttleKey());
         Session::regenerate();
 
-
-
-        $this->redirectIntended(default: route('dashboard', absolute: false), navigate: true);
+        /*
+         * A full page load, not navigate: true. This page's layout carries no
+         * Filament scripts, so navigating would inject them into a page where
+         * Alpine is already running. Filament registers its x-load directive
+         * on alpine:init, which has already fired by then, so the dashboard
+         * charts (x-load components) would stay blank until a refresh. The
+         * other redirects from the auth layout into the app do the same.
+         */
+        $this->redirectIntended(default: route('dashboard', absolute: false));
     }
 
     /**

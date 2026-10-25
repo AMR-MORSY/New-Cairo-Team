@@ -55,6 +55,10 @@
                         :current="request()->routeIs('site.import_new_sites')" wire:navigate>
                         {{ __('Import New Sites') }}
                     </x-ui.navlist.item>
+                    <x-ui.navlist.item icon="battery-50" :href="route('site.import_new_batteries')"
+                        :current="request()->routeIs('site.import_new_batteries')" wire:navigate>
+                        {{ __('Import New Batteries') }}
+                    </x-ui.navlist.item>
                     <x-ui.navlist.item icon="arrow-down-tray" :href="route('site.CE.sites')"
                         :current="request()->routeIs('site.CE.sites')" wire:navigate>
                         {{ __('CE Sites') }}

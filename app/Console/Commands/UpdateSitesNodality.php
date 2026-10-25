@@ -4,37 +4,34 @@ namespace App\Console\Commands;
 
 use App\Enums\SiteCategories;
 use App\Models\Site\Site;
-use App\Models\Site\SiteRoute;
+use App\Services\Sites\SiteRouteMap;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
 /**
- * A site with anything cascaded on it is a nodal, so its category gains NDL
- * ("TP" -> "TP + NDL") via SiteCategories::mapSiteNodality(). The parents are
- * read from site_routes, which ImportSiteRoutes fills from the planning sheets.
+ * Makes site_routes, which ImportSiteRoutes fills from the planning sheets,
+ * the only source of nodality. Routes change, so this both adds and removes
+ * NDL across the whole sites table:
  *
- * Only adds NDL: a site that stopped being a parent keeps its category.
+ *   - every site first drops NDL ("TP + NDL" -> "TP"),
+ *   - then each parent in site_routes gains it back via mapSiteNodality().
+ *
+ * So a site in a zone with no imported sheet ends up non-nodal. Both steps
+ * are worked out together and only the sites whose category actually
+ * changes are written: the same result as downgrading and re-upgrading,
+ * without rewriting every nodal site twice.
+ *
+ * A red cell is a site the planners removed or rerouted (see
+ * SiteRouteMap::cascadedCodes), so a link drawn red does not make its parent
+ * a nodal.
  */
 class UpdateSitesNodality extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'update:sites-nodality {--dry-run : Report what would change without writing}';
 
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Add NDL to the category of every site that has sites cascaded on it in site_routes.';
+    protected $description = 'Reset NDL on every site, then add it back to each parent in site_routes.';
 
-    /**
-     * Execute the console command.
-     */
-    public function handle()
+    public function handle(): int
     {
         $dry = (bool) $this->option('dry-run');
 
@@ -42,43 +39,58 @@ class UpdateSitesNodality extends Command
             $this->warn('dry run - nothing will be written');
         }
 
-        // distinct rather than groupBy: ONLY_FULL_GROUP_BY rejects grouping with raw_label selected
-        $parentCodes = SiteRoute::query()->distinct()->pluck('parent_code')
-            ->map(fn($code) => strtoupper(trim($code)))
-            ->unique()
-            ->values();
+        $hops = DB::table('site_routes')->get(['path', 'path_fills']);
 
-        $sites = $parentCodes->chunk(1000)
-            ->flatMap(fn($codes) => Site::whereIn('site_code', $codes->all())->get(['id', 'site_code', 'site_name', 'category']))
-            ->keyBy(fn($site) => strtoupper($site->site_code));
+        if ($hops->isEmpty()) {
+            // with no routes every site would look like a non-nodal and lose NDL
+            $this->error('site_routes is empty - import the planning sheets first (routes:import-sheet).');
 
-        $notFound = $parentCodes->reject(fn($code) => $sites->has($code))->values();
-
-        $changes = [];
-        $unchanged = 0;
-        $invalid = [];
-
-        foreach ($sites as $site) {
-            $category = SiteCategories::mapSiteNodality($site->category);
-
-            if ($category === null) {
-                $invalid[] = [$site->site_code, $site->site_name, $site->category];
-                continue;
-            }
-
-            if ($category === $site->category) {
-                $unchanged++;
-                continue;
-            }
-
-            $changes[] = ['site' => $site, 'from' => $site->category, 'to' => $category];
+            return self::FAILURE;
         }
 
-        if ($changes) {
-            $this->table(
-                ['Site', 'Name', 'From', 'To'],
-                array_map(fn($c) => [$c['site']->site_code, $c['site']->site_name, $c['from'], $c['to']], $changes)
-            );
+        // code => true; the same definition the nodal sites table uses
+        $parents = array_fill_keys((new SiteRouteMap())->nodalCodes(), true);
+
+        // every site: the parents in site_routes are the nodals, everything else is not
+        $sites = Site::query()->get(['id', 'site_code', 'site_name', 'category']);
+
+        $changes = [];
+        $invalid = [];
+        $unchanged = 0;
+
+        foreach ($sites as $site) {
+            $code = strtoupper(trim($site->site_code));
+            $base = SiteCategories::removeNodality($site->category);
+
+            if ($base === null) {
+                $invalid[] = [$site->site_code, $site->site_name, $site->category];
+
+                continue;
+            }
+
+            $target = isset($parents[$code]) ? SiteCategories::mapSiteNodality($base) : $base;
+
+            if ($target === $site->category) {
+                $unchanged++;
+
+                continue;
+            }
+
+            $changes[] = ['site' => $site, 'from' => $site->category, 'to' => $target, 'nodal' => isset($parents[$code])];
+        }
+
+        $gained = array_filter($changes, fn ($c) => $c['nodal']);
+        $lost = array_filter($changes, fn ($c) => ! $c['nodal']);
+
+        foreach (['Becoming nodal (NDL added)' => $gained, 'No longer nodal (NDL removed)' => $lost] as $title => $group) {
+            if ($group) {
+                $this->newLine();
+                $this->line($title . ': ' . count($group));
+                $this->table(
+                    ['Site', 'Name', 'From', 'To'],
+                    array_map(fn ($c) => [$c['site']->site_code, $c['site']->site_name, $c['from'], $c['to']], $group)
+                );
+            }
         }
 
         if (! $dry && $changes) {
@@ -94,22 +106,27 @@ class UpdateSitesNodality extends Command
             $this->table(['Site', 'Name', 'Category'], $invalid);
         }
 
-        if ($notFound->isNotEmpty()) {
-            $this->warn("Parents in site_routes with no site in the sites table ({$notFound->count()}):");
-            $this->line($notFound->implode(', '));
+        $notFound = array_diff(array_keys($parents), $sites->map(fn ($s) => strtoupper(trim($s->site_code)))->all());
+
+        if ($notFound) {
+            $this->warn('Parents in site_routes with no site in the sites table (' . count($notFound) . '):');
+            $this->line(implode(', ', $notFound));
         }
 
         $this->newLine();
         $this->info(sprintf(
-            '%d parent sites: %d %s, %d already nodal or without an NDL variant, %d skipped, %d not found.',
-            $parentCodes->count(),
-            count($changes),
-            $dry ? 'would change' : 'changed',
+            '%d sites, %d parents in site_routes: %d %s NDL, %d %s NDL, %d unchanged, %d skipped.',
+            $sites->count(),
+            count($parents),
+            count($gained),
+            $dry ? 'would gain' : 'gained',
+            count($lost),
+            $dry ? 'would lose' : 'lost',
             $unchanged,
             count($invalid),
-            $notFound->count(),
         ));
 
         return self::SUCCESS;
     }
+
 }

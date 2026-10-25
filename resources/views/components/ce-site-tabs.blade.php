@@ -1,0 +1,25 @@
+@props(['target'])
+
+{{--
+    The CE VIP / TP / G.SQR pages: the sites table, and beside it every site's
+    live routes with the batteries along them. The Routes tab is lazy - its
+    component only loads once the tab is shown, since it walks site_routes for
+    every site.
+--}}
+
+<div x-data="{ tab: 'table' }" class="grid gap-4">
+    <div role="tablist" class="tabs tabs-border">
+        <button type="button" role="tab" class="tab" x-bind:class="{ 'tab-active': tab === 'table' }"
+            x-on:click="tab = 'table'">{{ __('Table') }}</button>
+        <button type="button" role="tab" class="tab" x-bind:class="{ 'tab-active': tab === 'routes' }"
+            x-on:click="tab = 'routes'">{{ __('Routes') }}</button>
+    </div>
+
+    <div x-show="tab === 'table'">
+        <livewire:tables.site.nodal-sites-table :target="$target" />
+    </div>
+
+    <div x-show="tab === 'routes'" x-cloak>
+        <livewire:sites.actions.site-routes-with-batteries :target="$target" lazy />
+    </div>
+</div>

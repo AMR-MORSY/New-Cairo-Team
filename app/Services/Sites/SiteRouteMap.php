@@ -25,6 +25,9 @@ class SiteRouteMap
 
     private ?array $nameMap = null;
 
+    /** child_code => the first hop naming it; firstWhere() over every hop was the cost of routesTo(). */
+    private ?array $firstHopByChild = null;
+
     public function __construct(private readonly ?string $source = null) {}
 
     /**
@@ -34,14 +37,71 @@ class SiteRouteMap
      */
     public function routesTo(string $code): array
     {
-        $code = $this->normalise($code);
+        return $this->describeRoutes($this->routeEntries($code));
+    }
 
-        /*
-         * A route to this site is any drawn path that reaches it, cut off
-         * there. Taking the prefix matters for sites in the middle of a
-         * chain: the row that names them as the child records one route, but
-         * longer rows running through them record others.
-         */
+    /**
+     * routesTo() without the routes the planners have struck out: a route is
+     * dropped when every row drawing it has a red cell somewhere along it.
+     * Judged on each row's own cells - describe() takes a node's fill from
+     * the first row naming that site, and 3531CA is red on one row but
+     * yellow on another.
+     */
+    public function liveRoutesTo(string $code): array
+    {
+        return $this->describeRoutes(array_filter($this->routeEntries($code), fn ($entry) => $entry[2]));
+    }
+
+    /**
+     * liveRoutesTo() merged on shared parents, one root per hub:
+     * [{code, name, children: [...]}]. A run with no split is a chain of
+     * single children; where routes part, the parent holds each branch.
+     *
+     * @return array<int, array{code: string, name: ?string, children: array}>
+     */
+    public function routeTree(string $code): array
+    {
+        return $this->treeFromRoutes($this->liveRoutesTo($code));
+    }
+
+    /** routeTree() for routes already in hand, so a caller needing both walks them once. */
+    public function treeFromRoutes(array $routes): array
+    {
+        $roots = [];
+
+        foreach ($routes as $route) {
+            $level = &$roots;
+
+            foreach ($route as $node) {
+                $level[$node['code']] ??= ['code' => $node['code'], 'name' => $node['name'], 'children' => []];
+                $level = &$level[$node['code']]['children'];
+            }
+
+            unset($level);
+        }
+
+        $list = function (array $nodes) use (&$list): array {
+            return array_values(array_map(
+                fn ($node) => ['code' => $node['code'], 'name' => $node['name'], 'children' => $list($node['children'])],
+                $nodes,
+            ));
+        };
+
+        return $list($roots);
+    }
+
+    /**
+     * Every drawn path reaching $code, cut off there, as
+     * key => [prefix, hop, live]. Taking the prefix matters for sites in the
+     * middle of a chain: the row naming them as the child records one route,
+     * longer rows running through them record others. One path can be drawn
+     * on several rows; it is live when any of them is free of red up to here.
+     *
+     * @return array<string, array{0: array<int, string>, 1: SiteRoute, 2: bool}>
+     */
+    private function routeEntries(string $code): array
+    {
+        $code = $this->normalise($code);
         $seen = [];
 
         foreach ($this->load() as $hop) {
@@ -59,15 +119,23 @@ class SiteRouteMap
             }
 
             $key = implode('>', $prefix);
+            $live = ! in_array('red', array_slice(explode(',', (string) $hop->path_fills), 0, $at + 1), true);
 
             // keep the hop that actually names this site, for its MMU ids
             if (! isset($seen[$key]) || $hop->child_code === $code) {
-                $seen[$key] = [$prefix, $hop];
+                $seen[$key] = [$prefix, $hop, $live || ($seen[$key][2] ?? false)];
+            } elseif ($live) {
+                $seen[$key][2] = true;
             }
         }
 
+        return $seen;
+    }
+
+    private function describeRoutes(array $entries): array
+    {
         $routes = [];
-        foreach ($seen as [$prefix, $hop]) {
+        foreach ($entries as [$prefix, $hop]) {
             $routes[] = $this->describe($prefix, $hop);
         }
 
@@ -126,6 +194,114 @@ class SiteRouteMap
             ->reject(fn ($c) => $c === $code)
             ->values()
             ->all();
+    }
+
+    /**
+     * count(cascadedCodes($code)) for every site at once, as code => count,
+     * from a single pass over the hops - for a table that has to sort on it.
+     * Codes with nothing live below them are left out (count 0).
+     *
+     * The rules are cascadedCodes()'s: a hop counts for a site when the site
+     * sits above the hop's child (its first place in the path) and nothing
+     * from there down to the child is red.
+     *
+     * @return array<string, int>
+     */
+    public function cascadeCounts(): array
+    {
+        $below = [];
+
+        foreach ($this->load() as $hop) {
+            if ($hop->fill === 'red') {
+                continue;
+            }
+
+            $chain = explode('>', $hop->path);
+            $fills = explode(',', (string) $hop->path_fills);
+            $last = count($chain) - 1;
+
+            // the highest place from which the path down to the child is free of red
+            $clearFrom = $last;
+            while ($clearFrom > 0 && ($fills[$clearFrom] ?? '') !== 'red' && ($fills[$clearFrom - 1] ?? '') !== 'red') {
+                $clearFrom--;
+            }
+
+            if (($fills[$clearFrom] ?? '') === 'red') {
+                continue;   // the child itself is red
+            }
+
+            $first = [];
+            foreach ($chain as $i => $code) {
+                $first[$code] ??= $i;
+            }
+
+            foreach ($first as $code => $i) {
+                if ($i >= $clearFrom && $i < $last && $code !== $hop->child_code) {
+                    $below[$code][$hop->child_code] = true;
+                }
+            }
+        }
+
+        return array_map('count', $below);
+    }
+
+    /**
+     * Every nodal site: a code with a live link below it somewhere in the
+     * sheets. A link drawn red at either end is not live - red cells are
+     * sites the planners removed or rerouted, as in cascadedCodes().
+     *
+     * @return array<int, string>
+     */
+    public function nodalCodes(): array
+    {
+        $nodals = [];
+
+        foreach ($this->load() as $hop) {
+            $chain = explode('>', $hop->path);
+            $fills = explode(',', (string) $hop->path_fills);
+            $child = count($chain) - 1;
+
+            if ($child < 1 || $chain[$child - 1] === $chain[$child]) {
+                continue;   // a hub, or a site the sheet draws under itself (4509CA>4509CA) - not a cascade
+            }
+
+            if (($fills[$child - 1] ?? '') !== 'red' && ($fills[$child] ?? '') !== 'red') {
+                $nodals[$this->normalise($chain[$child - 1])] = true;
+            }
+        }
+
+        return array_keys($nodals);
+    }
+
+    /**
+     * The sites $code hangs directly off, through live links only, as
+     * code => name. More than one when the sheet draws alternate routes.
+     *
+     * @return array<string, ?string>
+     */
+    public function parentsOf(string $code): array
+    {
+        $code = $this->normalise($code);
+        $parents = [];
+
+        foreach ($this->load() as $hop) {
+            $chain = explode('>', $hop->path);
+            $at = array_search($code, $chain, true);
+
+            if ($at === false || $at < 1) {
+                continue;
+            }
+
+            $fills = explode(',', (string) $hop->path_fills);
+
+            if (($fills[$at] ?? '') === 'red' || ($fills[$at - 1] ?? '') === 'red' || $chain[$at - 1] === $code) {
+                continue;
+            }
+
+            $parents[$chain[$at - 1]] ??= $this->nameOf($chain[$at - 1]);
+        }
+
+        return $parents;
     }
 
     /** True when the sheet draws more than one way to reach this site. */
@@ -321,7 +497,7 @@ class SiteRouteMap
     {
         $code = $this->normalise($code);
 
-        return $this->load()->firstWhere('child_code', $code)?->fill;
+        return $this->firstHopNaming($code)?->fill;
     }
 
     /**
@@ -380,6 +556,18 @@ class SiteRouteMap
     }
 
     /** Turn a chain of codes into hops carrying names and MMU ids. */
+    private function firstHopNaming(string $code): ?SiteRoute
+    {
+        if ($this->firstHopByChild === null) {
+            $this->firstHopByChild = [];
+            foreach ($this->load() as $hop) {
+                $this->firstHopByChild[$hop->child_code] ??= $hop;
+            }
+        }
+
+        return $this->firstHopByChild[$code] ?? null;
+    }
+
     private function describe(array $chain, SiteRoute $leaf): array
     {
         $out = [];
@@ -388,7 +576,7 @@ class SiteRouteMap
             // the supplied hop describes the last code only when it names it
             $hop = ($i === count($chain) - 1 && $leaf->child_code === $code)
                 ? $leaf
-                : $this->load()->firstWhere('child_code', $code);
+                : $this->firstHopNaming($code);
 
             $out[] = [
                 'code' => $code,

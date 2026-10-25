@@ -2,14 +2,15 @@
 
 namespace App\Livewire\Tables\Site;
 
+use App\Enums\SiteCategories;
 use App\Enums\Zones;
-
+use App\Support\PowerGrid\Themes\CompactDaisyUI;
 use App\Models\Site\Site;
 use Livewire\Attributes\On;
 use Illuminate\Support\Carbon;
 use App\Contracts\SiteInterface;
 use Illuminate\Support\Collection;
-use App\Repositories\SiteRepository;
+use App\Services\Sites\SiteRouteMap;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
@@ -32,11 +33,18 @@ final class NodalSitesTable extends PowerGridComponent
 
     protected $siteRepository;
 
-    public function __construct()
-    {
+    /** Built once per request; it loads site_routes a single time for every row. */
+    protected ?SiteRouteMap $routeMap = null;
 
-        $this->siteRepository = app(SiteRepository::class);
+    
+  /** A dozen columns wide; the compact theme keeps them on one screen. */
+    public function customThemeClass(): ?string
+    {
+        return CompactDaisyUI::class;
     }
+
+
+   
 
     public function actions($row): array
     {
@@ -50,6 +58,44 @@ final class NodalSitesTable extends PowerGridComponent
                 ->dispatch('clickToGOSiteDetails', ['site_code' => $row->site_code]),
         ];
     }
+
+    /**
+     * Nodality, cascades and parents all come from site_routes (the planning
+     * sheets), with the same rules as the site page and update:sites-nodality:
+     * a link drawn red is not live.
+     */
+    protected function routeMap(): SiteRouteMap
+    {
+        return $this->routeMap ??= new SiteRouteMap();
+    }
+
+    /**
+     * sites.* plus count_cascades as a real column, so PowerGrid can sort on
+     * it in SQL. The counts come from site_routes, which SQL cannot see, so
+     * they are written into the query as
+     * CASE site_code WHEN ? THEN ? ... ELSE 0 END - one arm per site with
+     * anything cascaded on it, a few hundred.
+     *
+     * @return array{0: string, 1: array}
+     */
+    protected function selectWithCascadeCount(): array
+    {
+        $counts = $this->routeMap()->cascadeCounts();
+
+        if (! $counts) {
+            return ['sites.*, 0 as count_cascades', []];
+        }
+
+        $bindings = [];
+        foreach ($counts as $code => $count) {
+            array_push($bindings, $code, $count);
+        }
+
+        $arms = str_repeat(' WHEN ? THEN ?', count($counts));
+
+        return ["sites.*, CASE sites.site_code{$arms} ELSE 0 END as count_cascades", $bindings];
+    }
+
     protected function getCachedSitesQuery(): Builder
     {
         $cacheKey = "sites_query_{$this->target}_" . Auth::user()->id;
@@ -58,52 +104,38 @@ final class NodalSitesTable extends PowerGridComponent
                 return $this->buildQuery();
             });
     }
+    /**
+     * Which Cairo East sites each page lists. Public and static so the Routes
+     * tab (SiteRoutesWithBatteries) lists exactly the sites this table does.
+     */
+    public static function sites(string $target, ?SiteRouteMap $map = null): Builder
+    {
+        $query = Site::query()->where('zone', Zones::CAIRO_EAST->value);
+
+        return match ($target) {
+            // the nodals as the planning sheets draw them, not the old cascades table
+            'nodals' => $query->whereIn('site_code', ($map ?? new SiteRouteMap())->nodalCodes()),
+            'vip' => $query->whereIn('category', SiteCategories::withTag(SiteCategories::VIP)),
+            'TP' => $query->where('site_name', 'like', '%3P%'),
+            'GSquare' => $query->whereIn('category', SiteCategories::withTag(SiteCategories::GOLDEN_SQUARE)),
+            default => Site::query(),
+        };
+    }
+
     protected function buildQuery(): Builder
     {
-        if ($this->target == "nodals") {
-
-            return Site::query()
-                ->with(['cascades', 'batteries', 'site_data', 'power_data'])
-                ->whereHas('cascades', function ($query) {
-                    $query->where('zone', Zones::CAIRO_EAST->value);
-                })
-                ->selectRaw('sites.*');
-        } elseif ($this->target == 'vip') {
-            return Site::query()->with(['cascades', 'batteries', 'site_data', 'power_data'])->where('zone', Zones::CAIRO_EAST->value)->where(function ($query) {
-                $query->where('category', 'VIP')->orWhere('category', 'VIP + NDL')->orWhere('category', 'VIP + NDL + G.SQR');
-            })->selectRaw('sites.*');
-        } elseif ($this->target == 'TP') {
-            return Site::query()->with(['cascades', 'batteries', 'site_data', 'power_data'])->where('zone', Zones::CAIRO_EAST->value)->where('site_name', 'like', '%3P%')->selectRaw('sites.*');
-        } elseif ($this->target == 'GSquare') {
-            return Site::query()->with(['cascades', 'batteries', 'site_data', 'power_data'])->where('zone', Zones::CAIRO_EAST->value)->where(function ($query) {
-                $query->where('category', 'G.SQR')->orWhere('category', 'VIP + G.SQR')->orWhere('category', 'NDL + G.SQR')->orWhere('category', 'VIP + NDL + G.SQR');
-            })->selectRaw('sites.*');
+        if (! in_array($this->target, ['nodals', 'vip', 'TP', 'GSquare'], true)) {
+            return Site::query();
         }
-        return Site::query();
+
+        return self::sites($this->target, $this->routeMap())
+            ->with($this->target === 'nodals' ? ['batteries', 'site_data', 'power_data'] : ['cascades', 'batteries', 'site_data', 'power_data'])
+            ->selectRaw(...$this->selectWithCascadeCount());
     }
     public function datasource(): Builder
     {
         // return $this->getCachedSitesQuery();
-         if ($this->target == "nodals") {
-
-            return Site::query()
-                ->with(['cascades', 'batteries', 'site_data', 'power_data'])
-                ->whereHas('cascades', function ($query) {
-                    $query->where('zone', Zones::CAIRO_EAST->value);
-                })
-                ->selectRaw('sites.*');
-        } elseif ($this->target == 'vip') {
-            return Site::query()->with(['cascades', 'batteries', 'site_data', 'power_data'])->where('zone', Zones::CAIRO_EAST->value)->where(function ($query) {
-                $query->where('category', 'VIP')->orWhere('category', 'VIP + NDL')->orWhere('category', 'VIP + NDL + G.SQR');
-            })->selectRaw('sites.*');
-        } elseif ($this->target == 'TP') {
-            return Site::query()->with(['cascades', 'batteries', 'site_data', 'power_data'])->where('zone', Zones::CAIRO_EAST->value)->where('site_name', 'like', '%3P%')->selectRaw('sites.*');
-        } elseif ($this->target == 'GSquare') {
-            return Site::query()->with(['cascades', 'batteries', 'site_data', 'power_data'])->where('zone', Zones::CAIRO_EAST->value)->where(function ($query) {
-                $query->where('category', 'G.SQR')->orWhere('category', 'VIP + G.SQR')->orWhere('category', 'NDL + G.SQR')->orWhere('category', 'VIP + NDL + G.SQR');
-            })->selectRaw('sites.*');
-        }
-        return Site::query();
+        return $this->buildQuery();
     }
 
     public function setUp(): array
@@ -155,16 +187,19 @@ final class NodalSitesTable extends PowerGridComponent
             ->add('site_code')
             ->add('site_name')
             ->add('category')
-            ->add('nodal_code')
-            ->add('nodal_name')
+            // // the site(s) this one hangs off in the sheets; several when there are alternate routes
+            // ->add('nodal_code', function ($site) {
+            //     return implode("\n", array_keys($this->routeMap()->parentsOf($site->site_code)));
+            // })
+            // ->add('nodal_name', function ($site) {
+            //     // one line per parent, so it lines up with nodal_code even when a name is missing
+            //     return implode("\n", array_map(fn ($name) => $name ?: '—', $this->routeMap()->parentsOf($site->site_code)));
+            // })
             ->add('sharing')
             ->add('host')
             ->add('gest')
-            ->add('count_cascades', function ($site) {
-
-
-                return  count($this->siteRepository->indirectCascades($site->cascades))  +  $site->cascades->count();
-            })
+            // the same count the site page shows, computed in the query so the column can sort
+            ->add('count_cascades', fn ($site) => (int) $site->count_cascades)
             ->add('battery_brand', function ($site) {
                 return $site->batteries ? $site->batteries->pluck('batteries_brand')->implode("\n") : '';
             })
@@ -209,11 +244,12 @@ final class NodalSitesTable extends PowerGridComponent
 
                 ->sortable(),
 
-            Column::make('Nodal Code', 'nodal_code'),
+            // Column::make('Nodal Code', 'nodal_code'),
 
-            Column::make('Nodal Name', 'nodal_name'),
+            // Column::make('Nodal Name', 'nodal_name'),
 
-            Column::make('Count Cascades', 'count_cascades'),
+            Column::make('Count Cascades', 'count_cascades')
+              ->sortable(),
 
 
             Column::make('Battery Brand', 'battery_brand'),
